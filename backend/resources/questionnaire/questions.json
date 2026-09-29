@@ -1,0 +1,1472 @@
+{
+  "version": "2026.09.1",
+  "categories": [
+    {
+      "id": "basics",
+      "label": "Харилцааны үндэс"
+    },
+    {
+      "id": "communication",
+      "label": "Харилцан яриа"
+    },
+    {
+      "id": "affection",
+      "label": "Энхрийлэл"
+    },
+    {
+      "id": "effort",
+      "label": "Хичээл зүтгэл"
+    },
+    {
+      "id": "trust",
+      "label": "Итгэлцэл"
+    },
+    {
+      "id": "conflict",
+      "label": "Маргаан"
+    },
+    {
+      "id": "independence",
+      "label": "Бие даасан байдал"
+    },
+    {
+      "id": "future",
+      "label": "Ирээдүй"
+    }
+  ],
+  "questions": [
+    {
+      "id": "basics_duration",
+      "category": "basics",
+      "text": "Та хоёр хэр удаан хамт байгаа вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "stage"
+      ],
+      "options": [
+        {
+          "value": "lt_1m",
+          "label": "1 сараас бага"
+        },
+        {
+          "value": "1_3m",
+          "label": "1–3 сар"
+        },
+        {
+          "value": "3_6m",
+          "label": "3–6 сар"
+        },
+        {
+          "value": "6_12m",
+          "label": "6–12 сар"
+        },
+        {
+          "value": "1_3y",
+          "label": "1–3 жил"
+        },
+        {
+          "value": "3y_plus",
+          "label": "3-аас дээш жил"
+        }
+      ]
+    },
+    {
+      "id": "basics_type",
+      "category": "basics",
+      "text": "Та хоёрын харилцааг юу хамгийн сайн тодорхойлох вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "stage"
+      ],
+      "options": [
+        {
+          "value": "talking",
+          "label": "Ярилцаж, танилцаж байгаа"
+        },
+        {
+          "value": "dating",
+          "label": "Болзож байгаа"
+        },
+        {
+          "value": "exclusive",
+          "label": "Зөвхөн бие биетэйгээ үерхэж байгаа"
+        },
+        {
+          "value": "living_together",
+          "label": "Хамт амьдарч байгаа"
+        },
+        {
+          "value": "engaged",
+          "label": "Сүй тавьсан"
+        },
+        {
+          "value": "married",
+          "label": "Гэрлэсэн"
+        }
+      ]
+    },
+    {
+      "id": "basics_frequency",
+      "category": "basics",
+      "text": "Та хоёр хэр олон уулздаг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "time_together"
+      ],
+      "options": [
+        {
+          "value": "daily",
+          "label": "Бараг өдөр бүр"
+        },
+        {
+          "value": "several_week",
+          "label": "Долоо хоногт хэд хэдэн удаа"
+        },
+        {
+          "value": "weekly",
+          "label": "Долоо хоногт нэг орчим удаа"
+        },
+        {
+          "value": "occasionally",
+          "label": "Хааяа"
+        },
+        {
+          "value": "long_distance",
+          "label": "Хол зайнаас харилцдаг"
+        }
+      ]
+    },
+    {
+      "id": "comm_initiates",
+      "category": "communication",
+      "text": "Ихэвчлэн хэн нь яриа эхлүүлдэг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "communication",
+        "initiation",
+        "balance"
+      ],
+      "options": [
+        {
+          "value": "mostly_me",
+          "label": "Ихэвчлэн би",
+          "flag": "initiation_imbalance"
+        },
+        {
+          "value": "slightly_me",
+          "label": "Арай илүү би"
+        },
+        {
+          "value": "equal",
+          "label": "Ойролцоогоор адилхан"
+        },
+        {
+          "value": "slightly_partner",
+          "label": "Арай илүү хамтрагч маань"
+        },
+        {
+          "value": "mostly_partner",
+          "label": "Ихэвчлэн хамтрагч маань"
+        }
+      ]
+    },
+    {
+      "id": "comm_if_not_first",
+      "category": "communication",
+      "text": "Хэрвээ та түрүүлж бичихгүй бол ихэвчлэн юу болдог вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "communication",
+        "initiation",
+        "reciprocity"
+      ],
+      "options": [
+        {
+          "value": "quickly",
+          "label": "Тэр удалгүй өөрөө холбогддог"
+        },
+        {
+          "value": "eventually",
+          "label": "Эцэст нь тэр холбогддог"
+        },
+        {
+          "value": "long_time",
+          "label": "Нэлээд удаан хугацаа өнгөрч магадгүй",
+          "flag": "initiation_imbalance"
+        },
+        {
+          "value": "no_contact",
+          "label": "Бид огт ярихгүй байж ч магадгүй",
+          "flag": "initiation_imbalance"
+        }
+      ]
+    },
+    {
+      "id": "comm_heard",
+      "category": "communication",
+      "text": "Чухал зүйлийн талаар ярихад таныг сонсож байна гэж мэдрэгддэг үү?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "communication",
+        "emotional_support"
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        }
+      ]
+    },
+    {
+      "id": "comm_interest",
+      "category": "communication",
+      "text": "Хамтрагч тань таны бодол, мэдрэмжийг үнэхээр сонирхдог юм шиг санагддаг уу?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "communication",
+        "emotional_support",
+        "curiosity"
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        }
+      ]
+    },
+    {
+      "id": "comm_share_hurt",
+      "category": "communication",
+      "text": "Ямар нэг зүйл таныг гомдоосон үед та хамтрагчийнхаа хариу үйлдлээс айхгүйгээр хэлж чаддаг уу?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "communication",
+        "emotional_safety"
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй",
+          "flag": "fear_of_reaction"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор",
+          "flag": "fear_of_reaction"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        }
+      ]
+    },
+    {
+      "id": "comm_calm",
+      "category": "communication",
+      "text": "Санал зөрөлдөөнөө ихэвчлэн тайван ярилцаж чаддаг уу?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "communication",
+        "conflict_style"
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        }
+      ]
+    },
+    {
+      "id": "comm_begging",
+      "category": "communication",
+      "text": "Та анхаарал гуйж байгаа юм шиг мэдрэмж төрдөг үү?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "communication",
+        "reciprocity",
+        "attention"
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн",
+          "flag": "attention_seeking"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж",
+          "flag": "attention_seeking"
+        }
+      ]
+    },
+    {
+      "id": "comm_avoiding",
+      "category": "communication",
+      "text": "Хамтрагчтайгаа ярихаас зайлсхийж байгаа чухал зүйл танд бий юу?",
+      "type": "yes_no",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "communication",
+        "avoidance"
+      ],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Тийм"
+        },
+        {
+          "value": "no",
+          "label": "Үгүй"
+        }
+      ]
+    },
+    {
+      "id": "aff_initiates",
+      "category": "affection",
+      "text": "Ихэвчлэн хэн нь энхрийлэл, дотно байдлыг санаачилдаг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "affection",
+        "initiation",
+        "balance"
+      ],
+      "options": [
+        {
+          "value": "mostly_me",
+          "label": "Ихэвчлэн би"
+        },
+        {
+          "value": "slightly_me",
+          "label": "Арай илүү би"
+        },
+        {
+          "value": "equal",
+          "label": "Ойролцоогоор адилхан"
+        },
+        {
+          "value": "slightly_partner",
+          "label": "Арай илүү хамтрагч маань"
+        },
+        {
+          "value": "mostly_partner",
+          "label": "Ихэвчлэн хамтрагч маань"
+        }
+      ]
+    },
+    {
+      "id": "aff_wanted",
+      "category": "affection",
+      "text": "Та хамтрагчдаа хүсэгдэж байна гэж мэдэрдэг үү?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "affection",
+        "desire",
+        "security"
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        }
+      ]
+    },
+    {
+      "id": "aff_unprompted",
+      "category": "affection",
+      "text": "Хамтрагч тань таныг гуйгаагүй байхад хайр, энхрийллээ хэр олон илэрхийлдэг вэ?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "affection",
+        "reciprocity"
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        }
+      ]
+    },
+    {
+      "id": "aff_closeness",
+      "category": "affection",
+      "text": "Харилцааныхаа эхэн үетэй харьцуулахад та хоёр:",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "affection",
+        "trajectory"
+      ],
+      "options": [
+        {
+          "value": "much_closer",
+          "label": "Хамаагүй ойр болсон"
+        },
+        {
+          "value": "little_closer",
+          "label": "Арай ойр болсон"
+        },
+        {
+          "value": "same",
+          "label": "Бараг хэвээрээ"
+        },
+        {
+          "value": "little_distant",
+          "label": "Арай хөндийрсөн",
+          "flag": "drifting_apart"
+        },
+        {
+          "value": "much_distant",
+          "label": "Нэлээд хөндийрсөн",
+          "flag": "drifting_apart"
+        }
+      ]
+    },
+    {
+      "id": "aff_share_news",
+      "category": "affection",
+      "text": "Сэтгэл хөдөлгөм зүйл тохиоход хамтрагч тань таны хамгийн түрүүнд хэлэхийг хүсдэг хүмүүсийн нэг байдаг уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "affection",
+        "friendship"
+      ],
+      "options": [
+        {
+          "value": "always",
+          "label": "Тийм, үргэлж"
+        },
+        {
+          "value": "usually",
+          "label": "Ихэвчлэн"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "not_really",
+          "label": "Тийм ч биш"
+        }
+      ]
+    },
+    {
+      "id": "aff_quiet_time",
+      "category": "affection",
+      "text": "Онцгой зүйл хийхгүй байсан ч хамтдаа цагийг өнгөрөөх танд таатай байдаг уу?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "affection",
+        "friendship",
+        "quality_time"
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        }
+      ]
+    },
+    {
+      "id": "effort_plans",
+      "category": "effort",
+      "text": "Ихэвчлэн хэн нь болзоо, хамтдаа хийх зүйлсийг төлөвлөдөг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "effort",
+        "initiation",
+        "balance"
+      ],
+      "options": [
+        {
+          "value": "mostly_me",
+          "label": "Ихэвчлэн би"
+        },
+        {
+          "value": "slightly_me",
+          "label": "Арай илүү би"
+        },
+        {
+          "value": "equal",
+          "label": "Ойролцоогоор адилхан"
+        },
+        {
+          "value": "slightly_partner",
+          "label": "Арай илүү хамтрагч маань"
+        },
+        {
+          "value": "mostly_partner",
+          "label": "Ихэвчлэн хамтрагч маань"
+        }
+      ]
+    },
+    {
+      "id": "effort_resolves",
+      "category": "effort",
+      "text": "Харилцаанд үүссэн асуудлыг ихэвчлэн хэн нь шийдэхийг хичээдэг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "effort",
+        "repair",
+        "balance"
+      ],
+      "options": [
+        {
+          "value": "mostly_me",
+          "label": "Ихэвчлэн би",
+          "flag": "effort_imbalance"
+        },
+        {
+          "value": "slightly_me",
+          "label": "Арай илүү би"
+        },
+        {
+          "value": "equal",
+          "label": "Ойролцоогоор адилхан"
+        },
+        {
+          "value": "slightly_partner",
+          "label": "Арай илүү хамтрагч маань"
+        },
+        {
+          "value": "mostly_partner",
+          "label": "Ихэвчлэн хамтрагч маань"
+        }
+      ]
+    },
+    {
+      "id": "effort_more",
+      "category": "effort",
+      "text": "Та харилцаандаа хүлээн авч байгаагаасаа илүү хүч чармайлт гаргаж байна гэж санагддаг уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "effort",
+        "reciprocity",
+        "balance"
+      ],
+      "options": [
+        {
+          "value": "balanced",
+          "label": "Үгүй, тэнцвэртэй санагддаг"
+        },
+        {
+          "value": "partner_more",
+          "label": "Харин ч хамтрагч маань илүү хичээдэг"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн",
+          "flag": "effort_imbalance"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж",
+          "flag": "effort_imbalance"
+        }
+      ]
+    },
+    {
+      "id": "effort_one_week",
+      "category": "effort",
+      "text": "Хэрвээ та нэг долоо хоног хичээхээ багасгавал юу болно гэж бодож байна?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "effort",
+        "reciprocity",
+        "security"
+      ],
+      "options": [
+        {
+          "value": "nothing",
+          "label": "Бараг юу ч өөрчлөгдөхгүй"
+        },
+        {
+          "value": "partner_steps_up",
+          "label": "Хамтрагч маань анзаарч, өөрөө хичээнэ"
+        },
+        {
+          "value": "distant",
+          "label": "Бид мэдэгдэхүйц хөндийрнө",
+          "flag": "effort_imbalance"
+        },
+        {
+          "value": "fall_apart",
+          "label": "Харилцаа маань нурчих вий гэж айдаг",
+          "flag": "effort_imbalance"
+        }
+      ]
+    },
+    {
+      "id": "trust_level",
+      "category": "trust",
+      "text": "Та хамтрагчдаа хэр их итгэдэг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "trust"
+      ],
+      "options": [
+        {
+          "value": "completely",
+          "label": "Бүрэн итгэдэг"
+        },
+        {
+          "value": "mostly",
+          "label": "Ихэнхдээ итгэдэг"
+        },
+        {
+          "value": "somewhat",
+          "label": "Зарим талаар"
+        },
+        {
+          "value": "a_little",
+          "label": "Бага зэрэг"
+        },
+        {
+          "value": "not_at_all",
+          "label": "Огт итгэдэггүй"
+        }
+      ]
+    },
+    {
+      "id": "trust_lose_interest",
+      "category": "trust",
+      "text": "Хамтрагч тань танд сонирхолгүй болчих вий гэж та байнга санаа зовдог уу?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "trust",
+        "security",
+        "anxiety"
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        }
+      ]
+    },
+    {
+      "id": "trust_someone_else",
+      "category": "trust",
+      "text": "Хамтрагч тань өөр хүнийг сонирхчих вий гэж та санаа зовдог уу?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "trust",
+        "fidelity",
+        "anxiety"
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн",
+          "flag": "fidelity_worry"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж",
+          "flag": "fidelity_worry"
+        }
+      ]
+    },
+    {
+      "id": "trust_reasons",
+      "category": "trust",
+      "text": "Хамтрагч тань танд өөрт нь итгэхгүй байх бодит шалтгаан өгч байсан уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "trust",
+        "fidelity",
+        "history"
+      ],
+      "options": [
+        {
+          "value": "no",
+          "label": "Үгүй"
+        },
+        {
+          "value": "small_things",
+          "label": "Хэдэн жижиг зүйл"
+        },
+        {
+          "value": "significant",
+          "label": "Тийм, ноцтой зүйл",
+          "flag": "trust_breach"
+        },
+        {
+          "value": "multiple",
+          "label": "Олон удаа",
+          "flag": "trust_breach"
+        }
+      ]
+    },
+    {
+      "id": "trust_time_apart",
+      "category": "trust",
+      "text": "Хамтрагч тань тантай хамт биш цагийг өнгөрөөхөд та хэр тайван байдаг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "trust",
+        "security",
+        "independence"
+      ],
+      "options": [
+        {
+          "value": "very",
+          "label": "Маш тайван"
+        },
+        {
+          "value": "mostly",
+          "label": "Ихэнхдээ тайван"
+        },
+        {
+          "value": "uneasy",
+          "label": "Жаахан тавгүй"
+        },
+        {
+          "value": "uncomfortable",
+          "label": "Нэлээд тавгүй"
+        },
+        {
+          "value": "very_uncomfortable",
+          "label": "Маш тавгүй"
+        }
+      ]
+    },
+    {
+      "id": "conflict_frequency",
+      "category": "conflict",
+      "text": "Ноцтой маргаан хэр олон гардаг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "conflict",
+        "frequency"
+      ],
+      "options": [
+        {
+          "value": "rarely",
+          "label": "Ховор эсвэл огт гардаггүй"
+        },
+        {
+          "value": "few_year",
+          "label": "Жилд хэдхэн удаа"
+        },
+        {
+          "value": "monthly",
+          "label": "Сард нэг орчим"
+        },
+        {
+          "value": "weekly",
+          "label": "Долоо хоногт нэг орчим"
+        },
+        {
+          "value": "several_week",
+          "label": "Долоо хоногт хэд хэдэн удаа"
+        }
+      ]
+    },
+    {
+      "id": "conflict_harm",
+      "category": "conflict",
+      "text": "Маргааны үеэр та хоёрын хэн нэг нь нөгөөгөө доромжлох, шоолох, сүрдүүлэх эсвэл санаатайгаар гутаах явдал гардаг уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "conflict",
+        "respect",
+        "safety"
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Үгүй, хэзээ ч"
+        },
+        {
+          "value": "once_or_twice",
+          "label": "Нэг хоёр удаа тохиолдсон",
+          "flag": "harmful_conflict"
+        },
+        {
+          "value": "sometimes",
+          "label": "Тийм, заримдаа",
+          "flag": "harmful_conflict"
+        },
+        {
+          "value": "often",
+          "label": "Тийм, байнга",
+          "flag": "harmful_conflict"
+        }
+      ]
+    },
+    {
+      "id": "conflict_after",
+      "category": "conflict",
+      "text": "Маргааны дараа ихэвчлэн юу болдог вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "conflict",
+        "repair"
+      ],
+      "options": [
+        {
+          "value": "resolve",
+          "label": "Бид ярилцаж, шийддэг"
+        },
+        {
+          "value": "apologize",
+          "label": "Бидний нэг нь уучлалт гуйдаг"
+        },
+        {
+          "value": "ignore",
+          "label": "Юу ч болоогүй юм шиг байдаг"
+        },
+        {
+          "value": "gives_in",
+          "label": "Нэг нь бууж өгдөг"
+        },
+        {
+          "value": "stop_talking",
+          "label": "Хэсэг хугацаанд ярихаа больдог"
+        },
+        {
+          "value": "unresolved",
+          "label": "Хэзээ ч бүрэн шийдэгддэггүй",
+          "flag": "unresolved_conflict"
+        }
+      ]
+    },
+    {
+      "id": "conflict_recurring",
+      "category": "conflict",
+      "text": "Ижил асуудлууд дахин дахин давтагддаг уу?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "conflict",
+        "repair",
+        "patterns"
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн",
+          "flag": "unresolved_conflict"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж",
+          "flag": "unresolved_conflict"
+        }
+      ]
+    },
+    {
+      "id": "conflict_reach_out",
+      "category": "conflict",
+      "text": "Маргааны дараа ихэвчлэн хэн нь түрүүлж эвлэрэхийг оролддог вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "conflict",
+        "repair",
+        "balance"
+      ],
+      "options": [
+        {
+          "value": "mostly_me",
+          "label": "Ихэвчлэн би"
+        },
+        {
+          "value": "slightly_me",
+          "label": "Арай илүү би"
+        },
+        {
+          "value": "equal",
+          "label": "Ойролцоогоор адилхан"
+        },
+        {
+          "value": "slightly_partner",
+          "label": "Арай илүү хамтрагч маань"
+        },
+        {
+          "value": "mostly_partner",
+          "label": "Ихэвчлэн хамтрагч маань"
+        }
+      ]
+    },
+    {
+      "id": "indep_own_life",
+      "category": "independence",
+      "text": "Та өөрийн хобби, найз нөхөд, зорилгоо хадгалж чаддаг уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "independence",
+        "identity"
+      ],
+      "options": [
+        {
+          "value": "fully",
+          "label": "Тийм, бүрэн"
+        },
+        {
+          "value": "mostly",
+          "label": "Ихэнхдээ"
+        },
+        {
+          "value": "somewhat",
+          "label": "Зарим талаар"
+        },
+        {
+          "value": "not_really",
+          "label": "Тийм ч биш"
+        },
+        {
+          "value": "lost",
+          "label": "Ихэнхийг нь алдсан"
+        }
+      ]
+    },
+    {
+      "id": "indep_anxiety",
+      "category": "independence",
+      "text": "Хамтрагч тань хэдэн цагийн турш хариу өгөхгүй бол та хэр их түгшдэг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "independence",
+        "anxiety",
+        "security"
+      ],
+      "options": [
+        {
+          "value": "not_at_all",
+          "label": "Огт түгшдэггүй"
+        },
+        {
+          "value": "slightly",
+          "label": "Бага зэрэг"
+        },
+        {
+          "value": "moderately",
+          "label": "Дунд зэрэг"
+        },
+        {
+          "value": "very",
+          "label": "Маш их",
+          "flag": "emotional_dependence"
+        },
+        {
+          "value": "extremely",
+          "label": "Туйлын их",
+          "flag": "emotional_dependence"
+        }
+      ]
+    },
+    {
+      "id": "indep_mood",
+      "category": "independence",
+      "text": "Таны сэтгэл санаа тухайн өдөр хамтрагч тань тантай хэрхэн харьцсанаас их хамаардаг уу?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "independence",
+        "emotional_regulation"
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн",
+          "flag": "emotional_dependence"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж",
+          "flag": "emotional_dependence"
+        }
+      ]
+    },
+    {
+      "id": "indep_day_apart",
+      "category": "independence",
+      "text": "Хамтрагчтайгаа огт холбогдохгүйгээр бүтэн өдрийг тайван, таатай өнгөрөөж чадах уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "independence",
+        "security"
+      ],
+      "options": [
+        {
+          "value": "easily",
+          "label": "Амархан"
+        },
+        {
+          "value": "probably",
+          "label": "Чадах байх"
+        },
+        {
+          "value": "with_effort",
+          "label": "Жаахан хичээвэл чадна"
+        },
+        {
+          "value": "hard",
+          "label": "Хэцүү байх болно"
+        },
+        {
+          "value": "no",
+          "label": "Үгүй"
+        }
+      ]
+    },
+    {
+      "id": "future_discussed",
+      "category": "future",
+      "text": "Та хоёр энэ харилцаанаас юу хүсэж байгаагаа ярилцаж байсан уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "future",
+        "communication"
+      ],
+      "options": [
+        {
+          "value": "clearly",
+          "label": "Тийм, нээлттэй, тодорхой"
+        },
+        {
+          "value": "somewhat",
+          "label": "Тодорхой хэмжээгээр"
+        },
+        {
+          "value": "briefly",
+          "label": "Зөвхөн товчхон"
+        },
+        {
+          "value": "not_yet",
+          "label": "Одоохондоо үгүй"
+        },
+        {
+          "value": "avoid",
+          "label": "Бид энэ сэдвээс зайлсхийдэг"
+        }
+      ]
+    },
+    {
+      "id": "future_align",
+      "category": "future",
+      "text": "Та хоёрын ирээдүйн хүлээлт нийцдэг гэж та бодож байна уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "future",
+        "alignment"
+      ],
+      "options": [
+        {
+          "value": "completely",
+          "label": "Бүрэн нийцдэг"
+        },
+        {
+          "value": "mostly",
+          "label": "Ихэнхдээ нийцдэг"
+        },
+        {
+          "value": "unsure",
+          "label": "Сайн мэдэхгүй байна"
+        },
+        {
+          "value": "somewhat_different",
+          "label": "Зарим талаар ялгаатай юм шиг"
+        },
+        {
+          "value": "very_different",
+          "label": "Их ялгаатай юм шиг"
+        }
+      ]
+    },
+    {
+      "id": "future_build",
+      "category": "future",
+      "text": "Та энэ хүнтэй хамт амьдралаа цогцлоохыг төсөөлж чадах уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "future",
+        "commitment"
+      ],
+      "options": [
+        {
+          "value": "definitely",
+          "label": "Мэдээж"
+        },
+        {
+          "value": "probably",
+          "label": "Магадгүй"
+        },
+        {
+          "value": "not_sure",
+          "label": "Сайн мэдэхгүй"
+        },
+        {
+          "value": "probably_not",
+          "label": "Магадгүй үгүй"
+        },
+        {
+          "value": "no",
+          "label": "Үгүй"
+        }
+      ]
+    },
+    {
+      "id": "future_included",
+      "category": "future",
+      "text": "Хамтрагч тань таныг ирээдүйнхээ нэг хэсэг гэж хардаг гэж та мэдэрдэг үү?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "future",
+        "security",
+        "commitment"
+      ],
+      "options": [
+        {
+          "value": "clearly",
+          "label": "Тийм, тодорхой"
+        },
+        {
+          "value": "think_so",
+          "label": "Тийм гэж бодож байна"
+        },
+        {
+          "value": "not_sure",
+          "label": "Сайн мэдэхгүй"
+        },
+        {
+          "value": "dont_think",
+          "label": "Тийм гэж бодохгүй байна"
+        },
+        {
+          "value": "no",
+          "label": "Үгүй"
+        }
+      ]
+    },
+    {
+      "id": "future_three_years",
+      "category": "future",
+      "text": "Хэрвээ ирэх 3 жилийн турш та хоёрын харилцаанд юу ч өөрчлөгдөхгүй бол та ямар мэдрэмж төрөх вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "future",
+        "satisfaction",
+        "overall"
+      ],
+      "options": [
+        {
+          "value": "very_happy",
+          "label": "Маш баяртай байна"
+        },
+        {
+          "value": "mostly_happy",
+          "label": "Ихэнхдээ баяртай байна"
+        },
+        {
+          "value": "unsure",
+          "label": "Эргэлзэж байна"
+        },
+        {
+          "value": "unhappy",
+          "label": "Баярлахгүй",
+          "flag": "status_quo_unhappy"
+        },
+        {
+          "value": "would_not_want",
+          "label": "Би ийм байхыг хүсэхгүй",
+          "flag": "status_quo_unhappy"
+        }
+      ]
+    },
+    {
+      "id": "final_wish",
+      "category": "future",
+      "text": "Хамтрагч тань таны мэдрэмжийн талаар ойлгоосой гэж хүсдэг ганц зүйл юу вэ?",
+      "type": "text",
+      "optional": true,
+      "max_length": 1000,
+      "analysis_tags": [
+        "open_reflection"
+      ],
+      "options": []
+    }
+  ],
+  "signals": {
+    "strength:communication": "Нээлттэй харилцан яриа",
+    "strength:affection": "Дулаан сэтгэл, энхрийлэл",
+    "strength:effort": "Хамтын хүчин чармайлт",
+    "strength:trust": "Итгэлцлийн бат суурь",
+    "strength:conflict": "Маргааны дараах эвлэрэл",
+    "strength:independence": "Өөрийгөө хадгалах чадвар",
+    "strength:future": "Нийтлэг чиг хандлага",
+    "explore:communication": "Бүрэн сонсогдох мэдрэмж",
+    "explore:affection": "Өдөр тутмын энхрийлэл",
+    "explore:effort": "Хүчин чармайлтын хуваарилалт",
+    "explore:trust": "Итгэл ба тайван байдал",
+    "explore:conflict": "Маргаан ба эвлэрэл",
+    "explore:independence": "Бие даасан байдал ба аюулгүй мэдрэмж",
+    "explore:future": "Ирээдүйн хүлээлт",
+    "pattern:harmful_conflict": "Маргааны үеийн харьцаа",
+    "pattern:trust_breach": "Өнгөрсөн үйл явдлын дараах итгэл",
+    "pattern:fear_of_reaction": "Гомдлоо хуваалцахад аюулгүй санагдах эсэх",
+    "pattern:status_quo_unhappy": "Ирээдүйн замын талаарх таны мэдрэмж",
+    "pattern:effort_imbalance": "Хүчин чармайлтын тэнцвэр",
+    "pattern:initiation_imbalance": "Хэн нь түрүүлж холбогддог вэ",
+    "pattern:unresolved_conflict": "Дахин дахин эргэж ирдэг асуудлууд",
+    "pattern:drifting_apart": "Ойр дотно байдлын өөрчлөлт",
+    "pattern:fidelity_worry": "Санаа зовнил ба итгэл",
+    "pattern:emotional_dependence": "Таны сэтгэл санааны тэнцвэр",
+    "pattern:attention_seeking": "Анхаарал хүсэх мэдрэмж"
+  }
+}

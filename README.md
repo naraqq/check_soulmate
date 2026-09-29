@@ -136,28 +136,58 @@ Frontend (`frontend/.env`, optional): `VITE_API_BASE_URL` (empty = same origin).
 
 Before going live, confirm these endpoints and field names against the documentation QPay provides with your merchant contract. They are isolated in one file. Test against the sandbox (`https://merchant-sandbox.qpay.mn/v2`) first.
 
-## Production deployment (AWS, single server)
+## Production deployment (AWS Ubuntu)
 
-1. **Server:** Ubuntu with Nginx, PHP 8.2+ FPM (`php-mysql php-mbstring php-xml php-curl php-zip`), MySQL 8, Composer, Node (build only), Supervisor, Certbot.
-2. **Code:** deploy to `/var/www/soulmate-check`.
-3. **Backend:**
+`deploy.sh` provisions the server and ships releases over SSH. Run it from **Git Bash** (Windows), macOS or Linux, in the repository root.
+
+### First time
+
+1. **AWS security group:** allow inbound TCP 22 (SSH), 80 (HTTP) and 443 (HTTPS).
+2. **Configure:** run `./deploy.sh` once. It creates `deploy/deploy.env` (git-ignored); fill in:
    ```bash
-   cd backend
-   composer install --no-dev --optimize-autoloader
-   cp .env.example .env   # set APP_ENV=production, APP_DEBUG=false, real secrets, PAYMENT_BYPASS=false, QUEUE_CONNECTION=database
-   php artisan key:generate   # first deploy only; keep APP_KEY safe (it decrypts stored answers)
-   php artisan migrate --force
-   php artisan config:cache && php artisan route:cache
-   sudo chown -R www-data:www-data storage bootstrap/cache
+   SERVER=ubuntu@<server-public-ip>
+   SSH_KEY=~/Downloads/<your-key>.pem
+   DOMAIN=            # optional for now
+   EMAIL=             # for the HTTPS certificate
    ```
-4. **Frontend:** `cd frontend && npm ci && npm run build` → `frontend/dist`.
-5. **Nginx:** copy `deploy/nginx/soulmate-check.conf`, replace the domain and PHP-FPM socket, then `sudo certbot --nginx`.
-6. **Queue worker:** copy `deploy/supervisor/soulmate-queue.conf` into `/etc/supervisor/conf.d/`.
-7. **Scheduler (prunes unpaid assessments):** `* * * * * cd /var/www/soulmate-check/backend && php artisan schedule:run >> /dev/null 2>&1`
-8. **QPay:** register `https://yourdomain.mn/api/payments/qpay/callback` as `QPAY_CALLBACK_URL`.
-9. After every deploy, re-run `php artisan config:cache route:cache` and `sudo supervisorctl restart soulmate-queue:*`.
+3. **Provision** (Nginx, PHP-FPM, MySQL, Composer, Supervisor, Certbot, firewall, swap, database):
+   ```bash
+   ./deploy.sh setup
+   ```
+4. **Deploy:** builds and tests locally, uploads, installs, migrates and activates:
+   ```bash
+   ./deploy.sh
+   ```
+   The first deploy creates the production `.env` on the server (random DB password, new `APP_KEY`, `PAYMENT_BYPASS=false`, database queue). It then copies the QPay, AI and price settings from your local `backend/.env`.
+5. **HTTPS:** point your domain's DNS A record at the server, set `DOMAIN` and `EMAIL`, then:
+   ```bash
+   ./deploy.sh ssl
+   ```
+   This also updates `APP_URL` and `QPAY_CALLBACK_URL` to the HTTPS domain. Certificates renew automatically.
 
-**Back up `APP_KEY`.** Answers and reports are encrypted with it; losing it makes stored data unreadable.
+### Everyday commands
+
+| Command | What it does |
+|---|---|
+| `./deploy.sh` | Build, test, upload and switch to a new release (keeps the last 5). |
+| `SKIP_TESTS=1 ./deploy.sh` | Same, without running tests. |
+| `./deploy.sh env` | Push changed secrets (QPay, AI keys, model, price) from `backend/.env`. |
+| `./deploy.sh rollback` | Switch back to the previous release (database migrations are not reversed). |
+| `./deploy.sh logs` | Laravel and queue-worker logs, service status. |
+
+### On the server
+
+```
+/var/www/soulmate-check/
+  current -> releases/<timestamp>     active release (frontend/dist + backend)
+  releases/                           last 5 releases
+  shared/.env                         production settings (persist across deploys)
+  shared/storage/                     logs, cache, sessions
+```
+
+Nginx serves the SPA and routes `/api/*` to PHP-FPM (templates in `deploy/nginx/`). A Supervisor worker runs the report queue (`deploy/supervisor/`), and cron runs the Laravel scheduler.
+
+**Back up `APP_KEY`** from `/var/www/soulmate-check/shared/.env`. Answers and reports are encrypted with it; losing it makes stored data unreadable.
 
 ## Privacy and safety
 
@@ -168,5 +198,3 @@ Before going live, confirm these endpoints and field names against the documenta
 - API responses are sent with `Cache-Control: no-store`, and all endpoints are rate-limited.
 - Users can delete their assessment and report. Unpaid assessments are pruned after 30 days.
 - The AI prompt forbids diagnoses, labels such as "toxic", cheating predictions, verdicts on love, and break-up advice.
-#   c h e c k _ s o u l m a t e  
- 
