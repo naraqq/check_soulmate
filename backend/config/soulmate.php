@@ -39,6 +39,7 @@ return [
     'unpaid_retention_days' => (int) env('UNPAID_RETENTION_DAYS', 30),
 
     // A "generating" assessment older than this is considered stuck and may be retried.
+    // Must exceed the job timeout (7 min, see GenerateRelationshipReport::$timeout).
     'generation_stale_minutes' => 10,
 
     // Hard cap on OpenAI calls per assessment, so retries can't run up costs.

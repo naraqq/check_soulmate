@@ -1,4 +1,4 @@
-# Soulmate Check
+# Lemony
 
 A single-person relationship self-check (in Mongolian). The user answers ~40 questions, sees a small teaser computed in the browser, pays through QPay, and receives a personalised AI-generated report.
 

@@ -1,5 +1,8 @@
-import { useEffect, useId } from 'react'
+import { ArrowRight } from 'lucide-react'
+import { useEffect, useId, useRef } from 'react'
 import type { Question } from '../../data/types'
+import { LemonMark } from '../layout/LemonMark'
+import { Button } from '../ui/Button'
 import { OptionList } from './OptionList'
 
 interface Props {
@@ -8,11 +11,20 @@ interface Props {
   value: string | null
   onSelect: (value: string) => void
   onTextChange: (value: string) => void
+  /** Move on after reading a reply. */
+  onContinue: () => void
 }
 
-export function QuestionView({ question, categoryLabel, value, onSelect, onTextChange }: Props) {
+export function QuestionView({ question, categoryLabel, value, onSelect, onTextChange, onContinue }: Props) {
   const headingId = useId()
   const isText = question.type === 'text'
+  const reply = question.options?.find((o) => o.value === value)?.reply
+  const replyRef = useRef<HTMLDivElement>(null)
+
+  // On phones the reply can appear below the fold — bring it into view.
+  useEffect(() => {
+    if (reply) replyRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+  }, [reply])
 
   // Number keys pick options on desktop.
   useEffect(() => {
@@ -63,6 +75,22 @@ export function QuestionView({ question, categoryLabel, value, onSelect, onTextC
           />
         )}
       </div>
+
+      {reply && (
+        <div key={reply} ref={replyRef} role="status" className="mt-5 scroll-mb-28 animate-fade-up">
+          <div className="flex items-start gap-3">
+            <LemonMark className="mt-0.5 size-8 shrink-0" />
+            <p className="rounded-3xl rounded-tl-md border border-line bg-paper px-4 py-3 text-[15px] leading-relaxed backdrop-blur">
+              {reply}
+            </p>
+          </div>
+          <div className="mt-4 pl-11">
+            <Button onClick={onContinue} autoFocus>
+              Үргэлжлүүлэх <ArrowRight className="size-4" />
+            </Button>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

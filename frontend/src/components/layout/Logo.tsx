@@ -1,13 +1,11 @@
 import { Link } from 'react-router'
+import { LemonMark } from './LemonMark'
 
 export function Logo() {
   return (
-    <Link to="/" className="group inline-flex items-center gap-2.5" aria-label="Soulmate Check — нүүр хуудас">
-      <span className="relative inline-flex h-7 w-10 items-center" aria-hidden>
-        <span className="absolute left-0 size-7 rounded-full border-[2.5px] border-violet-400 transition-transform group-hover:-translate-x-0.5" />
-        <span className="absolute left-3 size-7 rounded-full border-[2.5px] border-pink-400/90 transition-transform group-hover:translate-x-0.5" />
-      </span>
-      <span className="font-display text-[17px] font-bold tracking-tight">Soulmate Check</span>
+    <Link to="/" className="group inline-flex items-center gap-2" aria-label="Lemony — нүүр хуудас">
+      <LemonMark className="size-8 transition-transform duration-500 group-hover:rotate-45" />
+      <span className="font-display text-xl font-bold tracking-tight">Lemony</span>
     </Link>
   )
 }

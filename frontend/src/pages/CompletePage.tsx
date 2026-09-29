@@ -1,12 +1,14 @@
 import { Compass, Leaf, Sparkles } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router'
+import { AnalyzingView } from '../components/teaser/AnalyzingView'
 import { PaywallCard } from '../components/teaser/PaywallCard'
 import { TeaserList } from '../components/teaser/TeaserList'
 import { ButtonLink } from '../components/ui/Button'
 import { Eyebrow } from '../components/ui/Card'
 import { LoadingView } from '../components/ui/StateView'
 import { QUESTIONNAIRE_VERSION, questions } from '../data/questions'
+import { visibleAnswers } from '../data/visibility'
 import { buildTeaser } from '../lib/analysis/teaser'
 import { track } from '../lib/analytics'
 import { api, ApiError, type AssessmentSummary } from '../lib/api'
@@ -26,9 +28,16 @@ export function CompletePage() {
   const [remote, setRemote] = useState<AssessmentSummary | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // Straight from the last question: show the short "understanding you" moment first.
+  const location = useLocation()
+  const [analyzing, setAnalyzing] = useState(() => (location.state as { justFinished?: boolean } | null)?.justFinished === true)
+  const finishAnalyzing = useCallback(() => {
+    setAnalyzing(false)
+    navigate('.', { replace: true, state: null }) // don't replay on refresh
+  }, [navigate])
 
   const localTeaser = useMemo(
-    () => (progress?.completed ? buildTeaser(questions, progress.answers) : null),
+    () => (progress?.completed ? buildTeaser(questions, visibleAnswers(questions, progress.answers)) : null),
     [progress],
   )
 
@@ -56,6 +65,7 @@ export function CompletePage() {
   }, [])
 
   if (!stored && !progress?.completed) return <Navigate to="/check" replace />
+  if (analyzing) return <AnalyzingView onDone={finishAnalyzing} />
   if (stored && !localTeaser && !remote) return <LoadingView title="Ачаалж байна…" />
 
   const teaser: TeaserTitles = localTeaser
@@ -80,7 +90,7 @@ export function CompletePage() {
     try {
       const { token } = await api.createAssessment({
         questionnaire_version: QUESTIONNAIRE_VERSION,
-        answers: progress.answers,
+        answers: visibleAnswers(questions, progress.answers),
         teaser: {
           strengths: localTeaser.strengths.map((t) => t.id),
           explore: localTeaser.explore.map((t) => t.id),
@@ -136,18 +146,6 @@ export function CompletePage() {
         </div>
 
         <div className="mt-8 flex flex-col items-center gap-3 text-sm text-ink-muted">
-          {!stored && (
-            <button
-              type="button"
-              className="hover:text-ink hover:underline"
-              onClick={() => {
-                storage.reopenProgress(QUESTIONNAIRE_VERSION)
-                navigate('/check')
-              }}
-            >
-              Хариултаа засах
-            </button>
-          )}
           <Link to="/privacy" className="hover:text-ink hover:underline">
             Таны мэдээллийг хэрхэн хамгаалдаг вэ?
           </Link>

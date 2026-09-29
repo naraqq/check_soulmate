@@ -1,0 +1,7 @@
+# Private pages (personal reports, payments) must never be indexed.
+User-agent: *
+Disallow: /report/
+Disallow: /payment/
+Disallow: /complete
+Disallow: /check
+Disallow: /api/

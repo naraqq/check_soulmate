@@ -58,7 +58,7 @@ class ReportApiTest extends TestCase
         $this->postJson("/api/assessments/{$assessment->public_token}/generate-report")->assertOk();
         $this->getJson("/api/assessments/{$assessment->public_token}/report")
             ->assertOk()
-            ->assertJsonPath('report.communication.observations.0', 'Ажиглалт нэг.');
+            ->assertJsonPath('report.communication.steps.0', 'Алхам нэг.');
 
         Http::assertSentCount(1);
     }
@@ -138,6 +138,51 @@ class ReportApiTest extends TestCase
         }
 
         $this->postJson($url)->assertStatus(429)->assertJsonPath('code', 'generation_limit_reached');
+    }
+
+    /** Production uses QUEUE_CONNECTION=database with a worker: generation is async and the page polls. */
+    public function test_generation_with_database_queue_is_async_and_completes_via_worker(): void
+    {
+        config(['queue.default' => 'database']);
+        Http::fake(['api.openai.com/*' => Http::response($this->openAiResponse($this->fakeReport()))]);
+        $assessment = $this->createAssessment(AssessmentStatus::Paid);
+        $token = $assessment->public_token;
+
+        $this->postJson("/api/assessments/{$token}/generate-report")
+            ->assertStatus(202)
+            ->assertJsonPath('status', 'generating');
+        $this->getJson("/api/assessments/{$token}/report")->assertStatus(202);
+        $this->assertDatabaseCount('jobs', 1);
+
+        // A second click while queued must not enqueue another job.
+        $this->postJson("/api/assessments/{$token}/generate-report")->assertStatus(202);
+        $this->assertDatabaseCount('jobs', 1);
+
+        $this->artisan('queue:work', ['--once' => true, '--stop-when-empty' => true])->assertSuccessful();
+
+        $this->getJson("/api/assessments/{$token}/report")
+            ->assertOk()
+            ->assertJsonPath('status', 'completed');
+        Http::assertSentCount(1);
+    }
+
+    public function test_stuck_generation_is_reported_as_retryable_and_can_be_retried(): void
+    {
+        Http::fake(['api.openai.com/*' => Http::response($this->openAiResponse($this->fakeReport()))]);
+        $assessment = $this->createAssessment(AssessmentStatus::Paid);
+        $assessment->forceFill([
+            'status' => AssessmentStatus::Generating,
+            'generation_started_at' => now()->subMinutes(30),
+            'generation_attempts' => 1,
+        ])->save();
+
+        $this->getJson("/api/assessments/{$assessment->public_token}/report")
+            ->assertStatus(409)
+            ->assertJsonPath('can_retry', true);
+
+        $this->postJson("/api/assessments/{$assessment->public_token}/generate-report")
+            ->assertOk()
+            ->assertJsonPath('status', 'completed');
     }
 
     public function test_in_progress_generation_is_not_started_twice(): void

@@ -51,15 +51,24 @@ trait BuildsAssessments
 
     protected function fakeReport(): array
     {
-        $section = ['summary' => 'Товч дүгнэлт.', 'observations' => ['Ажиглалт нэг.', 'Ажиглалт хоёр.']];
+        $section = [
+            'state' => 'mixed',
+            'insight' => 'Ойр дотно байдлыг хүсэх нь хүн бүрийн хэвийн хэрэгцээ.',
+            'healthy' => 'Эрүүл харилцаанд хоёулаа түрүүлж холбогддог.',
+            'steps' => ['Алхам нэг.', 'Алхам хоёр.'],
+            'try_saying' => 'Чамаас мессеж ирэхэд би их баярладаг.',
+        ];
         $report = [
             'headline' => 'Та хоёрын харилцаанд дулаан суурь байна.',
-            'summary' => 'Таны хариултаас харахад...',
-            'strengths' => [['title' => 'Итгэлцэл', 'description' => 'Та хамтрагчдаа бүрэн итгэдэг гэж хариулсан.']],
-            'areas_to_explore' => [['title' => 'Хүчин чармайлт', 'description' => 'Тайлбар.', 'importance' => 'moderate']],
+            'summary' => 'Та хоёрын харилцаанд итгэлцэл бат бөх байна.',
+            'note_to_you' => 'Таны мэдэрч буй зүйл бүрэн ойлгомжтой.',
+            'strengths' => [['title' => 'Итгэлцэл', 'description' => 'Та хамтрагчдаа бүрэн итгэдэг.']],
             'patterns' => [['title' => 'Санаачлага', 'description' => 'Тайлбар.']],
+            'areas_to_explore' => [['title' => 'Хүчин чармайлт', 'description' => 'Тайлбар.', 'importance' => 'moderate']],
+            'action_plan' => [['title' => 'Нэгдүгээр алхам', 'description' => 'Тайлбар.']],
+            'self_care' => ['Өөртөө цаг гаргаарай.'],
             'conversation_starters' => ['Бид хоёр ... талаар ярилцаж болох уу?'],
-            'closing' => 'Энэ бол таны өнөөгийн өнцөг юм.',
+            'closing' => 'Та хоёрт сайн сайхан бүхнийг хүсье.',
         ];
         foreach (RelationshipReportService::CATEGORY_SECTIONS as $category) {
             $report[$category] = $section;

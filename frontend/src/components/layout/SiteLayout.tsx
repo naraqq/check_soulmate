@@ -17,6 +17,7 @@ export function SiteLayout() {
         <div className="absolute -top-40 -left-32 size-[520px] rounded-full bg-violet-600/20 blur-[120px] animate-float" />
         <div className="absolute top-1/3 -right-40 size-[480px] rounded-full bg-fuchsia-500/12 blur-[120px] animate-float [animation-delay:-5s]" />
         <div className="absolute -bottom-40 left-1/4 size-[520px] rounded-full bg-indigo-500/12 blur-[130px] animate-float [animation-delay:-9s]" />
+        <div className="absolute top-2/3 right-1/5 size-[360px] rounded-full bg-yellow-400/[0.07] blur-[110px] animate-float [animation-delay:-3s]" />
       </div>
 
       <header className="no-print sticky top-0 z-30 border-b border-line/60 bg-cream/70 backdrop-blur-xl">
@@ -50,11 +51,10 @@ export function SiteLayout() {
               </Link>
             </nav>
           </div>
-          <p className="max-w-3xl leading-relaxed">
-            Soulmate Check нь зөвхөн таны хариултад үндэслэсэн, хиймэл оюун ухаанаар үүсгэсэн мэдээллийн чанартай
-            ажиглалт өгдөг. Энэ нь мэргэжлийн харилцааны зөвлөгөө, сэтгэл зүйн болон эмнэлзүйн үнэлгээ биш юм.
-          </p>
-          <p>© {new Date().getFullYear()} Soulmate Check</p>
+          <div className="flex flex-col justify-between gap-2 sm:flex-row">
+            <p>Харилцаа бүрт амттай ч, исгэлэн ч мөч бий.</p>
+            <p>© {new Date().getFullYear()} lemony.mn</p>
+          </div>
         </div>
       </footer>
     </div>

@@ -71,6 +71,20 @@ class ReportController extends Controller
 
     private function stateResponse(Assessment $assessment): JsonResponse
     {
+        // A worker that died mid-generation leaves the assessment "generating" forever.
+        // Past the stale limit, report it as failed so the page offers a retry
+        // (generate() re-claims stale assessments).
+        $stale = $assessment->status === AssessmentStatus::Generating
+            && $assessment->generation_started_at?->lt(now()->subMinutes((int) config('soulmate.generation_stale_minutes')));
+
+        if ($stale) {
+            return response()->json([
+                'code' => 'report_generation_failed',
+                'status' => 'failed',
+                'can_retry' => $assessment->generation_attempts < (int) config('soulmate.max_generation_attempts'),
+            ], 409);
+        }
+
         return match ($assessment->status) {
             AssessmentStatus::Completed => $this->reportResponse($assessment),
             AssessmentStatus::Failed => response()->json([

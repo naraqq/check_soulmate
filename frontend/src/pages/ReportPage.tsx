@@ -168,25 +168,16 @@ export function ReportPage() {
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[420px] glow-warm" />
       <div className="relative mx-auto max-w-3xl px-4 pt-10 pb-20 sm:px-6 sm:pt-16">
         <header className="mb-10 text-center animate-fade-up">
-          <Eyebrow>Soulmate Check</Eyebrow>
+          <Eyebrow>Lemony</Eyebrow>
           <h1 className="mt-3 font-display text-4xl font-semibold sm:text-5xl">Таны харилцааны тайлан</h1>
           <p className="mx-auto mt-4 max-w-lg text-ink-soft">
-            Энэ тайлан зөвхөн таны хариултад үндэслэсэн бөгөөд таны өнөөгийн мэдрэмж, өнцгийг тусгана.
+            Та хоёрын харилцааны дүр зураг, давуу тал, анхаарах зүйлс болон ярилцах сэдвүүд.
           </p>
         </header>
 
         <ReportView report={state.report} createdAt={state.createdAt} />
 
-        <aside className="mt-16 rounded-3xl bg-sand/70 p-6 text-sm leading-relaxed text-ink-soft">
-          <p className="font-semibold text-ink">Анхааруулга</p>
-          <p className="mt-2">
-            Энэхүү тайланг хиймэл оюун ухаан зөвхөн таны өгсөн хариултад үндэслэн үүсгэсэн бөгөөд мэдээллийн чанартай. Энэ
-            нь мэргэжлийн харилцааны зөвлөгөө, сэтгэл зүйн эсвэл эмнэлзүйн үнэлгээ биш юм. Хэрэв та өөрийгөө аюулгүй бус
-            гэж мэдэрч байвал итгэдэг хүн эсвэл мэргэжлийн байгууллагад хандаарай.
-          </p>
-        </aside>
-
-        <div className="no-print mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <div className="no-print mt-16 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Button variant="secondary" onClick={() => window.print()}>
             <Printer className="size-4" /> Хэвлэх / PDF хадгалах
           </Button>

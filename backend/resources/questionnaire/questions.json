@@ -1,9 +1,9 @@
 {
-  "version": "2026.09.1",
+  "version": "2026.09.3",
   "categories": [
     {
       "id": "basics",
-      "label": "Харилцааны үндэс"
+      "label": "Таны тухай"
     },
     {
       "id": "communication",
@@ -36,9 +36,71 @@
   ],
   "questions": [
     {
-      "id": "basics_duration",
+      "id": "basics_gender",
       "category": "basics",
-      "text": "Та хоёр хэр удаан хамт байгаа вэ?",
+      "text": "Таны хүйс?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "about_user"
+      ],
+      "show_if": null,
+      "options": [
+        {
+          "value": "female",
+          "label": "Эмэгтэй"
+        },
+        {
+          "value": "male",
+          "label": "Эрэгтэй"
+        },
+        {
+          "value": "other",
+          "label": "Бусад / хэлэхийг хүсэхгүй байна"
+        }
+      ]
+    },
+    {
+      "id": "basics_age",
+      "category": "basics",
+      "text": "Таны нас?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "about_user"
+      ],
+      "show_if": null,
+      "options": [
+        {
+          "value": "18_24",
+          "label": "18–24"
+        },
+        {
+          "value": "25_29",
+          "label": "25–29"
+        },
+        {
+          "value": "30_34",
+          "label": "30–34"
+        },
+        {
+          "value": "35_44",
+          "label": "35–44"
+        },
+        {
+          "value": "45_plus",
+          "label": "45-аас дээш"
+        }
+      ]
+    },
+    {
+      "id": "basics_type",
+      "category": "basics",
+      "text": "Та хоёрын харилцаа одоо ямар шатандаа байна вэ?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -46,6 +108,46 @@
         "context",
         "stage"
       ],
+      "show_if": null,
+      "options": [
+        {
+          "value": "talking",
+          "label": "Зүгээр чатлаж, танилцаж байгаа"
+        },
+        {
+          "value": "dating",
+          "label": "Болзож байгаа"
+        },
+        {
+          "value": "exclusive",
+          "label": "Үерхэж байгаа"
+        },
+        {
+          "value": "living_together",
+          "label": "Хамт амьдарч байгаа"
+        },
+        {
+          "value": "engaged",
+          "label": "Сүй тавьсан"
+        },
+        {
+          "value": "married",
+          "label": "Гэрлэсэн"
+        }
+      ]
+    },
+    {
+      "id": "basics_duration",
+      "category": "basics",
+      "text": "Та хоёр танилцаад хэр удаж байна вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "stage"
+      ],
+      "show_if": null,
       "options": [
         {
           "value": "lt_1m",
@@ -74,47 +176,9 @@
       ]
     },
     {
-      "id": "basics_type",
-      "category": "basics",
-      "text": "Та хоёрын харилцааг юу хамгийн сайн тодорхойлох вэ?",
-      "type": "single_choice",
-      "optional": false,
-      "max_length": null,
-      "analysis_tags": [
-        "context",
-        "stage"
-      ],
-      "options": [
-        {
-          "value": "talking",
-          "label": "Ярилцаж, танилцаж байгаа"
-        },
-        {
-          "value": "dating",
-          "label": "Болзож байгаа"
-        },
-        {
-          "value": "exclusive",
-          "label": "Зөвхөн бие биетэйгээ үерхэж байгаа"
-        },
-        {
-          "value": "living_together",
-          "label": "Хамт амьдарч байгаа"
-        },
-        {
-          "value": "engaged",
-          "label": "Сүй тавьсан"
-        },
-        {
-          "value": "married",
-          "label": "Гэрлэсэн"
-        }
-      ]
-    },
-    {
       "id": "basics_frequency",
       "category": "basics",
-      "text": "Та хоёр хэр олон уулздаг вэ?",
+      "text": "Одоогоор та хоёр хэр олон уулздаг вэ?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -122,6 +186,14 @@
         "context",
         "time_together"
       ],
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "living_together",
+          "married"
+        ]
+      },
       "options": [
         {
           "value": "daily",
@@ -146,6 +218,49 @@
       ]
     },
     {
+      "id": "basics_quality_time",
+      "category": "basics",
+      "text": "Хамтдаа чанартай цаг хэр их өнгөрөөдөг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "time_together",
+        "quality_time"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "living_together",
+          "married"
+        ],
+        "not_in": null
+      },
+      "options": [
+        {
+          "value": "daily",
+          "label": "Бараг өдөр бүр"
+        },
+        {
+          "value": "several_week",
+          "label": "Долоо хоногт хэд хэдэн удаа"
+        },
+        {
+          "value": "weekly",
+          "label": "Долоо хоногт нэг орчим удаа"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "almost_never",
+          "label": "Бараг үгүй"
+        }
+      ]
+    },
+    {
       "id": "comm_initiates",
       "category": "communication",
       "text": "Ихэвчлэн хэн нь яриа эхлүүлдэг вэ?",
@@ -157,6 +272,7 @@
         "initiation",
         "balance"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "mostly_me",
@@ -193,6 +309,7 @@
         "initiation",
         "reciprocity"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "quickly",
@@ -225,6 +342,7 @@
         "communication",
         "emotional_support"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "never",
@@ -260,6 +378,7 @@
         "emotional_support",
         "curiosity"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "never",
@@ -294,6 +413,7 @@
         "communication",
         "emotional_safety"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "never",
@@ -330,6 +450,7 @@
         "communication",
         "conflict_style"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "never",
@@ -365,6 +486,7 @@
         "reciprocity",
         "attention"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "never",
@@ -401,6 +523,7 @@
         "communication",
         "avoidance"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "yes",
@@ -424,6 +547,7 @@
         "initiation",
         "balance"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "mostly_me",
@@ -459,6 +583,7 @@
         "desire",
         "security"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "never",
@@ -493,6 +618,7 @@
         "affection",
         "reciprocity"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "never",
@@ -527,6 +653,7 @@
         "affection",
         "trajectory"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "much_closer",
@@ -563,6 +690,7 @@
         "affection",
         "friendship"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "always",
@@ -598,6 +726,7 @@
         "friendship",
         "quality_time"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "never",
@@ -633,6 +762,7 @@
         "initiation",
         "balance"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "mostly_me",
@@ -668,6 +798,7 @@
         "repair",
         "balance"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "mostly_me",
@@ -704,6 +835,7 @@
         "reciprocity",
         "balance"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "balanced",
@@ -741,6 +873,7 @@
         "reciprocity",
         "security"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "nothing",
@@ -772,6 +905,7 @@
       "analysis_tags": [
         "trust"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "completely",
@@ -807,6 +941,7 @@
         "security",
         "anxiety"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "never",
@@ -842,6 +977,7 @@
         "fidelity",
         "anxiety"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "never",
@@ -879,6 +1015,7 @@
         "fidelity",
         "history"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "no",
@@ -912,6 +1049,7 @@
         "security",
         "independence"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "very",
@@ -946,6 +1084,7 @@
         "conflict",
         "frequency"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "rarely",
@@ -981,6 +1120,7 @@
         "respect",
         "safety"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "never",
@@ -1014,6 +1154,7 @@
         "conflict",
         "repair"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "resolve",
@@ -1054,6 +1195,7 @@
         "repair",
         "patterns"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "never",
@@ -1091,6 +1233,7 @@
         "repair",
         "balance"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "mostly_me",
@@ -1125,6 +1268,7 @@
         "independence",
         "identity"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "fully",
@@ -1160,6 +1304,7 @@
         "anxiety",
         "security"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "not_at_all",
@@ -1196,6 +1341,7 @@
         "independence",
         "emotional_regulation"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "never",
@@ -1232,6 +1378,7 @@
         "independence",
         "security"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "easily",
@@ -1266,6 +1413,7 @@
         "future",
         "communication"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "clearly",
@@ -1300,6 +1448,7 @@
         "future",
         "alignment"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "completely",
@@ -1334,6 +1483,7 @@
         "future",
         "commitment"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "definitely",
@@ -1369,6 +1519,7 @@
         "security",
         "commitment"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "clearly",
@@ -1404,6 +1555,7 @@
         "satisfaction",
         "overall"
       ],
+      "show_if": null,
       "options": [
         {
           "value": "very_happy",
@@ -1439,6 +1591,7 @@
       "analysis_tags": [
         "open_reflection"
       ],
+      "show_if": null,
       "options": []
     }
   ],

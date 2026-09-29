@@ -14,6 +14,7 @@ export function buildQuestionnaireExport() {
       optional: q.optional ?? false,
       max_length: q.maxLength ?? null,
       analysis_tags: q.analysisTags,
+      show_if: q.showIf ? { question: q.showIf.question, in: q.showIf.in ?? null, not_in: q.showIf.notIn ?? null } : null,
       options: (q.options ?? []).map((o) => ({
         value: o.value,
         label: o.label,

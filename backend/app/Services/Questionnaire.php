@@ -120,6 +120,13 @@ class Questionnaire
             }
         }
 
+        // Drop answers to questions that don't apply (e.g. "how often do you meet" for married couples).
+        foreach ($this->questionsById as $id => $question) {
+            if (! $this->isVisible($question, $normalized)) {
+                $normalized[$id] = null;
+            }
+        }
+
         if ($errors === [] && $answered < self::MIN_ANSWERED) {
             $errors['answers'] = ['Please answer more questions before finishing.'];
         }
@@ -181,7 +188,7 @@ class Questionnaire
             $value = $answers[$question['id']] ?? null;
 
             if ($value === null) {
-                if (! ($question['optional'] ?? false)) {
+                if (! ($question['optional'] ?? false) && $this->isVisible($question, $answers)) {
                     $result['skipped']++;
                 }
 
@@ -219,6 +226,33 @@ class Questionnaire
         }
 
         return $result;
+    }
+
+    /**
+     * Mirrors frontend/src/data/visibility.ts.
+     *
+     * @param  array<string, mixed>  $question
+     * @param  array<string, string|null>  $answers
+     */
+    public function isVisible(array $question, array $answers): bool
+    {
+        $rule = $question['show_if'] ?? null;
+        if (! is_array($rule)) {
+            return true;
+        }
+
+        $value = $answers[$rule['question']] ?? null;
+        if ($value === null) {
+            return ($rule['in'] ?? null) === null;
+        }
+        if (is_array($rule['in'] ?? null) && ! in_array($value, $rule['in'], true)) {
+            return false;
+        }
+        if (is_array($rule['not_in'] ?? null) && in_array($value, $rule['not_in'], true)) {
+            return false;
+        }
+
+        return true;
     }
 
     private function sanitizeText(string $value, int $maxLength): string

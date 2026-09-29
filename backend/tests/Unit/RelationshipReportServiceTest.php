@@ -3,6 +3,8 @@
 namespace Tests\Unit;
 
 use App\Exceptions\ReportGenerationException;
+use App\Models\Assessment;
+use App\Services\Questionnaire;
 use App\Services\RelationshipReportService;
 use Tests\Concerns\BuildsAssessments;
 use Tests\TestCase;
@@ -60,5 +62,33 @@ class RelationshipReportServiceTest extends TestCase
     public function test_system_prompt_requests_mongolian(): void
     {
         $this->assertStringContainsString('Mongolian', $this->service()->systemPrompt());
+    }
+
+    public function test_system_prompt_forbids_referring_to_answers_and_disclaimers(): void
+    {
+        $prompt = $this->service()->systemPrompt();
+
+        $this->assertStringContainsString('NEVER mention the questionnaire', $prompt);
+        $this->assertStringContainsString('Do not add disclaimers', $prompt);
+        $this->assertStringContainsString('Do NOT mirror it back', $prompt);
+    }
+
+    public function test_system_prompt_never_encourages_separation(): void
+    {
+        $this->assertStringContainsString('NEVER encourage or suggest separating', $this->service()->systemPrompt());
+    }
+
+    public function test_payload_includes_gender_and_age_context(): void
+    {
+        $assessment = new Assessment([
+            'answers_json' => app(Questionnaire::class)->normalizeAnswers($this->validAnswers()),
+            'teaser_json' => null,
+        ]);
+
+        $context = collect($this->service()->buildPayload($assessment)['about_user_and_relationship']);
+
+        $this->assertContains('Таны хүйс?', $context->pluck('question'));
+        $this->assertContains('Таны нас?', $context->pluck('question'));
+        $this->assertContains('Эмэгтэй', $context->pluck('answer'));
     }
 }

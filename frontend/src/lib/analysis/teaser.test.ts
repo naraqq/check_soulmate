@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { questions } from '../../data/questions'
 import type { Answers, Question } from '../../data/types'
-import { analyzeCategories, buildTeaser, collectFlags, countAnswers } from './teaser'
+import { analyzeCategories, buildTeaser, collectFlags, countAnswers, sectionMood } from './teaser'
 
 /** Answer every choice question with the option scoring highest (or lowest). */
 function answerAll(pick: 'best' | 'worst'): Answers {
@@ -112,10 +112,28 @@ describe('buildTeaser', () => {
   })
 })
 
+describe('sectionMood', () => {
+  it('is high for supportive answers, low for difficult ones', () => {
+    expect(sectionMood('communication', questions, answerAll('best'))).toBe('high')
+    expect(sectionMood('communication', questions, answerAll('worst'))).toBe('low')
+  })
+
+  it('is never "high" when the section contains a flagged answer', () => {
+    const answers = answerAll('best')
+    answers.conflict_harm = 'once_or_twice'
+    expect(sectionMood('conflict', questions, answers)).not.toBe('high')
+  })
+
+  it('treats the unscored basics section neutrally', () => {
+    expect(sectionMood('basics', questions, answerAll('best'))).toBe('mid')
+  })
+})
+
 describe('countAnswers', () => {
-  it('counts blank text and null as skipped', () => {
+  it('counts blank text and null as skipped, but not questions that do not apply', () => {
     const counts = countAnswers(questions, { basics_duration: '1_3y', final_wish: '   ', comm_heard: null })
     expect(counts.answeredCount).toBe(1)
-    expect(counts.skippedCount).toBe(questions.length - 1)
+    // basics_quality_time only applies to couples who live together, so it isn't "skipped".
+    expect(counts.skippedCount).toBe(questions.length - 2)
   })
 })

@@ -3,7 +3,14 @@ import { useAppConfig } from '../../hooks/useAppConfig'
 import { formatPrice } from '../../lib/format'
 import { Button } from '../ui/Button'
 
-const COVERED = ['Харилцан яриа', 'Итгэлцэл', 'Энхрийлэл', 'Хүчин чармайлт', 'Маргаан ба эвлэрэл', 'Бие даасан байдал', 'Ирээдүйн хүлээлт']
+const COVERED = [
+  'Та хоёрын харилцааны гол хэв маяг',
+  '7 чиглэл тус бүрийн гүн тайлбар',
+  'Эрүүл харилцаа ямар байдаг вэ',
+  'Танд тохирсон, хийж болох алхмууд',
+  'Хамтрагчдаа хэлж болох үгс',
+  'Ирэх 7 хоногийн төлөвлөгөө',
+]
 
 interface Props {
   onUnlock: () => void
@@ -21,7 +28,7 @@ export function PaywallCard({ onUnlock, loading, error }: Props) {
         <h2 className="mt-3 font-display text-3xl font-semibold text-balance sm:text-4xl">
           Бүрэн, хувийн тайлангаа <span className="text-gradient">нээгээрэй</span>
         </h2>
-        <p className="mt-3 text-ink-soft">Таны хариултуудыг дараах чиглэлүүдээр нарийвчлан шинжилнэ:</p>
+        <p className="mt-3 text-ink-soft">Таны харилцааг ойлгож, урагшлахад тань туслах хувийн тайлан:</p>
 
         <ul className="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
           {COVERED.map((item) => (

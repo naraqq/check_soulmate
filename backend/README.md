@@ -1,3 +1,3 @@
-﻿# Soulmate Check - API
+# Lemony - API
 
-Laravel backend for Soulmate Check. See the root [README](../README.md) for setup, architecture and deployment.
+Laravel backend for Lemony. See the root [README](../README.md) for setup, architecture and deployment.

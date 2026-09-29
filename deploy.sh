@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Soulmate Check — deploy to an Ubuntu server (AWS EC2) over SSH.
+# Lemony — deploy to an Ubuntu server (AWS EC2) over SSH.
 # Run from Git Bash (Windows), macOS or Linux, in the repository root.
 #
 #   ./deploy.sh setup      One-time: install Nginx, PHP, MySQL, Composer, Supervisor,
@@ -216,7 +216,7 @@ release)
     cp "$REL/backend/.env.example" "$SHARED/.env"
     URL="$(base_url)"
     cat > /tmp/soulmate-prod.env <<ENV
-APP_NAME="Soulmate Check"
+APP_NAME="Lemony"
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=$URL
@@ -230,6 +230,7 @@ DB_DATABASE=soulmate_check
 DB_USERNAME=soulmate
 DB_PASSWORD=$(cat "$SHARED/.db_password")
 QUEUE_CONNECTION=database
+DB_QUEUE_RETRY_AFTER=480
 CACHE_STORE=database
 SESSION_DRIVER=database
 PAYMENT_BYPASS=false

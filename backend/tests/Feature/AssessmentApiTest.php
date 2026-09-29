@@ -88,6 +88,20 @@ class AssessmentApiTest extends TestCase
         $this->assertSame('alert(1)Намайг сонсоосой', $answers['final_wish']);
     }
 
+    public function test_answers_to_questions_that_do_not_apply_are_dropped(): void
+    {
+        $payload = $this->submitPayload();
+        $payload['answers']['basics_type'] = 'married';
+        $payload['answers']['basics_frequency'] = 'weekly';      // only for couples who don't live together
+        $payload['answers']['basics_quality_time'] = 'rarely';
+
+        $token = $this->postJson('/api/assessments', $payload)->assertCreated()->json('token');
+        $answers = Assessment::where('public_token', $token)->first()->answers_json;
+
+        $this->assertNull($answers['basics_frequency']);
+        $this->assertSame('rarely', $answers['basics_quality_time']);
+    }
+
     public function test_invalid_teaser_ids_are_dropped(): void
     {
         $token = $this->postJson('/api/assessments', $this->submitPayload([

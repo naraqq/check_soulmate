@@ -5,9 +5,9 @@ import { buildQuestionnaireExport } from './export'
 import { categories, questions } from './questions'
 
 describe('questionnaire config', () => {
-  it('has roughly 35–42 questions across all 8 categories', () => {
+  it('has roughly 35–45 questions across all 8 categories', () => {
     expect(questions.length).toBeGreaterThanOrEqual(35)
-    expect(questions.length).toBeLessThanOrEqual(42)
+    expect(questions.length).toBeLessThanOrEqual(45)
     expect(new Set(questions.map((q) => q.category)).size).toBe(categories.length)
   })
 
@@ -29,6 +29,10 @@ describe('questionnaire config', () => {
         expect(o.score, `${q.id}.${o.value}`).toBeLessThanOrEqual(1)
       }
     }
+  })
+
+  it('starts with questions about the user, then the relationship stage', () => {
+    expect(questions.slice(0, 3).map((q) => q.id)).toEqual(['basics_gender', 'basics_age', 'basics_type'])
   })
 
   it('ends with the three-year question followed by the optional reflection', () => {

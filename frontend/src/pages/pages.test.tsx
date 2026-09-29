@@ -25,8 +25,8 @@ function render(path: string, url: string, element: ReactElement) {
 const token = 'a'.repeat(48)
 
 describe('pages render', () => {
-  it('landing', () => expect(render('/', '/', <LandingPage />)).toContain('санагддаг вэ?'))
-  it('check', () => expect(render('/check', '/check', <CheckPage />)).toContain('Та хоёр хэр удаан хамт байгаа вэ?'))
+  it('landing', () => expect(render('/', '/', <LandingPage />)).toContain('үзээрэй'))
+  it('check', () => expect(render('/check', '/check', <CheckPage />)).toContain('Эхлээд таныг бага зэрэг танъя'))
   it('payment', () => expect(render('/payment/:token', `/payment/${token}`, <PaymentPage />)).toContain('Нэхэмжлэх'))
   it('payment with invalid token', () =>
     expect(render('/payment/:token', '/payment/123', <PaymentPage />)).toContain('Холбоос буруу'))
@@ -36,10 +36,19 @@ describe('pages render', () => {
 })
 
 describe('ReportView', () => {
-  const section = { summary: 'Товч дүгнэлт.', observations: ['Ажиглалт.'] }
+  const section = {
+    state: 'attention' as const,
+    insight: 'Ойр дотно байдлыг хүсэх нь хэвийн хэрэгцээ.',
+    healthy: 'Хоёулаа түрүүлж холбогддог.',
+    steps: ['Нэгдүгээр алхам.', 'Хоёрдугаар алхам.'],
+    try_saying: 'Чамаас мессеж ирэхэд би баярладаг.',
+  }
   const report: RelationshipReport = {
     headline: 'Дулаан суурь',
     summary: 'Дүгнэлт',
+    note_to_you: 'Таны мэдэрч буй зүйл ойлгомжтой.',
+    action_plan: [{ title: 'Эхний алхам', description: 'Тайлбар' }],
+    self_care: ['Өөртөө цаг гаргаарай.'],
     strengths: [{ title: 'Итгэл', description: 'Тайлбар' }],
     areas_to_explore: [{ title: 'Тэнцвэр', description: 'Тайлбар', importance: 'high' }],
     communication: section,
@@ -56,10 +65,50 @@ describe('ReportView', () => {
 
   it('renders every report section without raw JSON or percentages', () => {
     const html = render('/', '/', <ReportView report={report} createdAt="2026-09-29T00:00:00Z" />)
-    for (const heading of ['Давуу талууд', 'Ирээдүйн нийцэл', 'Бидний анзаарсан хэв маяг', 'Яриа эхлүүлэх санаанууд', 'Эцсийн бодрол']) {
+    for (const heading of [
+      'Танд хэлэх үг',
+      'Та хоёрын давуу талууд',
+      'Та хоёрын харилцааны гол хэв маяг',
+      'Ирээдүйн нийцэл',
+      'Ирэх 7 хоногт',
+      'Өөртөө анхаарал тавих нь',
+      'Хамтрагчтайгаа ярилцах асуултууд',
+    ]) {
       expect(html).toContain(heading)
     }
     expect(html).not.toContain('{&quot;')
     expect(html).not.toMatch(/\d+%/)
+  })
+
+  it('gives every topic insight, a healthy picture, steps and words to say', () => {
+    const html = render('/', '/', <ReportView report={report} createdAt="2026-09-29T00:00:00Z" />)
+    expect(html).toContain('Харилцаа тань чиглэл бүрээр')
+    expect(html).toContain('Анхаарах нь зүйтэй')
+    expect(html.match(/Эрүүл харилцаанд ийм байдаг/g)).toHaveLength(7)
+    expect(html.match(/Юу хийж болох вэ/g)).toHaveLength(7)
+    expect(html.match(/Ингэж хэлээд үзээрэй/g)).toHaveLength(7)
+    expect(html).toContain('href="#topic-trust"')
+  })
+
+  it('still renders older reports (summary/observations/tip, no note or plan)', () => {
+    const legacy = { summary: 'Товч.', observations: ['Ажиглалт.'], tip: 'Зөвлөгөө.' }
+    const old: RelationshipReport = {
+      ...report,
+      note_to_you: undefined,
+      action_plan: undefined,
+      self_care: undefined,
+      communication: legacy,
+      affection: legacy,
+      effort: legacy,
+      trust: legacy,
+      conflict: legacy,
+      independence: legacy,
+      future: legacy,
+    }
+    const html = render('/', '/', <ReportView report={old} createdAt="2026-09-29T00:00:00Z" />)
+    expect(html).toContain('Ажиглалт.')
+    expect(html).toContain('Туршиж үзэх зүйл')
+    expect(html).not.toContain('Танд хэлэх үг')
+    expect(html).not.toContain('Ирэх 7 хоногт')
   })
 })

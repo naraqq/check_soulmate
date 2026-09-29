@@ -22,7 +22,8 @@ class GenerateRelationshipReport implements ShouldQueue
 
     public int $tries = 1;
 
-    public int $timeout = 300;
+    /** Worst case: 120s model timeout × 3 attempts + back-off. Keep below DB_QUEUE_RETRY_AFTER. */
+    public int $timeout = 420;
 
     public function __construct(public int $assessmentId) {}
 

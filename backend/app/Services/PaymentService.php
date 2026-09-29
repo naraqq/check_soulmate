@@ -53,7 +53,7 @@ class PaymentService
             ]);
 
             try {
-                $invoice = $this->gateway->createInvoice($payment, 'Soulmate Check тайлан');
+                $invoice = $this->gateway->createInvoice($payment, 'Lemony тайлан');
             } catch (Throwable $e) {
                 $payment->update(['status' => PaymentStatus::Failed]);
                 throw $e;

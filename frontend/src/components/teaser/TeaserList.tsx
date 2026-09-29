@@ -32,7 +32,7 @@ export function TeaserList({ heading, items, tone, icon: Icon }: Props) {
               <Lock className="mt-0.5 size-4 shrink-0 text-ink-muted" aria-label="Түгжээтэй" />
             </div>
             <p aria-hidden className="mt-1.5 select-none text-sm text-ink-soft blur-[5px]">
-              Таны хариултаас харахад энэ хэсэгт нэгэн сонирхолтой хэв маяг ажиглагдаж байна.
+              Энэ хэсэгт та хоёрын харилцаанд нэгэн сонирхолтой хэв маяг ажиглагдаж байна.
             </p>
           </li>
         ))}

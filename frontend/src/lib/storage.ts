@@ -15,6 +15,8 @@ export interface StoredProgress {
   currentIndex: number
   answers: Answers
   completed: boolean
+  /** Section intros already shown (older saves may not have it). */
+  seenIntros?: string[]
   updatedAt: string
 }
 
@@ -58,14 +60,6 @@ export const storage = {
     write(PROGRESS_KEY, { ...progress, updatedAt: new Date().toISOString() })
   },
   clearProgress: () => remove(PROGRESS_KEY),
-
-  /** Re-open a finished (but not yet submitted) questionnaire for editing. */
-  reopenProgress(version: string) {
-    const progress = read<StoredProgress>(PROGRESS_KEY)
-    if (progress && progress.questionnaireVersion === version) {
-      write(PROGRESS_KEY, { ...progress, completed: false, updatedAt: new Date().toISOString() })
-    }
-  },
 
   loadAssessment: () => read<StoredAssessment>(ASSESSMENT_KEY),
   saveAssessment: (token: string) => write(ASSESSMENT_KEY, { token, createdAt: new Date().toISOString() }),

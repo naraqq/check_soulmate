@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { QUESTIONNAIRE_VERSION } from '../data/questions'
-import type { Answers, Question } from '../data/types'
+import type { Answers, CategoryId, Question } from '../data/types'
+import { isVisible } from '../data/visibility'
 import { track } from '../lib/analytics'
 import { storage } from '../lib/storage'
 
@@ -8,24 +9,34 @@ import { storage } from '../lib/storage'
 export const AUTO_ADVANCE_MS = 380
 
 interface State {
+  /** Index into the full questions array (always a visible question). */
   index: number
   answers: Answers
   completed: boolean
+  /** Sections whose intro screen has been dismissed. */
+  seenIntros: CategoryId[]
 }
 
 function initialState(total: number): State {
   const saved = storage.loadProgress(QUESTIONNAIRE_VERSION)
-  if (!saved) return { index: 0, answers: {}, completed: false }
+  if (!saved) return { index: 0, answers: {}, completed: false, seenIntros: [] }
   return {
     index: Math.min(Math.max(0, saved.currentIndex), total - 1),
     answers: saved.answers,
     completed: saved.completed,
+    seenIntros: (saved.seenIntros ?? []) as CategoryId[],
   }
 }
 
+function findVisible(questions: Question[], answers: Answers, from: number, step: 1 | -1): number | null {
+  for (let i = from; i >= 0 && i < questions.length; i += step) {
+    if (isVisible(questions[i], answers)) return i
+  }
+  return null
+}
+
 export function useQuestionnaire(questions: Question[]) {
-  const total = questions.length
-  const [state, setState] = useState<State>(() => initialState(total))
+  const [state, setState] = useState<State>(() => initialState(questions.length))
   const advanceTimer = useRef<number | undefined>(undefined)
 
   // Persist every change so a refresh or closed tab never loses progress.
@@ -35,30 +46,23 @@ export function useQuestionnaire(questions: Question[]) {
       currentIndex: state.index,
       answers: state.answers,
       completed: state.completed,
+      seenIntros: state.seenIntros,
     })
   }, [state])
 
   useEffect(() => () => window.clearTimeout(advanceTimer.current), [])
 
   const question = questions[state.index]
-
-  const goTo = useCallback(
-    (index: number) => {
-      window.clearTimeout(advanceTimer.current)
-      setState((s) => ({ ...s, index: Math.min(Math.max(0, index), total - 1) }))
-    },
-    [total],
-  )
+  const visible = useMemo(() => questions.filter((q) => isVisible(q, state.answers)), [questions, state.answers])
+  const position = Math.max(0, visible.indexOf(question))
 
   const next = useCallback(() => {
     window.clearTimeout(advanceTimer.current)
     setState((s) => {
-      if (s.index >= total - 1) return { ...s, completed: true }
-      return { ...s, index: s.index + 1 }
+      const nextIndex = findVisible(questions, s.answers, s.index + 1, 1)
+      return nextIndex === null ? { ...s, completed: true } : { ...s, index: nextIndex }
     })
-  }, [total])
-
-  const back = useCallback(() => goTo(state.index - 1), [goTo, state.index])
+  }, [questions])
 
   const setAnswer = useCallback(
     (value: string | null, { autoAdvance = false } = {}) => {
@@ -67,40 +71,37 @@ export function useQuestionnaire(questions: Question[]) {
 
       if (autoAdvance) {
         // Position only — never the question or the answer.
-        track({ name: 'question_answered', props: { index: state.index + 1, total } })
+        track({ name: 'question_answered', props: { index: position + 1, total: visible.length } })
         window.clearTimeout(advanceTimer.current)
-        advanceTimer.current = window.setTimeout(next, AUTO_ADVANCE_MS)
+        // A caring reply stays on screen until the user continues — they read at their own pace.
+        const hasReply = Boolean(current.options?.find((o) => o.value === value)?.reply)
+        if (!hasReply) advanceTimer.current = window.setTimeout(next, AUTO_ADVANCE_MS)
       }
     },
-    [questions, state.index, total, next],
+    [questions, state.index, position, visible.length, next],
   )
 
-  /** Record the question as intentionally skipped and move on. */
-  const skip = useCallback(() => {
-    const current = questions[state.index]
-    setState((s) => ({ ...s, answers: { ...s.answers, [current.id]: null } }))
-    next()
-  }, [questions, state.index, next])
+  const dismissIntro = useCallback(() => {
+    setState((s) => ({ ...s, seenIntros: [...new Set([...s.seenIntros, questions[s.index].category])] }))
+  }, [questions])
 
-  const restart = useCallback(() => {
-    window.clearTimeout(advanceTimer.current)
-    storage.clearAll()
-    setState({ index: 0, answers: {}, completed: false })
-  }, [])
+  const previousIndex = findVisible(questions, state.answers, state.index - 1, -1)
+  /** The section the user just finished, when the current question starts a new one. */
+  const finishedCategory =
+    previousIndex !== null && questions[previousIndex].category !== question.category ? questions[previousIndex].category : null
 
   return {
     question,
-    index: state.index,
-    total,
+    /** 0-based position among questions that apply to this user. */
+    position,
+    total: visible.length,
     answers: state.answers,
     value: state.answers[question.id] ?? null,
     completed: state.completed,
-    isFirst: state.index === 0,
-    isLast: state.index === total - 1,
+    showIntro: !state.seenIntros.includes(question.category),
+    finishedCategory,
     setAnswer,
     next,
-    back,
-    skip,
-    restart,
+    dismissIntro,
   }
 }

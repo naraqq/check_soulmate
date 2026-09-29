@@ -1,5 +1,6 @@
 import { exploreTitles, flagPriority, patternTitles, strengthTitles, type SignalId } from '../../data/signals'
-import type { AnswerFlag, Answers, AnswerOption, Question, ScoredCategoryId } from '../../data/types'
+import type { AnswerFlag, Answers, AnswerOption, CategoryId, Question, ScoredCategoryId } from '../../data/types'
+import { isVisible } from '../../data/visibility'
 
 export const SCORED_CATEGORIES: ScoredCategoryId[] = [
   'communication',
@@ -86,10 +87,29 @@ export function collectFlags(questions: Question[], answers: Answers): Map<Answe
   return flags
 }
 
+export type SectionMood = 'high' | 'mid' | 'low'
+
+/**
+ * How a finished section felt overall — picks which gentle reflection to show
+ * between sections. A flagged answer in the section caps it at "mid".
+ */
+export function sectionMood(category: CategoryId, questions: Question[], answers: Answers): SectionMood {
+  if (category === 'basics') return 'mid'
+  const score = analyzeCategories(questions, answers)[category].score
+  if (score === null) return 'mid'
+  const flagged = questions.some(
+    (q) => q.category === category && q.options?.some((o) => o.value === answers[q.id] && o.flag),
+  )
+  if (score < 0.45) return 'low'
+  if (score >= 0.7 && !flagged) return 'high'
+  return 'mid'
+}
+
 export function countAnswers(questions: Question[], answers: Answers) {
   let answeredCount = 0
   let skippedCount = 0
   for (const question of questions) {
+    if (!isVisible(question, answers)) continue // didn't apply to this user
     const value = answers[question.id]
     if (value == null || value.trim() === '') skippedCount += 1
     else answeredCount += 1

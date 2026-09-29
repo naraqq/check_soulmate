@@ -53,7 +53,7 @@ return [
         'model' => env('OPENAI_MODEL', 'gpt-5-mini'),
         'base_url' => env('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
         'timeout' => (int) env('OPENAI_TIMEOUT', 120),
-        'max_output_tokens' => (int) env('OPENAI_MAX_OUTPUT_TOKENS', 8000),
+        'max_output_tokens' => (int) env('OPENAI_MAX_OUTPUT_TOKENS', 12000),
     ],
 
     // QPay merchant API v2. Sandbox: https://merchant-sandbox.qpay.mn/v2

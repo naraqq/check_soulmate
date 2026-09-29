@@ -1,6 +1,6 @@
-import type { LucideIcon } from 'lucide-react'
+import { Lightbulb, MessageCircleHeart, Sprout, type LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
-import type { RelationshipReport, ReportSection } from '../../lib/api'
+import type { RelationshipReport, ReportSection, SectionState } from '../../lib/api'
 import { cn } from '../../lib/format'
 
 export function SectionHeading({ icon: Icon, eyebrow, title }: { icon: LucideIcon; eyebrow?: string; title: string }) {
@@ -77,25 +77,120 @@ export function AreaCards({ items }: { items: RelationshipReport['areas_to_explo
   )
 }
 
-export function CategoryCard({ icon: Icon, title, section }: { icon: LucideIcon; title: string; section: ReportSection }) {
+/** Neutral status tags — teal / violet / pink, never red-yellow-green "health" colours. */
+const stateStyles: Record<SectionState, { label: string; chip: string; dot: string }> = {
+  strength: { label: 'Бат бөх тал', chip: 'bg-sage-soft text-sage', dot: 'bg-sage' },
+  mixed: { label: 'Холимог', chip: 'bg-clay-soft text-clay-dark', dot: 'bg-clay' },
+  attention: { label: 'Анхаарах нь зүйтэй', chip: 'bg-dusk-soft text-dusk', dot: 'bg-dusk' },
+}
+
+export function StateChip({ state }: { state?: SectionState }) {
+  if (!state) return null
+  const s = stateStyles[state]
   return (
-    <article className="rounded-3xl border border-line/80 bg-paper p-6 shadow-soft sm:p-8">
-      <div className="mb-4 flex items-center gap-3">
-        <span className="grid size-10 place-items-center rounded-2xl bg-clay-soft">
-          <Icon className="size-5 text-clay-dark" aria-hidden />
-        </span>
-        <h3 className="font-display text-xl font-semibold">{title}</h3>
-      </div>
-      <p className="leading-relaxed text-ink">{section.summary}</p>
-      {section.observations.length > 0 && (
-        <ul className="mt-5 space-y-2.5 border-t border-line/70 pt-5">
+    <span className={cn('inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold', s.chip)}>
+      <span aria-hidden className={cn('size-1.5 rounded-full', s.dot)} />
+      {s.label}
+    </span>
+  )
+}
+
+export interface CategoryItem {
+  key: string
+  title: string
+  icon: LucideIcon
+  section: ReportSection
+}
+
+/** At-a-glance grid: every topic with its status; tapping jumps to the detailed card. */
+export function CategoryOverview({ items }: { items: CategoryItem[] }) {
+  return (
+    <nav aria-label="Чиглэлүүд" className="no-print grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+      {items.map(({ key, title, icon: Icon, section }) => (
+        <a
+          key={key}
+          href={`#topic-${key}`}
+          className="flex flex-col gap-2.5 rounded-2xl border border-line bg-paper p-3.5 backdrop-blur transition hover:-translate-y-px hover:border-white/25"
+        >
+          <span className="flex items-center gap-2 text-sm font-semibold">
+            <Icon className="size-4 shrink-0 text-clay" aria-hidden /> {title}
+          </span>
+          <StateChip state={section.state} />
+        </a>
+      ))}
+    </nav>
+  )
+}
+
+export function CategoryCard({ item }: { item: CategoryItem }) {
+  const { key, title, icon: Icon, section } = item
+  return (
+    <article id={`topic-${key}`} className="scroll-mt-24 rounded-3xl border border-line bg-paper p-6 shadow-soft backdrop-blur sm:p-8">
+      <header className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <span className="grid size-10 place-items-center rounded-2xl bg-clay-soft">
+            <Icon className="size-5 text-clay-dark" aria-hidden />
+          </span>
+          <h3 className="font-display text-xl font-bold">{title}</h3>
+        </div>
+        <StateChip state={section.state} />
+      </header>
+
+      <p className="text-[17px] leading-relaxed text-ink">{section.insight ?? section.summary}</p>
+
+      {section.healthy && (
+        <div className="mt-6 rounded-2xl border border-teal-300/15 bg-sage-soft p-4 sm:p-5">
+          <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-sage">
+            <Sprout className="size-4" aria-hidden /> Эрүүл харилцаанд ийм байдаг
+          </p>
+          <p className="mt-2 text-[15px] leading-relaxed text-ink">{section.healthy}</p>
+        </div>
+      )}
+
+      {section.steps && section.steps.length > 0 && (
+        <div className="mt-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">Юу хийж болох вэ</p>
+          <ol className="mt-3 space-y-2.5">
+            {section.steps.map((step, i) => (
+              <li key={step} className="flex gap-3 text-[15px] leading-relaxed text-ink-soft">
+                <span className="grid size-6 shrink-0 place-items-center rounded-full bg-clay-soft text-xs font-bold text-clay-dark">
+                  {i + 1}
+                </span>
+                {step}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      {section.try_saying && (
+        <div className="mt-6 rounded-2xl border border-violet-400/20 bg-gradient-to-br from-violet-500/12 to-pink-500/8 p-4 sm:p-5">
+          <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-clay-dark">
+            <MessageCircleHeart className="size-4" aria-hidden /> Ингэж хэлээд үзээрэй
+          </p>
+          <p className="mt-2 text-[17px] leading-relaxed font-medium text-ink">“{section.try_saying}”</p>
+        </div>
+      )}
+
+      {/* Older reports only */}
+      {section.observations && section.observations.length > 0 && (
+        <ul className="mt-5 space-y-3">
           {section.observations.map((obs) => (
             <li key={obs} className="flex gap-3 text-[15px] leading-relaxed text-ink-soft">
-              <span aria-hidden className="mt-2.5 size-1.5 shrink-0 rounded-full bg-clay/60" />
+              <span aria-hidden className="mt-2.5 size-1.5 shrink-0 rounded-full bg-clay/70" />
               {obs}
             </li>
           ))}
         </ul>
+      )}
+
+      {section.tip && (
+        <div className="mt-6 rounded-2xl border border-violet-400/20 bg-gradient-to-br from-violet-500/12 to-pink-500/8 p-4 sm:p-5">
+          <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-clay-dark">
+            <Lightbulb className="size-4" aria-hidden /> Туршиж үзэх зүйл
+          </p>
+          <p className="mt-2 text-[15px] leading-relaxed text-ink">{section.tip}</p>
+        </div>
       )}
     </article>
   )

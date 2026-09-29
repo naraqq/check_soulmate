@@ -38,6 +38,15 @@ export interface AnswerOption {
   /** -1 = "mostly me" … 0 = equal … 1 = "mostly my partner". Used for "who usually…" questions. */
   balance?: number
   flag?: AnswerFlag
+  /** A short, caring reply shown right after this answer is chosen (only on meaningful answers). */
+  reply?: string
+}
+
+/** Show a question only when an earlier answer matches (or doesn't match) these values. */
+export interface ShowIf {
+  question: string
+  in?: string[]
+  notIn?: string[]
 }
 
 export interface Question {
@@ -53,12 +62,21 @@ export interface Question {
   optional?: boolean
   placeholder?: string
   maxLength?: number
+  showIf?: ShowIf
 }
 
 export interface Category {
   id: CategoryId
+  /** Short label shown above each question. */
   label: string
   description: string
+  /** Screen shown when the user enters this section — guides them through the check. */
+  intro: { title: string; text: string }
+  /**
+   * Shown when the user finishes this section, chosen by how the section felt overall.
+   * Gentle acknowledgement only — never the report's actual findings.
+   */
+  outro: { high: string; mid: string; low: string }
 }
 
 /** questionId → option value (or free text). null means the user skipped it. */
