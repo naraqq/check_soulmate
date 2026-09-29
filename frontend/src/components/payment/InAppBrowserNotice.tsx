@@ -12,7 +12,7 @@ export function InAppBrowserNotice({ browser }: { browser: InAppBrowser & { app:
   const [copied, setCopied] = useState(false)
   const url = window.location.href
   const external = externalBrowserUrl(url, browser.platform)
-  const browserName = browser.platform === 'ios' ? 'Safari' : 'Chrome'
+  const browserName = browser.platform === 'ios' ? 'external browser' : 'external browser'
 
   async function copy() {
     if (await copyText(url)) {
