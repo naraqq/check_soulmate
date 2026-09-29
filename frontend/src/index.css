@@ -75,6 +75,8 @@
 
 @layer base {
   html {
+    /* Also paints the iOS overscroll "rubber band" area, which otherwise shows white. */
+    background-color: var(--color-cream);
     color-scheme: dark;
     -webkit-tap-highlight-color: transparent;
     text-size-adjust: 100%;
