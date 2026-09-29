@@ -1,6 +1,7 @@
 import { ArrowRight, Check, Clock, Heart, Lock, MessageCircleHeart, Quote, Sprout, UserX } from 'lucide-react'
 import { LemonMark } from '../components/layout/LemonMark'
 import { ButtonLink } from '../components/ui/Button'
+import { RetestButton } from '../components/ui/RetestButton'
 import { Card } from '../components/ui/Card'
 import { useAppConfig } from '../hooks/useAppConfig'
 import { formatPrice } from '../lib/format'
@@ -85,6 +86,8 @@ export function LandingPage() {
               <ButtonLink to={primaryTo} size="lg" className="w-full max-w-xs sm:w-auto">
                 {primaryLabel} <ArrowRight className="size-4" />
               </ButtonLink>
+              {/* Returning visitor with a previous check: let them start a new one. */}
+              {inProgress && <RetestButton variant="ghost" label="Шинээр шалгах" />}
               <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-ink-muted">
                 <li className="flex items-center gap-1.5">
                   <Clock className="size-4" aria-hidden /> 7 минут

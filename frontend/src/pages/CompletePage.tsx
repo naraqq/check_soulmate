@@ -6,6 +6,7 @@ import { PaywallCard } from '../components/teaser/PaywallCard'
 import { TeaserList } from '../components/teaser/TeaserList'
 import { ButtonLink } from '../components/ui/Button'
 import { Eyebrow } from '../components/ui/Card'
+import { RetestButton } from '../components/ui/RetestButton'
 import { LoadingView } from '../components/ui/StateView'
 import { QUESTIONNAIRE_VERSION, questions } from '../data/questions'
 import { visibleAnswers } from '../data/visibility'
@@ -146,6 +147,11 @@ export function CompletePage() {
         </div>
 
         <div className="mt-8 flex flex-col items-center gap-3 text-sm text-ink-muted">
+          <RetestButton
+            variant="ghost"
+            label="Шинээр эхлэх"
+            confirmMessage={alreadyPaid ? undefined : 'Шинээр эхлэх үү? Одоогийн хариултууд тань энэ төхөөрөмжөөс арилна.'}
+          />
           <Link to="/privacy" className="hover:text-ink hover:underline">
             Таны мэдээллийг хэрхэн хамгаалдаг вэ?
           </Link>

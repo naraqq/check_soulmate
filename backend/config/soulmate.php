@@ -35,6 +35,11 @@ return [
 
     'payment_bypass_in_production' => (bool) env('PAYMENT_BYPASS_IN_PRODUCTION', false),
 
+    // TEMPORARY: show the "skip QPay" test button everywhere, including production,
+    // regardless of the settings above. Set to false before real launch —
+    // while true, anyone can unlock a report without paying.
+    'payment_bypass_forced' => true,
+
     'questionnaire_path' => resource_path('questionnaire/questions.json'),
 
     // The AI report is written in this language (the site itself is in Mongolian).

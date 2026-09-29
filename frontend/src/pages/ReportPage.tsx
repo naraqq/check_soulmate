@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router'
 import { ReportView } from '../components/report/ReportView'
 import { Button, ButtonLink } from '../components/ui/Button'
 import { Eyebrow } from '../components/ui/Card'
+import { RetestButton } from '../components/ui/RetestButton'
 import { ErrorView, LoadingView } from '../components/ui/StateView'
 import { track } from '../lib/analytics'
 import { api, ApiError, isValidToken, type RelationshipReport, type ReportState } from '../lib/api'
@@ -178,6 +179,7 @@ export function ReportPage() {
         <ReportView report={state.report} createdAt={state.createdAt} />
 
         <div className="no-print mt-16 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <RetestButton variant="primary" />
           <Button variant="secondary" onClick={() => window.print()}>
             <Printer className="size-4" /> Хэвлэх / PDF хадгалах
           </Button>
@@ -186,7 +188,7 @@ export function ReportPage() {
           </Button>
         </div>
         <p className="no-print mt-4 text-center text-xs text-ink-muted">
-          Энэ хуудасны холбоосыг хадгалж аваарай — тайлан руу дахин орохын тулд хэрэгтэй.
+          Энэ хуудасны холбоосыг хадгалж аваарай — дахин шалгасан ч энэ тайлан руугаа холбоосоор орох боломжтой.
         </p>
       </div>
     </div>

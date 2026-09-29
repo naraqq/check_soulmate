@@ -175,12 +175,12 @@ export function PaymentPage() {
           </p>
         </div>
 
-        {/* Shown whenever the server reports the test bypass as enabled (PAYMENT_BYPASS[_IN_PRODUCTION]). */}
+        {/* Test "skip QPay" button — shown whenever the server reports the bypass as enabled (see PaymentBypass). */}
         {data.dev_bypass && (
           <div className="mt-6 rounded-2xl border border-dashed border-dusk/40 bg-dusk-soft/50 p-4 text-center">
-            <p className="mb-2 text-xs font-semibold text-dusk">Хөгжүүлэлтийн горим</p>
+            <p className="mb-2 text-xs font-semibold text-dusk">Туршилтын горим</p>
             <Button variant="secondary" onClick={devBypass}>
-              Туршилтын төлбөр хийх (dev)
+              QPay-г алгасаад үр дүнг харах
             </Button>
           </div>
         )}

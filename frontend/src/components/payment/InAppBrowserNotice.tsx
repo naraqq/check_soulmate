@@ -12,7 +12,7 @@ export function InAppBrowserNotice({ browser }: { browser: InAppBrowser & { app:
   const [copied, setCopied] = useState(false)
   const url = window.location.href
   const external = externalBrowserUrl(url, browser.platform)
-  const browserName = browser.platform === 'ios' ? 'external browser' : 'external browser'
+  const browserName = browser.platform === 'ios' ? 'Safari' : 'Chrome'
 
   async function copy() {
     if (await copyText(url)) {
@@ -49,7 +49,7 @@ export function InAppBrowserNotice({ browser }: { browser: InAppBrowser & { app:
 
       <p className="mt-4 text-sm leading-relaxed text-ink-muted">
         Товч ажиллахгүй бол: дэлгэцийн буланд байрлах <span className="font-semibold text-ink">•••</span> цэсийг дараад{' '}
-        <span className="font-semibold text-ink">«Open in {browserName}»</span>-г сонгоорой. Эсвэл хуулсан холбоосоо{' '}
+        <span className="font-semibold text-ink">«Open in external browser»</span>-г сонгоорой. Эсвэл хуулсан холбоосоо{' '}
         {browserName}-д буулгаарай.
       </p>
     </div>

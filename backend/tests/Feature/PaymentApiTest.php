@@ -138,9 +138,21 @@ class PaymentApiTest extends TestCase
         $this->assertSame('dev_bypass', Payment::firstOrFail()->provider);
     }
 
+    public function test_forced_bypass_works_in_production_without_any_env_settings(): void
+    {
+        $this->app['env'] = 'production';
+        config(['soulmate.payment_bypass_forced' => true, 'soulmate.payment_bypass' => false, 'soulmate.payment_bypass_in_production' => false]);
+        $this->fakeQPay();
+        $assessment = $this->createAssessment();
+
+        $this->postJson("/api/assessments/{$assessment->public_token}/payment")->assertJsonPath('dev_bypass', true);
+        $this->postJson("/api/assessments/{$assessment->public_token}/dev/mark-paid")->assertJsonPath('status', 'paid');
+    }
+
     public function test_dev_bypass_is_off_in_production_by_default(): void
     {
         $this->app['env'] = 'production';
+        config(['soulmate.payment_bypass_forced' => false]);
         $assessment = $this->createAssessment();
 
         $this->postJson("/api/assessments/{$assessment->public_token}/dev/mark-paid")->assertNotFound();
@@ -151,7 +163,7 @@ class PaymentApiTest extends TestCase
     public function test_dev_bypass_works_in_production_only_with_explicit_opt_in(): void
     {
         $this->app['env'] = 'production';
-        config(['soulmate.payment_bypass_in_production' => true]);
+        config(['soulmate.payment_bypass_forced' => false, 'soulmate.payment_bypass_in_production' => true]);
         $this->fakeQPay();
         $assessment = $this->createAssessment();
 
@@ -166,7 +178,7 @@ class PaymentApiTest extends TestCase
     public function test_production_opt_in_alone_does_not_enable_bypass(): void
     {
         $this->app['env'] = 'production';
-        config(['soulmate.payment_bypass' => false, 'soulmate.payment_bypass_in_production' => true]);
+        config(['soulmate.payment_bypass_forced' => false, 'soulmate.payment_bypass' => false, 'soulmate.payment_bypass_in_production' => true]);
         $assessment = $this->createAssessment();
 
         $this->postJson("/api/assessments/{$assessment->public_token}/dev/mark-paid")->assertNotFound();
@@ -189,7 +201,7 @@ class PaymentApiTest extends TestCase
     public function test_missing_qpay_config_in_production_is_an_error_not_a_bypass(): void
     {
         $this->app['env'] = 'production';
-        config(['services.qpay.username' => null]);
+        config(['services.qpay.username' => null, 'soulmate.payment_bypass_forced' => false]);
         $assessment = $this->createAssessment();
 
         $this->postJson("/api/assessments/{$assessment->public_token}/payment")
