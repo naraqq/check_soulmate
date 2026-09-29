@@ -1,5 +1,5 @@
 import { ArrowRight } from 'lucide-react'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router'
 import { QuestionView } from '../components/questionnaire/QuestionView'
 import { SectionIntro } from '../components/questionnaire/SectionIntro'
@@ -24,6 +24,8 @@ export function CheckPage() {
   const navigate = useNavigate()
   const q = useQuestionnaire(questions)
   const startedTracked = useRef(false)
+  // The question the user just tapped an answer on (so we don't flash a "next" button during auto-advance).
+  const [selectedHere, setSelectedHere] = useState<string | null>(null)
 
   const category = useMemo(() => categories.find((c) => c.id === q.question.category)!, [q.question.category])
   const categoryIndex = categories.indexOf(category)
@@ -58,7 +60,7 @@ export function CheckPage() {
   const showingReply = Boolean(q.question.options?.find((o) => o.value === q.value)?.reply)
 
   return (
-    <div className="mx-auto flex min-h-[calc(100dvh-4rem)] max-w-xl flex-col px-4 pt-6 pb-8 sm:px-6 sm:pt-10">
+    <div className="mx-auto flex min-h-dvh max-w-xl flex-col px-4 pt-[max(1.5rem,env(safe-area-inset-top))] pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-6 sm:pt-12">
       {/* Journey — one segment per section, no question counting */}
       <div className="mb-10" role="progressbar" aria-label="Явц" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(overall * 100)}>
         <div className="flex items-center justify-between gap-3 text-sm">
@@ -97,23 +99,28 @@ export function CheckPage() {
             <QuestionView
               key={q.question.id}
               question={q.question}
-              categoryLabel={category.label}
               value={q.value}
-              onSelect={(value) => q.setAnswer(value, { autoAdvance: true })}
+              onSelect={(value) => {
+                setSelectedHere(q.question.id)
+                q.setAnswer(value, { autoAdvance: true })
+              }}
               onTextChange={(value) => q.setAnswer(value)}
               onContinue={q.next}
             />
           </div>
 
-          {/* Only forward: finish the optional reflection (may be left empty), or continue a resumed answer. */}
-          {(isText || (answeredCurrent && !showingReply)) && (
-            <div className="sticky bottom-0 mt-10 -mx-4 flex justify-end bg-gradient-to-t from-cream via-cream to-cream/0 px-4 pt-6 pb-[max(1rem,env(safe-area-inset-bottom))] sm:static sm:mx-0 sm:bg-none sm:px-0">
+          {/*
+            Only forward: finish the optional reflection (may be left empty), or continue an answer
+            restored after a refresh. Never shown right after a tap — that answer auto-advances.
+          */}
+          {(isText || (answeredCurrent && !showingReply && selectedHere !== q.question.id)) && (
+            <div className="mt-8 flex justify-end">
               {isText ? (
-                <Button onClick={q.next}>
+                <Button size="lg" onClick={q.next} className="w-full sm:w-auto">
                   Дуусгах <ArrowRight className="size-4" />
                 </Button>
               ) : (
-                <Button variant="secondary" onClick={q.next}>
+                <Button variant="secondary" onClick={q.next} className="w-full sm:w-auto">
                   Дараах <ArrowRight className="size-4" />
                 </Button>
               )}

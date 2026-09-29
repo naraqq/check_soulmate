@@ -332,8 +332,11 @@ REMOTE
 # ---------------------------------------------------------------------------------
 
 # Keys copied from your local backend/.env to the server. Everything else
-# (APP_KEY, DB password, URLs, PAYMENT_BYPASS=false) is managed on the server.
-SECRET_KEYS='AI_PROVIDER|GEMINI_API_KEY|GEMINI_MODEL|OPENAI_API_KEY|OPENAI_MODEL|REPORT_LANGUAGE|QPAY_BASE_URL|QPAY_USERNAME|QPAY_PASSWORD|QPAY_INVOICE_CODE|QPAY_INVOICE_RECEIVER_CODE|REPORT_PRICE|REPORT_CURRENCY'
+# (APP_KEY, DB password, URLs) is managed on the server.
+# The test payment button in production needs BOTH PAYMENT_BYPASS=true and
+# PAYMENT_BYPASS_IN_PRODUCTION=true; set the latter to false and run
+# `./deploy.sh env` to switch it off again.
+SECRET_KEYS='AI_PROVIDER|GEMINI_API_KEY|GEMINI_MODEL|OPENAI_API_KEY|OPENAI_MODEL|REPORT_LANGUAGE|QPAY_BASE_URL|QPAY_USERNAME|QPAY_PASSWORD|QPAY_INVOICE_CODE|QPAY_INVOICE_RECEIVER_CODE|REPORT_PRICE|REPORT_CURRENCY|PAYMENT_BYPASS|PAYMENT_BYPASS_IN_PRODUCTION'
 
 push_secrets() {
   local local_env="$ROOT/backend/.env"

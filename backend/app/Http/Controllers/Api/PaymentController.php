@@ -54,7 +54,7 @@ class PaymentController extends Controller
         return response('SUCCESS', 200)->header('Content-Type', 'text/plain');
     }
 
-    /** POST /api/assessments/{token}/dev/mark-paid — only routed when PaymentBypass::enabled(). */
+    /** POST /api/assessments/{token}/dev/mark-paid — 404 unless PaymentBypass::enabled(). */
     public function devMarkPaid(Assessment $assessment): JsonResponse
     {
         abort_unless(PaymentBypass::enabled(), 404);

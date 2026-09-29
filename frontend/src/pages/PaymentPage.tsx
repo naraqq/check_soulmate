@@ -1,7 +1,9 @@
 import { RefreshCw, ShieldCheck } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
+import { InAppBrowserNotice } from '../components/payment/InAppBrowserNotice'
 import { InvoicePanel } from '../components/payment/InvoicePanel'
+import { detectInAppBrowser } from '../lib/inAppBrowser'
 import { Button, ButtonLink } from '../components/ui/Button'
 import { Card, Eyebrow } from '../components/ui/Card'
 import { ErrorView, LoadingView } from '../components/ui/StateView'
@@ -25,6 +27,8 @@ export function PaymentPage() {
   const [notice, setNotice] = useState<string | null>(null)
   const [attempt, setAttempt] = useState(0)
   const pollStarted = useRef(0) // set when polling starts
+  // Messenger/Facebook/Instagram browsers block bank-app links (notably on iPhone).
+  const [inApp] = useState(() => detectInAppBrowser(typeof navigator === 'undefined' ? '' : navigator.userAgent))
 
   const onPaid = useCallback(() => {
     track({ name: 'payment_confirmed' })
@@ -144,6 +148,8 @@ export function PaymentPage() {
         <h1 className="mt-2 font-display text-3xl font-semibold text-balance">Тайлангаа нээхийн тулд төлбөрөө төлнө үү</h1>
       </div>
 
+      {inApp.app && <InAppBrowserNotice browser={{ ...inApp, app: inApp.app }} />}
+
       <Card className="animate-fade-up [animation-delay:80ms]">
         {data.invoice ? (
           <InvoicePanel invoice={data.invoice} amount={data.amount} currency={data.currency} />
@@ -169,7 +175,8 @@ export function PaymentPage() {
           </p>
         </div>
 
-        {data.dev_bypass && import.meta.env.DEV && (
+        {/* Shown whenever the server reports the test bypass as enabled (PAYMENT_BYPASS[_IN_PRODUCTION]). */}
+        {data.dev_bypass && (
           <div className="mt-6 rounded-2xl border border-dashed border-dusk/40 bg-dusk-soft/50 p-4 text-center">
             <p className="mb-2 text-xs font-semibold text-dusk">Хөгжүүлэлтийн горим</p>
             <Button variant="secondary" onClick={devBypass}>

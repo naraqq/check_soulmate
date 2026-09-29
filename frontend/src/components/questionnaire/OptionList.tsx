@@ -32,11 +32,11 @@ export function OptionList({ options, type, value, onSelect, labelledBy }: Props
             onClick={() => onSelect(option.value)}
             className={cn(
               'group flex min-h-14 w-full items-center gap-3 rounded-2xl border px-4 py-3.5 text-left text-[15px] font-medium transition-all duration-200 sm:text-base',
-              'animate-fade-up active:scale-[0.99]',
+              'animate-fade-up touch-manipulation select-none active:scale-[0.99]',
               isYesNo && 'justify-center py-5 text-center text-lg',
               selected
-                ? 'border-transparent bg-accent text-white shadow-glow'
-                : 'border-line bg-paper text-ink shadow-soft backdrop-blur hover:-translate-y-px hover:border-white/25 hover:bg-white/[0.08]',
+                ? 'border-transparent bg-accent text-white shadow-[0_4px_16px_-8px_rgb(192_38_211/0.6)]'
+                : 'border-line bg-paper text-ink hover:border-white/25 hover:bg-white/[0.08]',
             )}
             style={{ animationDelay: `${i * 35}ms` }}
           >

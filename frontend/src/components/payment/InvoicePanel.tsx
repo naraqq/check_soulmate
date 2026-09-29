@@ -39,6 +39,11 @@ export function InvoicePanel({ invoice, amount, currency }: Props) {
           )}
         </div>
         <p className="mt-3 text-center text-sm text-ink-muted">Банкны аппликейшнээрээ QR кодыг уншуулна уу</p>
+        {/* Paying on the same phone: the screen can't be scanned, but a saved image can. */}
+        <p className="mt-3 max-w-xs rounded-2xl bg-sand/60 px-4 py-3 text-center text-[13px] leading-relaxed text-ink-soft sm:hidden">
+          Утсаараа төлж байна уу? QR кодыг <span className="font-semibold text-ink">удаан дараад хадгалаарай</span>, дараа нь
+          банкны аппынхаа QR уншигчаас тэр зургаа сонгоорой.
+        </p>
       </div>
 
       <ol className="space-y-2 rounded-2xl bg-sand/60 p-4 text-[15px] text-ink-soft">

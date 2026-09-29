@@ -7,7 +7,6 @@ import { OptionList } from './OptionList'
 
 interface Props {
   question: Question
-  categoryLabel: string
   value: string | null
   onSelect: (value: string) => void
   onTextChange: (value: string) => void
@@ -15,7 +14,7 @@ interface Props {
   onContinue: () => void
 }
 
-export function QuestionView({ question, categoryLabel, value, onSelect, onTextChange, onContinue }: Props) {
+export function QuestionView({ question, value, onSelect, onTextChange, onContinue }: Props) {
   const headingId = useId()
   const isText = question.type === 'text'
   const reply = question.options?.find((o) => o.value === value)?.reply
@@ -41,8 +40,7 @@ export function QuestionView({ question, categoryLabel, value, onSelect, onTextC
 
   return (
     <section key={question.id} className="animate-fade-up" aria-live="polite">
-      <p className="mb-3 text-sm font-semibold text-clay">{categoryLabel}</p>
-      <h1 id={headingId} className="font-display text-[1.65rem] leading-snug font-semibold text-balance sm:text-3xl">
+      <h1 id={headingId} className="font-display text-[1.4rem] leading-snug font-semibold text-balance sm:text-3xl">
         {question.text}
       </h1>
       {question.helper && <p className="mt-3 text-[15px] text-ink-soft">{question.helper}</p>}

@@ -74,7 +74,7 @@ export function LandingPage() {
               <LemonMark className="size-6" />
               Lemony · харилцааны шалгалт
             </p>
-            <h1 className="font-display text-[2.5rem] leading-[1.1] font-bold text-balance sm:text-6xl">
+            <h1 className="font-display text-[2.1rem] leading-[1.12] font-bold text-balance sm:text-6xl">
               Харилцаагаа <span className="text-gradient">гаднаас нь</span> хараад үзээрэй
             </h1>
             <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-ink-soft sm:text-xl">

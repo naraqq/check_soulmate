@@ -138,7 +138,7 @@ class PaymentApiTest extends TestCase
         $this->assertSame('dev_bypass', Payment::firstOrFail()->provider);
     }
 
-    public function test_dev_bypass_never_works_in_production(): void
+    public function test_dev_bypass_is_off_in_production_by_default(): void
     {
         $this->app['env'] = 'production';
         $assessment = $this->createAssessment();
@@ -146,6 +146,30 @@ class PaymentApiTest extends TestCase
         $this->postJson("/api/assessments/{$assessment->public_token}/dev/mark-paid")->assertNotFound();
 
         $this->assertSame(AssessmentStatus::Created, $assessment->refresh()->status);
+    }
+
+    public function test_dev_bypass_works_in_production_only_with_explicit_opt_in(): void
+    {
+        $this->app['env'] = 'production';
+        config(['soulmate.payment_bypass_in_production' => true]);
+        $this->fakeQPay();
+        $assessment = $this->createAssessment();
+
+        // The payment page learns it may show the test button…
+        $this->postJson("/api/assessments/{$assessment->public_token}/payment")->assertJsonPath('dev_bypass', true);
+
+        // …and the button works.
+        $this->postJson("/api/assessments/{$assessment->public_token}/dev/mark-paid")->assertJsonPath('status', 'paid');
+        $this->assertSame(AssessmentStatus::Paid, $assessment->refresh()->status);
+    }
+
+    public function test_production_opt_in_alone_does_not_enable_bypass(): void
+    {
+        $this->app['env'] = 'production';
+        config(['soulmate.payment_bypass' => false, 'soulmate.payment_bypass_in_production' => true]);
+        $assessment = $this->createAssessment();
+
+        $this->postJson("/api/assessments/{$assessment->public_token}/dev/mark-paid")->assertNotFound();
     }
 
     public function test_fake_gateway_is_used_without_qpay_credentials_in_development(): void

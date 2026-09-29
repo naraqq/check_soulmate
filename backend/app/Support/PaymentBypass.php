@@ -3,13 +3,17 @@
 namespace App\Support;
 
 /**
- * Development-only payment bypass. Never active in production, regardless of
- * the PAYMENT_BYPASS setting.
+ * Test payment bypass. Needs PAYMENT_BYPASS=true; in production it also needs
+ * PAYMENT_BYPASS_IN_PRODUCTION=true, so it can never switch on by accident.
  */
 final class PaymentBypass
 {
     public static function enabled(): bool
     {
-        return config('soulmate.payment_bypass') === true && ! app()->environment('production');
+        if (config('soulmate.payment_bypass') !== true) {
+            return false;
+        }
+
+        return ! app()->environment('production') || config('soulmate.payment_bypass_in_production') === true;
     }
 }

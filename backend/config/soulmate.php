@@ -23,12 +23,17 @@ return [
     | Development payment bypass
     |--------------------------------------------------------------------------
     |
-    | Lets developers mark a test assessment as paid without QPay. It is only
-    | honoured outside production — see App\Support\PaymentBypass.
+    | Lets testers mark an assessment as paid without QPay. Outside production
+    | PAYMENT_BYPASS alone enables it. In production it additionally requires
+    | PAYMENT_BYPASS_IN_PRODUCTION=true — a deliberate, temporary opt-in (anyone
+    | on the payment page can then unlock a report for free). See
+    | App\Support\PaymentBypass.
     |
     */
 
     'payment_bypass' => (bool) env('PAYMENT_BYPASS', false),
+
+    'payment_bypass_in_production' => (bool) env('PAYMENT_BYPASS_IN_PRODUCTION', false),
 
     'questionnaire_path' => resource_path('questionnaire/questions.json'),
 
