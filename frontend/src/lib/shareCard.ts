@@ -15,6 +15,8 @@ export interface CardContent {
   /** Small line above the title. */
   eyebrow?: string
   title: string
+  /** A short paragraph under the title (e.g. what a love style means). */
+  body?: string
   /** Up to three short lines, shown as checked rows (e.g. strengths). */
   items?: string[]
   /** Call to action in the pill at the bottom. */
@@ -195,12 +197,16 @@ export async function renderCard(format: CardFormat, content: CardContent): Prom
   // drop list items from the end first, then shrink the title.
   const areaTop = L.top + L.logo + L.item
   const available = ctaY - L.item - areaTop
+  const bodySize = Math.round(L.item * 0.95)
+  ctx.font = `500 ${bodySize}px ${FONT}`
+  const bodyLines = content.body ? wrapLines(ctx, content.body, textWidth).slice(0, 4) : []
+  const bodyH = bodyLines.length ? bodyLines.length * bodySize * 1.4 + bodySize * 0.7 : 0
   const measure = (items: string[], titleMax: number) => {
     const titleFit = fitText(ctx, content.title, 800, titleMax, L.title[1], textWidth, L.titleLines)
     ctx.font = `600 ${L.item}px ${FONT}`
     const itemRows = items.map((t) => wrapLines(ctx, t, textWidth - L.item * 3).slice(0, 2))
     const itemH = itemRows.reduce((sum, rows) => sum + rows.length * L.item * 1.25 + L.item * 1.1, 0) + L.itemGap * Math.max(0, items.length - 1)
-    const blockH = eyebrowH + titleFit.lines.length * titleFit.size * 1.15 + (items.length ? L.item * 1.4 + itemH : 0)
+    const blockH = eyebrowH + titleFit.lines.length * titleFit.size * 1.15 + bodyH + (items.length ? L.item * 1.4 + itemH : 0)
     return { titleFit, itemRows, blockH, items }
   }
   let fit = measure((content.items ?? []).filter(Boolean).slice(0, 3), L.title[0])
@@ -225,6 +231,16 @@ export async function renderCard(format: CardFormat, content: CardContent): Prom
   for (const line of titleFit.lines) {
     y += titleLineH
     ctx.fillText(line, x, y - titleFit.size * 0.15)
+  }
+
+  if (bodyLines.length) {
+    y += bodySize * 0.7
+    ctx.font = `500 ${bodySize}px ${FONT}`
+    ctx.fillStyle = INK_SOFT
+    for (const line of bodyLines) {
+      y += bodySize * 1.4
+      ctx.fillText(line, x, y - bodySize * 0.3)
+    }
   }
 
   if (items.length) {

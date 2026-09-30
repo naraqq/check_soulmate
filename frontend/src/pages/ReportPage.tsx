@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router'
 import { ReportFeedbackForm } from '../components/report/ReportFeedbackForm'
 import { ReportView } from '../components/report/ReportView'
 import { ShareCta } from '../components/share/ShareCta'
+import { loadLoveStyle } from '../data/loveStyles'
 import { Button, ButtonLink } from '../components/ui/Button'
 import { Eyebrow } from '../components/ui/Card'
 import { RetestButton } from '../components/ui/RetestButton'
@@ -185,7 +186,7 @@ export function ReportPage() {
         <ShareCta
           placement="report"
           flow={state.report.track ?? 'couple'}
-          strengths={state.report.strengths.map((s) => s.title)}
+          loveStyle={loadLoveStyle()}
           className="no-print mt-12"
         />
 

@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
-import { messengerTarget, shareUrl, siteHost, strengthsCard } from './share'
+import { LOVE_STYLES } from '../data/loveStyles'
+import { inviteText, loveStyleCard, messengerTarget, shareUrl, siteHost } from './share'
 
 // Tests run in Node: give the helpers a local-dev browser location.
 beforeAll(() => {
@@ -20,19 +21,23 @@ describe('shareUrl', () => {
   })
 })
 
-describe('strengthsCard', () => {
-  it('shows at most three strengths and nothing else from the check', () => {
-    const card = strengthsCard('couple', ['A', ' B ', '', 'C', 'D'])
-    expect(card.items).toEqual(['A', 'B', 'C'])
-    expect(JSON.stringify(card)).not.toMatch(/анхаар|санаа зов/i)
+describe('loveStyleCard', () => {
+  it('is about the person — their type and traits, nothing about a relationship', () => {
+    const card = loveStyleCard(LOVE_STYLES.carer)
+    expect(card.title).toBe('Халамжлагч')
+    expect(card.items).toHaveLength(3)
+    expect(JSON.stringify(card)).not.toMatch(/хамтрагч|харилцааны давуу|анхаар/i)
+    expect(card.cta).toBe('Чиний хайрын хэв маяг юу вэ?')
+  })
+})
+
+describe('inviteText', () => {
+  it('invites the other person to take it separately, never to see answers', () => {
+    expect(inviteText('partner', null)).toContain('тус тусдаа')
   })
 
-  it('speaks to people who are only getting to know someone', () => {
-    expect(strengthsCard('early', ['A']).cta).toContain('ирээдүйтэй')
-  })
-
-  it('still makes a card when there are no strengths', () => {
-    expect(strengthsCard('couple', []).title).toBe('Би харилцаагаа гаднаас нь харлаа')
+  it('mentions the love style when inviting a friend', () => {
+    expect(inviteText('friend', LOVE_STYLES.anchor)).toContain('Тайван бэхлэгч')
   })
 })
 

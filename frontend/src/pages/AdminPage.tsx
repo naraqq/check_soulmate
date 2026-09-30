@@ -518,6 +518,8 @@ const SHARE_METHOD_LABELS: Record<string, string> = {
   messenger: 'Messenger',
   download: 'Зураг татсан',
   copy_link: 'Холбоос хуулсан',
+  invite_friend: 'Найзаа урьсан',
+  invite_partner: 'Нөгөө хүнээ урьсан',
 }
 
 function SharingPanel({ data }: { data: Dashboard }) {

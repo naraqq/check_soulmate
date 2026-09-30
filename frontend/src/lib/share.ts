@@ -1,3 +1,4 @@
+import type { LoveStyle } from '../data/loveStyles'
 import type { Track } from '../data/types'
 import type { CardContent } from './shareCard'
 
@@ -5,7 +6,15 @@ import type { CardContent } from './shareCard'
 export type SharePlacement = 'teaser' | 'report'
 
 /** How it was shared — becomes utm_medium, so the dashboard shows which method brings visitors. */
-export type ShareMethod = 'native_image' | 'native_link' | 'messenger' | 'instagram_story' | 'download' | 'copy_link'
+export type ShareMethod =
+  | 'native_image'
+  | 'native_link'
+  | 'messenger'
+  | 'instagram_story'
+  | 'download'
+  | 'copy_link'
+  | 'invite_friend'
+  | 'invite_partner'
 
 const PUBLIC_HOST = 'lemony.mn'
 
@@ -26,12 +35,6 @@ export function shareUrl(method: ShareMethod, placement: SharePlacement, audienc
   url.searchParams.set('utm_medium', method)
   url.searchParams.set('utm_campaign', placement)
   return url.toString()
-}
-
-export function shareText(track: Track): string {
-  return track === 'early'
-    ? 'Танилцаж байгаа хүнтэйгээ ирээдүйтэй юу гэдгээ Lemony-гоор шалгалаа 🍋 Чи ч гэсэн шалгаад үз:'
-    : 'Би Lemony-гоор харилцаагаа шалгалаа 🍋 Чи ч гэсэн шалгаад үз:'
 }
 
 /**
@@ -67,30 +70,27 @@ export function canShareFile(file: File): boolean {
   }
 }
 
-/**
- * The card someone shares: only their strengths — never concerns, answers or anything
- * about the other person, so it's safe to post where that person might see it.
- */
-export function strengthsCard(track: Track, strengths: string[]): Omit<CardContent, 'theme'> {
-  const items = strengths
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .slice(0, 3)
-  const footnote = `${siteHost()} · 7 минутын шалгалт`
-  if (track === 'early') {
-    return {
-      eyebrow: 'Танилцаж буй харилцааны маань сайн эхлэл',
-      title: items.length ? 'Бидний хооронд юу сайн байна вэ' : 'Би харилцаагаа гаднаас нь харлаа',
-      items,
-      cta: 'Энэ харилцаа ирээдүйтэй юу? Шалгаад үз',
-      footnote,
-    }
-  }
+/** The story card: the person's love style — about them, always flattering, nothing about the relationship. */
+export function loveStyleCard(style: LoveStyle): CardContent {
   return {
-    eyebrow: 'Миний харилцааны давуу талууд',
-    title: items.length ? 'Бидний харилцааны хамгийн хүчтэй талууд' : 'Би харилцаагаа гаднаас нь харлаа',
-    items,
-    cta: 'Та хоёрын давуу тал юу вэ?',
-    footnote,
+    eyebrow: 'Миний хайрын хэв маяг',
+    title: style.name,
+    body: style.description,
+    items: [...style.traits],
+    cta: 'Чиний хайрын хэв маяг юу вэ?',
+    footnote: `${siteHost()} · 7 минутын шалгалт`,
+    theme: style.theme,
   }
+}
+
+/** Private invites — sent to one person, which suits this topic better than a public post. */
+export type InviteKind = 'friend' | 'partner'
+
+export function inviteText(kind: InviteKind, style: LoveStyle | null): string {
+  if (kind === 'partner') {
+    return 'Хоёулаа энэ шалгалтыг тус тусдаа хийгээд, юу гарсныг хамтдаа ярилцах уу? 🍋 7 минут л болно:'
+  }
+  return style
+    ? `Миний хайрын хэв маяг “${style.name}” гарлаа 🍋 Чинийх юу болохыг хараач:`
+    : 'Энэ харилцааны шалгалтыг хийгээд үзээч, надад их таалагдсан 🍋'
 }

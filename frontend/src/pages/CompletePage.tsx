@@ -9,6 +9,7 @@ import { Button, ButtonLink } from '../components/ui/Button'
 import { Eyebrow } from '../components/ui/Card'
 import { RetestButton } from '../components/ui/RetestButton'
 import { LoadingView } from '../components/ui/StateView'
+import { loadLoveStyle, loveStyleFor, saveLoveStyle } from '../data/loveStyles'
 import { QUESTIONNAIRE_VERSION, questions } from '../data/questions'
 import { trackFor } from '../data/track'
 import type { Track } from '../data/types'
@@ -46,6 +47,16 @@ export function CompletePage() {
     () => (progress?.completed ? buildTeaser(questions, visibleAnswers(questions, progress.answers)) : null),
     [progress],
   )
+
+  // The shareable love style: worked out from this device's answers, remembered for the report page.
+  const loveStyle = useMemo(() => {
+    if (!progress?.completed) return loadLoveStyle()
+    const answers = visibleAnswers(questions, progress.answers)
+    return loveStyleFor(questions, answers, trackFor(answers))
+  }, [progress])
+  useEffect(() => {
+    if (loveStyle) saveLoveStyle(loveStyle.id)
+  }, [loveStyle])
 
   // If already submitted, ask the backend where this assessment stands.
   useEffect(() => {
@@ -167,8 +178,8 @@ export function CompletePage() {
           )}
         </div>
 
-        {/* Everyone who finishes can share — not just payers — so the free preview also brings people in. */}
-        {teaser.strengths.length > 0 && <ShareCta placement="teaser" flow={flow} strengths={teaser.strengths} className="mt-10" />}
+        {/* Everyone who finishes gets their love style and can share it — not just payers. */}
+        <ShareCta placement="teaser" flow={flow} loveStyle={loveStyle} className="mt-10" />
 
         <div className="mt-8 flex flex-col items-center gap-3 text-sm text-ink-muted">
           <RetestButton
