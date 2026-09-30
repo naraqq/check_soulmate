@@ -150,7 +150,6 @@ export function PaymentPage() {
         <h1 className="mt-2 font-display text-3xl font-semibold text-balance">Тайлангаа нээхийн тулд төлбөрөө төлнө үү</h1>
       </div>
 
-      {inApp.app && <InAppBrowserNotice browser={{ ...inApp, app: inApp.app }} />}
 
       <p className="mb-5 text-center text-sm text-ink-soft">Асуудал гарвал <SupportLink>манай Facebook хуудсанд бичээрэй</SupportLink>.</p>
 
