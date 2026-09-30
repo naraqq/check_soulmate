@@ -1644,7 +1644,7 @@ const earlyQuestions: Question[] = [
       { value: 'yes', label: 'Тийм, баяртай байна', score: 1 },
       { value: 'mostly', label: 'Ихэнхдээ', score: 0.75 },
       { value: 'unsure', label: 'Эргэлзэж байна', score: 0.4 },
-      { value: 'no', label: 'Үгүй, илүү ихийг хүсч байна', score: 0.1, flag: 'status_quo_unhappy' },
+      { value: 'no', label: 'Үгүй, илүү ихийг хүсэж байна', score: 0.1, flag: 'status_quo_unhappy' },
     ],
   },
   {

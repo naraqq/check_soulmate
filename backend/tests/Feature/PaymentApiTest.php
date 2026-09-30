@@ -138,15 +138,16 @@ class PaymentApiTest extends TestCase
         $this->assertSame('dev_bypass', Payment::firstOrFail()->provider);
     }
 
-    public function test_forced_bypass_works_in_production_without_any_env_settings(): void
+    public function test_legacy_force_flag_cannot_bypass_production_payments(): void
     {
         $this->app['env'] = 'production';
         config(['soulmate.payment_bypass_forced' => true, 'soulmate.payment_bypass' => false, 'soulmate.payment_bypass_in_production' => false]);
         $this->fakeQPay();
         $assessment = $this->createAssessment();
 
-        $this->postJson("/api/assessments/{$assessment->public_token}/payment")->assertJsonPath('dev_bypass', true);
-        $this->postJson("/api/assessments/{$assessment->public_token}/dev/mark-paid")->assertJsonPath('status', 'paid');
+        $this->postJson("/api/assessments/{$assessment->public_token}/payment")->assertJsonPath('dev_bypass', false);
+        $this->postJson("/api/assessments/{$assessment->public_token}/dev/mark-paid")->assertNotFound();
+        $this->assertSame(AssessmentStatus::PaymentPending, $assessment->refresh()->status);
     }
 
     public function test_dev_bypass_is_off_in_production_by_default(): void
@@ -160,19 +161,17 @@ class PaymentApiTest extends TestCase
         $this->assertSame(AssessmentStatus::Created, $assessment->refresh()->status);
     }
 
-    public function test_dev_bypass_works_in_production_only_with_explicit_opt_in(): void
+    public function test_legacy_production_opt_in_cannot_bypass_payments(): void
     {
         $this->app['env'] = 'production';
         config(['soulmate.payment_bypass_forced' => false, 'soulmate.payment_bypass_in_production' => true]);
         $this->fakeQPay();
         $assessment = $this->createAssessment();
 
-        // The payment page learns it may show the test button…
-        $this->postJson("/api/assessments/{$assessment->public_token}/payment")->assertJsonPath('dev_bypass', true);
-
-        // …and the button works.
-        $this->postJson("/api/assessments/{$assessment->public_token}/dev/mark-paid")->assertJsonPath('status', 'paid');
-        $this->assertSame(AssessmentStatus::Paid, $assessment->refresh()->status);
+        // Legacy production settings cannot expose a test payment button.
+        $this->postJson("/api/assessments/{$assessment->public_token}/payment")->assertJsonPath('dev_bypass', false);
+        $this->postJson("/api/assessments/{$assessment->public_token}/dev/mark-paid")->assertNotFound();
+        $this->assertSame(AssessmentStatus::PaymentPending, $assessment->refresh()->status);
     }
 
     public function test_production_opt_in_alone_does_not_enable_bypass(): void

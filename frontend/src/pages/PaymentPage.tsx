@@ -1,3 +1,4 @@
+import { SupportLink } from '../components/ui/SupportLink'
 import { RefreshCw, ShieldCheck } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
@@ -133,6 +134,7 @@ export function PaymentPage() {
             <ButtonLink to="/complete" variant="quiet">
               Буцах
             </ButtonLink>
+            <SupportLink>Төлбөрийн тусламж авах</SupportLink>
           </>
         }
       />
@@ -149,6 +151,8 @@ export function PaymentPage() {
       </div>
 
       {inApp.app && <InAppBrowserNotice browser={{ ...inApp, app: inApp.app }} />}
+
+      <p className="mb-5 text-center text-sm text-ink-soft">Асуудал гарвал <SupportLink>манай Facebook хуудсанд бичээрэй</SupportLink>.</p>
 
       <Card className="animate-fade-up [animation-delay:80ms]">
         {data.invoice ? (

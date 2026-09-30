@@ -55,8 +55,8 @@ run_remote() {
   local mode="$1"
   remote_script | remote "cat > /tmp/soulmate-remote.sh"
   remote "sudo env APP_DIR=$(printf %q "$APP_DIR") DOMAIN=$(printf %q "$DOMAIN") EMAIL=$(printf %q "$EMAIL") \
-    HOST_IP=$(printf %q "$HOST_IP") RELEASE=$(printf %q "${RELEASE:-}") bash /tmp/soulmate-remote.sh $mode; \
-    rm -f /tmp/soulmate-remote.sh"
+    HOST_IP=$(printf %q "$HOST_IP") RELEASE=$(printf %q "${RELEASE:-}") bash /tmp/soulmate-remote.sh $mode; result=\$?; \
+    rm -f /tmp/soulmate-remote.sh; exit \$result"
 }
 
 # ---------------------------------------------------------------------------------
@@ -128,17 +128,25 @@ reload_app() {
   systemctl reload "php$(php_version)-fpm"   # also clears OPcache
   supervisorctl reread >/dev/null
   supervisorctl update >/dev/null
-  supervisorctl restart 'soulmate-queue:*' >/dev/null || true
+  supervisorctl restart 'soulmate-queue:*' >/dev/null
 }
 
 health_check() {
-  local host="${DOMAIN:-localhost}"
-  if curl -fsS --max-time 10 -H "Host: $host" http://127.0.0.1/api/config >/dev/null \
-    || curl -fsSk --max-time 10 --resolve "$host:443:127.0.0.1" "https://$host/api/config" >/dev/null; then
-    say "Health check passed: /api/config responds"
+  local host="${DOMAIN:-localhost}" response
+  if [[ -n "$DOMAIN" && -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]]; then
+    response="$(curl -fsS --max-time 10 --resolve "$host:443:127.0.0.1" "https://$host/api/config")" \
+      || fail "HTTPS health check failed — run ./deploy.sh logs"
   else
-    fail "Health check failed — run ./deploy.sh logs"
+    response="$(curl -fsS --max-time 10 -H "Host: $host" http://127.0.0.1/api/config)" \
+      || fail "Health check failed — run ./deploy.sh logs"
   fi
+  # A redirect or HTML error page is not a successful API health check.
+  printf '%s' "$response" | php -r '
+    $data = json_decode(stream_get_contents(STDIN), true);
+    exit(is_array($data) && is_int($data["price"] ?? null) && $data["price"] > 0
+      && is_string($data["currency"] ?? null) && $data["currency"] !== "" ? 0 : 1);
+  ' || fail "Health check returned invalid API configuration — run ./deploy.sh logs"
+  say "Health check passed: /api/config returns valid pricing"
 }
 
 case "$MODE" in
@@ -277,10 +285,10 @@ ANALYTICS_DASHBOARD_KEY=%s
   render_configs
   reload_app
 
-  # Keep the 5 newest releases.
-  ls -1dt "$APP"/releases/* | tail -n +6 | xargs -r rm -rf
-
   health_check
+
+  # Remove old releases only after the new release passes the health check.
+  ls -1dt "$APP"/releases/* | tail -n +6 | xargs -r rm -rf
   if [[ "$FIRST_ENV" == 1 ]]; then echo "FIRST_ENV"; fi
   ;;
 
@@ -352,10 +360,8 @@ REMOTE
 
 # Keys copied from your local backend/.env to the server. Everything else
 # (APP_KEY, DB password, URLs) is managed on the server.
-# The test payment button in production needs BOTH PAYMENT_BYPASS=true and
-# PAYMENT_BYPASS_IN_PRODUCTION=true; set the latter to false and run
-# `./deploy.sh env` to switch it off again.
-SECRET_KEYS='AI_PROVIDER|GEMINI_API_KEY|GEMINI_MODEL|OPENAI_API_KEY|OPENAI_MODEL|REPORT_LANGUAGE|QPAY_BASE_URL|QPAY_USERNAME|QPAY_PASSWORD|QPAY_INVOICE_CODE|QPAY_INVOICE_RECEIVER_CODE|REPORT_PRICE|REPORT_CURRENCY|PAYMENT_BYPASS|PAYMENT_BYPASS_IN_PRODUCTION'
+# Local test-payment settings must never be copied to production.
+SECRET_KEYS='AI_PROVIDER|GEMINI_API_KEY|GEMINI_MODEL|OPENAI_API_KEY|OPENAI_MODEL|REPORT_LANGUAGE|QPAY_BASE_URL|QPAY_USERNAME|QPAY_PASSWORD|QPAY_INVOICE_CODE|QPAY_INVOICE_RECEIVER_CODE|REPORT_PRICE|REPORT_CURRENCY'
 
 push_secrets() {
   local local_env="$ROOT/backend/.env"
@@ -374,7 +380,7 @@ build_and_test() {
     cd "$ROOT/frontend"
     # Install only when needed: `npm ci` would wipe node_modules (and fails on Windows if a dev server holds files).
     if [[ ! -d node_modules || package-lock.json -nt node_modules/.package-lock.json ]]; then
-      npm install --no-audit --no-fund --loglevel=error
+      npm ci --no-audit --no-fund --loglevel=error
     fi
     npm run export:questions --silent
     if [[ "${SKIP_TESTS:-0}" != 1 ]]; then
@@ -384,7 +390,9 @@ build_and_test() {
     npm run build --silent
   )
 
-  if [[ "${SKIP_TESTS:-0}" != 1 ]] && command -v php >/dev/null && [[ -d "$ROOT/backend/vendor" ]]; then
+  if [[ "${SKIP_TESTS:-0}" != 1 ]]; then
+    command -v php >/dev/null || fail "PHP is required for backend tests. Install PHP or explicitly set SKIP_TESTS=1."
+    [[ -d "$ROOT/backend/vendor" ]] || fail "Run composer install in backend/ before deploying."
     say "Running backend tests"
     (cd "$ROOT/backend" && php artisan test --compact)
   fi

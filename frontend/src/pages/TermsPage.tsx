@@ -1,3 +1,4 @@
+import { SupportLink } from '../components/ui/SupportLink'
 import { LegalPage } from '../components/layout/LegalPage'
 import { useAppConfig } from '../hooks/useAppConfig'
 import { formatPrice } from '../lib/format'
@@ -33,7 +34,7 @@ export function TermsPage() {
         <p>
           Асуумж бөглөх нь үнэгүй. Бүрэн тайлангийн үнэ {formatPrice(price, currency)} бөгөөд QPay-ээр нэг удаа төлнө.
           Төлбөрийг зөвхөн манай сервер QPay-ээс баталгаажуулсны дараа тайлан үүсгэнэ. Техникийн шалтгаанаар тайлан үүсэхгүй
-          бол дахин оролдох боломжтой; асуудал шийдэгдэхгүй бол бидэнтэй холбогдоно уу.
+          бол дахин оролдох боломжтой; асуудал шийдэгдэхгүй бол <SupportLink>манай Facebook хуудсанд зурвас бичээрэй</SupportLink>.
         </p>
       </section>
 

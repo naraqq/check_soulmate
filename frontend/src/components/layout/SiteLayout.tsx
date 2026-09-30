@@ -1,3 +1,4 @@
+import { SupportLink } from '../ui/SupportLink'
 import { useEffect } from 'react'
 import { Link, Outlet, useLocation } from 'react-router'
 import { Logo } from './Logo'
@@ -30,13 +31,14 @@ export function SiteLayout() {
           <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 pt-10 pb-[max(2.5rem,env(safe-area-inset-bottom))] text-sm text-ink-muted sm:px-6">
             <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <Logo />
-              <nav className="flex gap-6">
+              <nav className="flex flex-wrap gap-6">
                 <Link to="/privacy" className="hover:text-ink">
                   Нууцлалын бодлого
                 </Link>
                 <Link to="/terms" className="hover:text-ink">
                   Үйлчилгээний нөхцөл
                 </Link>
+                <SupportLink className="hover:text-ink">Холбоо барих</SupportLink>
               </nav>
             </div>
             <div className="flex flex-col justify-between gap-2 sm:flex-row">

@@ -197,4 +197,9 @@ Nginx serves the SPA and routes `/api/*` to PHP-FPM (templates in `deploy/nginx/
 - Logs record failure reason codes only, never answers or prompts.
 - API responses are sent with `Cache-Control: no-store`, and all endpoints are rate-limited.
 - Users can delete their assessment and report. Unpaid assessments are pruned after 30 days.
-- The AI prompt forbids diagnoses, labels such as "toxic", cheating predictions, verdicts on love, and break-up advice.
+- The AI prompt forbids diagnoses, labels such as "toxic", cheating predictions, verdicts on love, and unsupported claims about a partner’s motives. It supports informed choices, including stepping back when appropriate.
+
+
+### Final production checks
+
+See [the production release handoff](docs/production-release.md) for the launch procedure and remaining live checks. After configuring the production environment, run `php artisan app:production-check` in the active backend directory. Test-payment bypasses are limited to `local` and `testing`; legacy production bypass flags are ignored. Support is available through the Facebook page linked in the footer, payment help and privacy pages.
