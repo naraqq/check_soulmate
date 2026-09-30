@@ -28,7 +28,7 @@ describe('questionnaire config', () => {
     expect(trackFor({ basics_type: stage })).toBe(track)
     expect(shown.length).toBeGreaterThanOrEqual(35)
     expect(shown.length).toBeLessThanOrEqual(50)
-    expect([...new Set(shown.map((q) => q.category))]).toEqual(['basics', ...sections])
+    expect([...new Set(shown.map((q) => q.category))]).toEqual(['basics', 'self', ...sections])
   })
 
   it('uses unique question ids and unique option values per question', () => {
@@ -45,7 +45,7 @@ describe('questionnaire config', () => {
       expect(q.options?.length, q.id).toBeGreaterThanOrEqual(2)
       for (const o of q.options ?? []) {
         // Unscored options mean "doesn't apply yet" (e.g. "hasn't come up") and are simply not counted.
-        if (q.category === 'basics' || o.score === undefined) continue
+        if (q.category === 'basics' || q.category === 'self' || o.score === undefined) continue
         expect(o.score, `${q.id}.${o.value}`).toBeGreaterThanOrEqual(0)
         expect(o.score, `${q.id}.${o.value}`).toBeLessThanOrEqual(1)
       }

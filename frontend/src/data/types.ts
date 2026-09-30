@@ -1,5 +1,7 @@
 export type CategoryId =
   | 'basics'
+  // About the person themselves (both flows, not scored)
+  | 'self'
   | 'communication'
   | 'affection'
   | 'effort'
@@ -17,7 +19,12 @@ export type CategoryId =
   | 'feelings'
 
 /** Categories that are scored. "basics" only provides context. */
-export type ScoredCategoryId = Exclude<CategoryId, 'basics'>
+export type ScoredCategoryId = Exclude<CategoryId, 'basics' | 'self'>
+
+/** Sections that describe the person or situation (basics, self) are never scored. */
+export function isScored(category: CategoryId): category is ScoredCategoryId {
+  return category !== 'basics' && category !== 'self'
+}
 
 /**
  * Which question flow and report the user gets, decided by the relationship stage:

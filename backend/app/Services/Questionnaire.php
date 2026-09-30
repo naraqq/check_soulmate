@@ -141,7 +141,7 @@ class Questionnaire
         // Count only answers that survived — answers to the other track's questions don't make a report meaningful.
         $answered = 0;
         foreach ($this->questionsById as $id => $question) {
-            if ($question['category'] !== 'basics' && $question['type'] !== 'text' && ($normalized[$id] ?? null) !== null) {
+            if (! in_array($question['category'], ['basics', 'self'], true) && $question['type'] !== 'text' && ($normalized[$id] ?? null) !== null) {
                 $answered++;
             }
         }

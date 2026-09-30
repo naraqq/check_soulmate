@@ -55,8 +55,8 @@ export function CompletePage() {
     return loveStyleFor(questions, answers, trackFor(answers))
   }, [progress])
   useEffect(() => {
-    if (loveStyle) saveLoveStyle(loveStyle.id)
-  }, [loveStyle])
+    if (loveStyle && progress?.completed) saveLoveStyle(loveStyle, progress.answers.self_gives_love)
+  }, [loveStyle, progress])
 
   // If already submitted, ask the backend where this assessment stands.
   useEffect(() => {

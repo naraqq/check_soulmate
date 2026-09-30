@@ -1,5 +1,5 @@
 import { Printer, RefreshCw, Trash2 } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { ReportFeedbackForm } from '../components/report/ReportFeedbackForm'
 import { ReportView } from '../components/report/ReportView'
@@ -34,6 +34,8 @@ export function ReportPage() {
   const { token } = useParams()
   const navigate = useNavigate()
   const [state, setState] = useState<State>({ kind: 'loading' })
+  // Read once: a fresh object on every render would make the share card re-render endlessly.
+  const loveStyle = useMemo(() => loadLoveStyle(), [])
   const [messageIndex, setMessageIndex] = useState(0)
   const [deleting, setDeleting] = useState(false)
 
@@ -186,7 +188,7 @@ export function ReportPage() {
         <ShareCta
           placement="report"
           flow={state.report.track ?? 'couple'}
-          loveStyle={loadLoveStyle()}
+          loveStyle={loveStyle}
           className="no-print mt-12"
         />
 

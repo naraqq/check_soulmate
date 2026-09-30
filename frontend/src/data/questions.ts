@@ -10,7 +10,7 @@ import type { AnswerFlag, AnswerOption, Category, Question, Track } from './type
  * Option `value`s are stable identifiers — change labels freely, but bump
  * QUESTIONNAIRE_VERSION whenever question ids or option values change.
  */
-export const QUESTIONNAIRE_VERSION = '2026.10.3'
+export const QUESTIONNAIRE_VERSION = '2026.10.4'
 
 export const categories: Category[] = [
   {
@@ -26,6 +26,21 @@ export const categories: Category[] = [
       high: 'Баярлалаа. Одоо та хоёрын түүхийг бага зэрэг ойлголоо.',
       mid: 'Баярлалаа. Одоо та хоёрын түүхийг бага зэрэг ойлголоо.',
       low: 'Баярлалаа. Одоо та хоёрын түүхийг бага зэрэг ойлголоо.',
+    },
+  },
+  {
+    id: 'self',
+    label: 'Та өөрөө',
+    description: 'Та хайраа хэрхэн илэрхийлж, юу хэрэгтэй байдаг вэ.',
+    intro: {
+      title: 'Одоо таны тухай',
+      text: 'Та хайраа хэрхэн илэрхийлж, юу хэрэгтэй байдаг тухай хэдэн асуулт. Тайлан тань үүгээр илүү хувийн болно.',
+    },
+    // About the person, not scored — the same line whatever the answers.
+    outro: {
+      high: 'Баярлалаа. Одоо таныг илүү сайн ойлголоо.',
+      mid: 'Баярлалаа. Одоо таныг илүү сайн ойлголоо.',
+      low: 'Баярлалаа. Одоо таныг илүү сайн ойлголоо.',
     },
   },
   {
@@ -495,6 +510,87 @@ const basicsQuestions: Question[] = [
   },
 ]
 
+/**
+ * About the person themselves — asked in both flows, right after the basics. Not scored:
+ * there are no right answers. They personalise the report (e.g. the gap between how someone
+ * shows love and how they want to receive it) and the shareable love style.
+ */
+export const LOVE_LANGUAGES = ['words', 'time', 'acts', 'touch', 'gifts'] as const
+
+const selfQuestions: Question[] = [
+  {
+    id: 'self_gives_love',
+    category: 'self',
+    text: 'Та хайраа ихэвчлэн хэрхэн илэрхийлдэг вэ?',
+    type: 'single_choice',
+    analysisTags: ['about_user', 'love_language', 'gives'],
+    options: [
+      { value: 'words', label: 'Үгээр — сэтгэлээ хэлж, магтдаг' },
+      { value: 'time', label: 'Хамт цаг өнгөрөөж' },
+      { value: 'acts', label: 'Тусалж, санаа тавих үйлдлээр' },
+      { value: 'touch', label: 'Тэврэх, хүрэлцэх зэргээр' },
+      { value: 'gifts', label: 'Жижиг бэлэг, гэнэтийн зүйлээр' },
+    ],
+  },
+  {
+    id: 'self_receives_love',
+    category: 'self',
+    text: 'Танд юу хамгийн их хайрлагдаж байгаа мэдрэмж төрүүлдэг вэ?',
+    type: 'single_choice',
+    analysisTags: ['about_user', 'love_language', 'receives'],
+    options: [
+      { value: 'words', label: 'Сайхан үг, талархал сонсох' },
+      { value: 'time', label: 'Бүрэн анхаарал, хамт өнгөрөөх цаг' },
+      { value: 'acts', label: 'Надад тусалж, санаа тавих нь' },
+      { value: 'touch', label: 'Тэврэлт, дотно хүрэлцэл' },
+      { value: 'gifts', label: 'Намайг санасныг харуулсан жижиг бэлэг' },
+    ],
+  },
+  {
+    id: 'self_when_upset',
+    category: 'self',
+    text: 'Сэтгэл гонсойход та ихэвчлэн…',
+    type: 'single_choice',
+    analysisTags: ['about_user', 'conflict_style', 'coping'],
+    options: [
+      { value: 'talk', label: 'Шууд ярилцахыг хүсдэг' },
+      { value: 'space', label: 'Эхлээд ганцаараа бодох хэрэгтэй болдог' },
+      { value: 'hold_in', label: 'Дотроо хадгалаад, хэлдэггүй' },
+      { value: 'react', label: 'Хурдан бухимдаад, дараа нь тайвширдаг' },
+    ],
+  },
+  {
+    id: 'self_need_now',
+    category: 'self',
+    text: 'Яг одоо танд хамгийн их хэрэгтэй зүйл юу вэ?',
+    type: 'single_choice',
+    analysisTags: ['about_user', 'needs'],
+    options: [
+      { value: 'reassurance', label: 'Хайрлагдаж, үнэлэгдэж байгаагаа мэдрэх' },
+      { value: 'clarity', label: 'Бид хаашаа явж байгааг тодорхой мэдэх' },
+      { value: 'closeness', label: 'Илүү ойр дотно байх' },
+      { value: 'space', label: 'Өөртөө илүү орон зай' },
+      { value: 'respect', label: 'Сонсогдож, хүндлэгдэх' },
+    ],
+  },
+  {
+    id: 'self_past',
+    category: 'self',
+    text: 'Өмнөх харилцаанаас тань одоо ч нөлөөлж буй зүйл бий юу?',
+    helper: 'Хүсвэл л хариулаарай — “Хэлэхийг хүсэхгүй байна” гэж сонгож болно.',
+    type: 'single_choice',
+    analysisTags: ['about_user', 'history'],
+    options: [
+      { value: 'none', label: 'Онцгой зүйл байхгүй' },
+      { value: 'trust', label: 'Итгэхэд хэцүү болсон' },
+      { value: 'fear_leaving', label: 'Орхигдохоос айдаг болсон' },
+      { value: 'over_give', label: 'Хэт их зүйл өгдөг болсон' },
+      { value: 'guarded', label: 'Сэтгэлээ амархан нээдэггүй болсон' },
+      { value: 'prefer_not', label: 'Хэлэхийг хүсэхгүй байна' },
+    ],
+  },
+]
+
 /** Committed relationships: exclusive, living together, engaged, married. */
 const coupleQuestions: Question[] = [
   // ХАРИЛЦАН ЯРИА ------------------------------------------------------------
@@ -552,14 +648,6 @@ const coupleQuestions: Question[] = [
       never: 'Гомдлоо хэлэхээс эмээх нь ойлгомжтой. Энд та чөлөөтэй байж болно.',
       rarely: 'Гомдлоо хэлэхээс эмээх нь ойлгомжтой. Энд та чөлөөтэй байж болно.',
     }),
-  },
-  {
-    id: 'comm_calm',
-    category: 'communication',
-    text: 'Санал зөрсөн үедээ тайван ярилцаж чаддаг уу?',
-    type: 'scale',
-    analysisTags: ['communication', 'conflict_style'],
-    options: positiveFrequency(),
   },
   {
     id: 'comm_begging',
@@ -651,18 +739,6 @@ const coupleQuestions: Question[] = [
       { value: 'rarely', label: 'Ховор', score: 0.2 },
       { value: 'not_really', label: 'Тийм ч биш', score: 0 },
     ],
-  },
-  {
-    id: 'aff_quiet_time',
-    category: 'affection',
-    text: 'Зүгээр л хамт байх танд таатай юу?',
-    helper: 'Заавал гадуур гарах, онцгой зүйл хийхгүй байсан ч гэсэн.',
-    type: 'scale',
-    analysisTags: ['affection', 'friendship', 'quality_time'],
-    options: withReplies(positiveFrequency(), {
-      often: 'Энэ бол ойр дотно харилцааны сайхан шинж.',
-      almost_always: 'Энэ бол ойр дотно харилцааны сайхан шинж.',
-    }),
   },
 
   // ХИЧЭЭЛ ЗҮТГЭЛ ------------------------------------------------------------
@@ -928,20 +1004,6 @@ const coupleQuestions: Question[] = [
     analysisTags: ['independence', 'emotional_regulation'],
     options: negativeFrequency('emotional_dependence'),
   },
-  {
-    id: 'indep_day_apart',
-    category: 'independence',
-    text: 'Нэг өдөр холбоо барихгүй байсан ч та тайван байж чадах уу?',
-    type: 'single_choice',
-    analysisTags: ['independence', 'security'],
-    options: [
-      { value: 'easily', label: 'Амархан', score: 1 },
-      { value: 'probably', label: 'Чадах байх', score: 0.75 },
-      { value: 'with_effort', label: 'Жаахан хичээвэл чадна', score: 0.45 },
-      { value: 'hard', label: 'Хэцүү байх болно', score: 0.2 },
-      { value: 'no', label: 'Үгүй', score: 0 },
-    ],
-  },
 
   // ИРЭЭДҮЙ ------------------------------------------------------------------
   {
@@ -1102,15 +1164,6 @@ const earlyQuestions: Question[] = [
     options: positiveFrequency(),
   },
   {
-    id: 'int_remembers',
-    visibleWhen: [{ question: 'int_questions', in: ['never', 'rarely', 'sometimes'] }],
-    category: 'interest',
-    text: 'Таны өмнө нь хэлсэн жижиг зүйлсийг тэр санаж байдаг уу?',
-    type: 'scale',
-    analysisTags: ['interest', 'attentiveness'],
-    options: positiveFrequency(),
-  },
-  {
     id: 'int_plans',
     visibleWhen: [{ question: 'basics_met_in_person', in: ['once', 'few_times', 'regularly'] }],
     category: 'interest',
@@ -1249,20 +1302,6 @@ const earlyQuestions: Question[] = [
     type: 'scale',
     analysisTags: ['connection', 'fun'],
     options: positiveFrequency(),
-  },
-  {
-    id: 'conn_deep',
-    category: 'connection',
-    text: 'Та хоёр өөрт чухал зүйлсийнхээ талаар ярилцдаг уу?',
-    helper: 'Жишээ нь хүсэл мөрөөдөл, санаа зовж байгаа зүйл, өөрийн үзэл бодол.',
-    type: 'single_choice',
-    analysisTags: ['connection', 'depth'],
-    options: [
-      { value: 'often', label: 'Тийм, байнга', score: 1 },
-      { value: 'sometimes', label: 'Заримдаа', score: 0.7 },
-      { value: 'rarely', label: 'Ховор', score: 0.35 },
-      { value: 'not_yet', label: 'Одоохондоо үгүй', score: 0.3 },
-    ],
   },
   {
     id: 'conn_yourself',
@@ -1451,15 +1490,6 @@ const earlyQuestions: Question[] = [
       { value: 'caught_lying', label: 'Худал хэлж байсныг нь мэдсэн', score: 0, flag: 'trust_breach' },
     ],
   },
-  {
-    id: 'resp_speak_up',
-    visibleWhen: [{ question: 'checkin_boundaries', in: ['never', 'rarely', 'sometimes'] }],
-    category: 'respect',
-    text: 'Таалагдахгүй зүйлээ түүнд хэлж чаддаг уу?',
-    type: 'scale',
-    analysisTags: ['respect', 'emotional_safety'],
-    options: positiveFrequency('fear_of_reaction'),
-  },
 
   // НИЙЦЭЛ -------------------------------------------------------------------
   {
@@ -1630,4 +1660,9 @@ const earlyQuestions: Question[] = [
   },
 ]
 
-export const questions: Question[] = [...basicsQuestions, ...onlyFor('couple', coupleQuestions), ...onlyFor('early', earlyQuestions)]
+export const questions: Question[] = [
+  ...basicsQuestions,
+  ...selfQuestions,
+  ...onlyFor('couple', coupleQuestions),
+  ...onlyFor('early', earlyQuestions),
+]

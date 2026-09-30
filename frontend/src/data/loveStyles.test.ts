@@ -36,7 +36,7 @@ describe('loveStyleFor', () => {
     let seed = 3
     const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647
     const answers = randomAnswers('dating', rand)
-    expect(loveStyleFor(questions, answers, 'early')).toBe(loveStyleFor(questions, answers, 'early'))
+    expect(loveStyleFor(questions, answers, 'early')).toEqual(loveStyleFor(questions, answers, 'early'))
   })
 
   it('always returns a type, even with no answers', () => {
@@ -46,7 +46,7 @@ describe('loveStyleFor', () => {
   it('keeps every type short enough for a story card', () => {
     for (const style of Object.values(LOVE_STYLES)) {
       expect(style.name.length).toBeLessThanOrEqual(16)
-      expect(style.traits.every((t) => t.length <= 28)).toBe(true)
+      expect(style.traits.every((t) => t.length <= 32)).toBe(true)
     }
   })
 })

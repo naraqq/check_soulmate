@@ -99,27 +99,62 @@ const WEIGHTS: Record<Track, Record<LoveStyleId, number>> = {
 }
 
 /** Pick the type that describes the user most strongly. Ties resolve in LOVE_STYLES order, so it's stable. */
-export function loveStyleFor(questions: Question[], answers: Answers, track: Track): LoveStyle {
-  const w = WEIGHTS[track]
-  const secure = tagScore(questions, answers, ['anxiety', 'security'])
-  const scores: Record<LoveStyleId, number> = {
-    carer: Math.min(1, (leadScore(questions, answers) ?? 0) * w.carer),
-    open: (tagScore(questions, answers, ['emotional_safety', 'authenticity']) ?? 0) * w.open,
-    anchor: (secure ?? 0) * w.anchor,
-    independent: (tagScore(questions, answers, ['independence', 'identity', 'self_worth']) ?? 0) * w.independent,
-    deep: secure === null ? 0 : (1 - secure) * w.deep,
-    seeker: answers.intent_you === 'serious' ? w.seeker : 0,
-  }
-  const best = (Object.keys(LOVE_STYLES) as LoveStyleId[]).reduce((a, b) => (scores[b] > scores[a] ? b : a))
-  return LOVE_STYLES[best]
+/** How the person says they show love — becomes the card's third, personal trait. */
+const GIVES_TRAIT: Record<string, string> = {
+  words: 'Хайраа үгээр илэрхийлдэг',
+  time: 'Хайраа цаг заваараа харуулдаг',
+  acts: 'Хайраа үйлдлээрээ харуулдаг',
+  touch: 'Хайраа хүрэлцлээр илэрхийлдэг',
+  gifts: 'Хайраа жижиг бэлгээр харуулдаг',
 }
 
-const STORAGE_KEY = 'lemony.lovestyle.v1'
+/** The type with its third trait replaced by the person's own way of showing love, when known. */
+function personalise(style: LoveStyle, gives: string | null | undefined): LoveStyle {
+  const trait = gives ? GIVES_TRAIT[gives] : undefined
+  return trait ? { ...style, traits: [style.traits[0], style.traits[1], trait] } : style
+}
+
+/**
+ * Nudges from the "Та өөрөө" answers (how they show love, what they need, how they handle
+ * being upset). Small on purpose: they tip close calls, they don't override the pattern.
+ */
+function selfNudges(answers: Answers, track: Track): Record<LoveStyleId, number> {
+  const gives = answers.self_gives_love
+  const need = answers.self_need_now
+  const upset = answers.self_when_upset
+  return {
+    carer: gives === 'acts' || gives === 'gifts' ? 0.12 : 0,
+    open: (gives === 'words' ? 0.07 : 0) + (upset === 'talk' ? 0.07 : 0),
+    anchor: gives === 'time' ? 0.08 : 0,
+    independent: (need === 'space' ? 0.12 : 0) + (upset === 'space' ? 0.05 : 0),
+    deep: (need === 'reassurance' || need === 'closeness' ? 0.1 : 0) + (gives === 'touch' ? 0.05 : 0),
+    seeker: track === 'early' && need === 'clarity' ? 0.12 : 0,
+  }
+}
+
+/** Pick the type that describes the user most strongly. Ties resolve in LOVE_STYLES order, so it's stable. */
+export function loveStyleFor(questions: Question[], answers: Answers, track: Track): LoveStyle {
+  const w = WEIGHTS[track]
+  const nudge = selfNudges(answers, track)
+  const secure = tagScore(questions, answers, ['anxiety', 'security'])
+  const scores: Record<LoveStyleId, number> = {
+    carer: Math.min(1, (leadScore(questions, answers) ?? 0) * w.carer) + nudge.carer,
+    open: (tagScore(questions, answers, ['emotional_safety', 'authenticity']) ?? 0) * w.open + nudge.open,
+    anchor: (secure ?? 0) * w.anchor + nudge.anchor,
+    independent: (tagScore(questions, answers, ['independence', 'identity', 'self_worth']) ?? 0) * w.independent + nudge.independent,
+    deep: (secure === null ? 0 : (1 - secure) * w.deep) + nudge.deep,
+    seeker: (answers.intent_you === 'serious' ? w.seeker : 0) + nudge.seeker,
+  }
+  const best = (Object.keys(LOVE_STYLES) as LoveStyleId[]).reduce((a, b) => (scores[b] > scores[a] ? b : a))
+  return personalise(LOVE_STYLES[best], answers.self_gives_love)
+}
+
+const STORAGE_KEY = 'lemony.lovestyle.v2'
 
 /** Remembered on this device so the report page (which has no answers) can offer the same card. */
-export function saveLoveStyle(id: LoveStyleId) {
+export function saveLoveStyle(style: LoveStyle, gives: string | null | undefined) {
   try {
-    window.localStorage.setItem(STORAGE_KEY, id)
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ id: style.id, gives: gives ?? null }))
   } catch {
     // Storage unavailable — the report page then offers invites only.
   }
@@ -127,8 +162,9 @@ export function saveLoveStyle(id: LoveStyleId) {
 
 export function loadLoveStyle(): LoveStyle | null {
   try {
-    const id = window.localStorage.getItem(STORAGE_KEY)
-    return id && id in LOVE_STYLES ? LOVE_STYLES[id as LoveStyleId] : null
+    const saved = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? 'null') as { id?: string; gives?: string | null } | null
+    if (!saved?.id || !(saved.id in LOVE_STYLES)) return null
+    return personalise(LOVE_STYLES[saved.id as LoveStyleId], saved.gives)
   } catch {
     return null
   }

@@ -6,6 +6,7 @@ use App\Exceptions\ReportGenerationException;
 use App\Models\Assessment;
 use App\Services\Questionnaire;
 use App\Services\RelationshipReportService;
+use Illuminate\Validation\ValidationException;
 use Tests\Concerns\BuildsAssessments;
 use Tests\TestCase;
 
@@ -67,6 +68,39 @@ class RelationshipReportServiceTest extends TestCase
         $report['trust']['evidence_question_ids'] = ['comm_initiates'];
         $this->expectException(ReportGenerationException::class);
         $this->service()->groundReport($report, $answers, 'couple');
+    }
+
+    public function test_any_topic_may_cite_what_the_user_said_about_themselves(): void
+    {
+        $answers = app(Questionnaire::class)->normalizeAnswers($this->validAnswers());
+        $report = $this->fakeReport();
+        $report['affection']['evidence_question_ids'] = ['aff_initiates', 'self_receives_love'];
+
+        $grounded = $this->service()->groundReport($report, $answers, 'couple');
+
+        $this->assertSame('Сайхан үг, талархал сонсох', $grounded['affection']['evidence'][1]['answer']);
+    }
+
+    public function test_answers_about_the_user_do_not_count_toward_the_minimum(): void
+    {
+        $answers = ['basics_type' => 'married'];
+        foreach (app(Questionnaire::class)->questions() as $q) {
+            if (in_array($q['category'], ['basics', 'self'], true) && $q['type'] !== 'text' && ! isset($answers[$q['id']])) {
+                $answers[$q['id']] = $q['options'][0]['value'];
+            }
+        }
+
+        $this->expectException(ValidationException::class);
+        app(Questionnaire::class)->normalizeAnswers($answers);
+    }
+
+    public function test_prompts_explain_the_about_you_answers(): void
+    {
+        foreach (['couple', 'early'] as $track) {
+            $prompt = $this->service()->systemPrompt($track);
+            $this->assertStringContainsString('how they show love', $prompt);
+            $this->assertStringContainsString('never if they chose not to say', $prompt);
+        }
     }
 
     public function test_attention_requires_supporting_evidence_too(): void

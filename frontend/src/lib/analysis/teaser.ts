@@ -1,5 +1,13 @@
 import { exploreTitles, flagPriority, patternTitles, strengthTitles, type SignalId } from '../../data/signals'
-import type { AnswerFlag, Answers, AnswerOption, CategoryId, Question, ScoredCategoryId } from '../../data/types'
+import {
+  isScored,
+  type AnswerFlag,
+  type Answers,
+  type AnswerOption,
+  type CategoryId,
+  type Question,
+  type ScoredCategoryId,
+} from '../../data/types'
 import { isVisible } from '../../data/visibility'
 
 export const SCORED_CATEGORIES: ScoredCategoryId[] = [
@@ -55,11 +63,12 @@ export function analyzeCategories(questions: Question[], answers: Answers): Reco
   ) as Record<ScoredCategoryId, { weighted: number; weight: number; answered: number }>
 
   for (const question of questions) {
-    if (question.category === 'basics') continue
+    const category = question.category
+    if (!isScored(category)) continue
     const option = selectedOption(question, answers)
     if (option?.score === undefined) continue
     const weight = question.weight ?? 1
-    const bucket = totals[question.category]
+    const bucket = totals[category]
     bucket.weighted += option.score * weight
     bucket.weight += weight
     bucket.answered += 1
@@ -87,13 +96,14 @@ export function collectFlags(questions: Question[], answers: Answers): Map<Answe
   let balanceCategory: ScoredCategoryId | undefined
 
   for (const question of questions) {
-    if (question.category === 'basics') continue
+    const category = question.category
+    if (!isScored(category)) continue
     const option = selectedOption(question, answers)
     if (!option) continue
-    if (option.flag && !flags.has(option.flag)) flags.set(option.flag, question.category)
+    if (option.flag && !flags.has(option.flag)) flags.set(option.flag, category)
     if (question.analysisTags.includes('balance') && option.balance !== undefined) {
       balances.push(option.balance)
-      balanceCategory ??= question.category
+      balanceCategory ??= category
     }
   }
 
@@ -116,7 +126,7 @@ export type SectionMood = 'high' | 'mid' | 'low'
  * between sections. A flagged answer in the section caps it at "mid".
  */
 export function sectionMood(category: CategoryId, questions: Question[], answers: Answers): SectionMood {
-  if (category === 'basics') return 'mid'
+  if (!isScored(category)) return 'mid'
   const score = analyzeCategories(questions, answers)[category].score
   if (score === null) return 'mid'
   const flagged = questions.some(
