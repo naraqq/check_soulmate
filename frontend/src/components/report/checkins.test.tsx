@@ -5,9 +5,9 @@ import { EvidenceDetails } from './EvidenceDetails'
 import { ReportFeedbackForm } from './ReportFeedbackForm'
 
 describe('grounded check-in presentation', () => {
-  it('shows the source separately from what remains unknown', () => {
-    const html = renderToStaticMarkup(<EvidenceDetails evidence={[{ question: 'Question?', answer: '<script>example</script>' }]} uncertainty="Still unknown" />)
-    expect(html).toContain('Энэ дүгнэлт юунд тулгуурлав?')
+  it('shows what remains unknown without the evidence breakdown', () => {
+    const html = renderToStaticMarkup(<EvidenceDetails uncertainty="<script>Still unknown</script>" />)
+    expect(html).not.toContain('Энэ дүгнэлт юунд тулгуурлав?')
     expect(html).toContain('Still unknown')
     expect(html).toContain('&lt;script&gt;')
     expect(html).not.toContain('<script>')

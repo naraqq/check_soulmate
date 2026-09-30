@@ -196,7 +196,7 @@ export function CategoryCard({ item }: { item: CategoryItem }) {
 
       <p className="text-[17px] leading-relaxed text-ink">{section.insight ?? section.summary}</p>
 
-      <EvidenceDetails evidence={section.evidence} uncertainty={section.uncertainty} />
+      <EvidenceDetails uncertainty={section.uncertainty} />
 
       {section.healthy && (
         <div className="mt-6 rounded-2xl border border-teal-300/15 bg-sage-soft p-4 sm:p-5">

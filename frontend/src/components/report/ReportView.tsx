@@ -113,7 +113,7 @@ export function ReportView({ report, createdAt, comparison }: { report: Relation
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-clay-dark">{copy.snapshot}</p>
           <p className="mt-4 font-display text-3xl leading-tight font-semibold text-balance sm:text-4xl">{report.headline}</p>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">{report.summary}</p>
-          <EvidenceDetails evidence={report.evidence} uncertainty={report.uncertainty} />
+          <EvidenceDetails uncertainty={report.uncertainty} />
           <p className="mt-8 text-xs text-ink-muted">{date}</p>
         </div>
       </ReportBlock>
