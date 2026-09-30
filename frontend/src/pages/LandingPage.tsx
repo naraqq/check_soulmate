@@ -22,7 +22,7 @@ type View = Track | 'both'
 const HERO: Record<View, { before: string; highlight: string; after: string; text: string }> = {
   both: {
     before: 'Харилцаагаа ',
-    highlight: 'гаднаас нь',
+    highlight: 'өөр өнцгөөс',
     after: ' хараад үзээрэй',
     text: 'Дөнгөж танилцаж байгаа ч, олон жил хамт байгаа ч — хэдэн асуултад хариулаад, та хоёрын хооронд юу болоод байгааг ойлгоорой.',
   },
@@ -34,7 +34,7 @@ const HERO: Record<View, { before: string; highlight: string; after: string; tex
   },
   couple: {
     before: 'Харилцаагаа ',
-    highlight: 'гаднаас нь',
+    highlight: 'өөр өнцгөөс',
     after: ' хараад үзээрэй',
     text: 'Ганцаараа хичээж байгаа юм шиг санагдаж байна уу? Эсвэл зүгээр л зөв замаар явж байгаа эсэхээ мэдмээр байна уу? Хэдэн асуултад хариулаад, та хоёрын хооронд юу болоод байгааг ойлгоорой.',
   },
