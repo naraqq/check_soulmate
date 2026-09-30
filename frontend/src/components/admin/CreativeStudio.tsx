@@ -8,6 +8,8 @@ import { CARD_SIZES, canvasToBlob, downloadBlob, renderCard, type CardContent, t
 interface Template {
   id: string
   name: string
+  /** Which landing page version the ad opens (?for=), so the page matches the ad. */
+  audience?: 'early' | 'couple'
   content: (price: string) => Omit<CardContent, 'footnote'>
 }
 
@@ -24,16 +26,19 @@ const TEMPLATES: Template[] = [
   {
     id: 'hook-distant',
     name: 'Бодол: “Хол болчихсон юм шиг”',
+    audience: 'couple',
     content: () => ({ eyebrow: 'Танд ч ийм санагддаг уу?', title: '“Маргалддаггүй ч, хол болчихсон юм шиг санагддаг.”', cta: '7 минутад харилцаагаа ойлгоорой', theme: 'violet' }),
   },
   {
     id: 'hook-future',
     name: 'Бодол: “Ирээдүйдээ хардаг болов уу?”',
+    audience: 'couple',
     content: () => ({ eyebrow: 'Танд ч ийм санагддаг уу?', title: '“Тэр намайг ирээдүйдээ хардаг болов уу?”', cta: 'Шалгаад үзээрэй', theme: 'lemon' }),
   },
   {
     id: 'early',
     name: 'Танилцаж буй хүмүүст',
+    audience: 'early',
     content: () => ({
       eyebrow: 'Чатлаж, танилцаж байгаа юу?',
       title: 'Энэ харилцаа ирээдүйтэй юу?',
@@ -45,6 +50,7 @@ const TEMPLATES: Template[] = [
   {
     id: 'couple',
     name: 'Хосуудад',
+    audience: 'couple',
     content: () => ({
       eyebrow: 'Хосуудад зориулсан',
       title: 'Та хоёр зөв замаар явж байна уу?',
@@ -135,13 +141,15 @@ export function CreativeStudio() {
   }
 
   const campaign = `${templateId}-${format}`
+  const audience = TEMPLATES.find((t) => t.id === templateId)?.audience
   const link = useMemo(() => {
     const url = new URL('/', window.location.origin)
+    if (audience) url.searchParams.set('for', audience)
     url.searchParams.set('utm_source', source)
     url.searchParams.set('utm_medium', 'paid_social')
     url.searchParams.set('utm_campaign', campaign)
     return url.toString()
-  }, [source, campaign])
+  }, [source, campaign, audience])
 
   async function copyLink() {
     try {

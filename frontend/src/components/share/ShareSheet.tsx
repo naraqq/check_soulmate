@@ -97,7 +97,7 @@ export function ShareSheet({ open, onClose, placement, flow, strengths }: Props)
   }
 
   async function nativeShare(method: ShareMethod, file?: File) {
-    const url = shareUrl(method, placement)
+    const url = shareUrl(method, placement, flow)
     const text = `${shareText(flow)} ${url}`
     try {
       if (file && canShareFile(file)) await navigator.share({ files: [file], text })
@@ -132,7 +132,7 @@ export function ShareSheet({ open, onClose, placement, flow, strengths }: Props)
   }
 
   function shareMessenger() {
-    const link = shareUrl('messenger', placement)
+    const link = shareUrl('messenger', placement, flow)
     // Copy first (still inside the tap), so pasting works even if Messenger doesn't take the link.
     void navigator.clipboard?.writeText(`${shareText(flow)} ${link}`).catch(() => {})
     const { platform } = detectInAppBrowser(navigator.userAgent)
@@ -152,7 +152,7 @@ export function ShareSheet({ open, onClose, placement, flow, strengths }: Props)
   }
 
   async function copyLink() {
-    const url = shareUrl('copy_link', placement)
+    const url = shareUrl('copy_link', placement, flow)
     try {
       await navigator.clipboard.writeText(`${shareText(flow)} ${url}`)
       completed('copy_link', 'Холбоос хуулагдлаа. Messenger, Instagram эсвэл хаана ч хамаагүй буулгаарай.')

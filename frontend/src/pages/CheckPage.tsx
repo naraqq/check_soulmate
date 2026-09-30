@@ -1,11 +1,11 @@
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Navigate, useNavigate } from 'react-router'
+import { Navigate, useNavigate, useSearchParams } from 'react-router'
 import { QuestionView } from '../components/questionnaire/QuestionView'
 import { SectionIntro } from '../components/questionnaire/SectionIntro'
 import { Button } from '../components/ui/Button'
 import { categories, questions } from '../data/questions'
-import { trackFor } from '../data/track'
+import { audienceParam, STAGE_QUESTION, stageFitsAudience, trackFor } from '../data/track'
 import { isVisible, visibleAnswers } from '../data/visibility'
 import { useQuestionnaire } from '../hooks/useQuestionnaire'
 import { sectionMood } from '../lib/analysis/teaser'
@@ -23,6 +23,9 @@ function encouragementFor(progress: number): string {
 
 export function CheckPage() {
   const navigate = useNavigate()
+  // Came through a landing-page door (?for=early / ?for=couple): offer only that audience's stages.
+  const audience = audienceParam(useSearchParams()[0].get('for'))
+  const [allStages, setAllStages] = useState(false)
   const q = useQuestionnaire(questions)
   const [comparisonToken, setComparisonToken] = useState(() => storage.loadComparisonToken())
   const startedTracked = useRef(false)
@@ -68,6 +71,8 @@ export function CheckPage() {
   // Already submitted on this device — the answers are locked.
   if (storage.loadAssessment()) return <Navigate to="/complete" replace />
 
+  // The stage question lists only the chosen audience's stages, unless the user asks for all.
+  const narrowStages = q.question.id === STAGE_QUESTION && audience !== null && !allStages
   const isText = q.question.type === 'text'
   const answeredCurrent = q.value !== null && q.value !== ''
   // The reply bubble has its own "continue" button, so the bottom one steps aside.
@@ -129,7 +134,11 @@ export function CheckPage() {
           <div className="flex-1">
             <QuestionView
               key={q.question.id}
-              question={q.question}
+              question={
+                narrowStages && q.question.options
+                  ? { ...q.question, options: q.question.options.filter((o) => stageFitsAudience(o.value, audience!)) }
+                  : q.question
+              }
               value={q.value}
               onSelect={(value) => {
                 setSelectedHere(q.question.id)
@@ -138,6 +147,11 @@ export function CheckPage() {
               onTextChange={(value) => q.setAnswer(value)}
               onContinue={q.next}
             />
+            {narrowStages && (
+              <button type="button" onClick={() => setAllStages(true)} className="mt-4 text-sm text-ink-muted underline-offset-4 hover:text-ink hover:underline">
+                Өөр шат харах
+              </button>
+            )}
           </div>
 
           {/*

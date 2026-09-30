@@ -13,6 +13,11 @@ describe('shareUrl', () => {
     expect(url.pathname).toBe('/')
     expect(Object.fromEntries(url.searchParams)).toEqual({ utm_source: 'share', utm_medium: 'instagram_story', utm_campaign: 'report' })
   })
+
+
+  it('sends friends to the matching landing page', () => {
+    expect(new URL(shareUrl('messenger', 'teaser', 'early')).searchParams.get('for')).toBe('early')
+  })
 })
 
 describe('strengthsCard', () => {

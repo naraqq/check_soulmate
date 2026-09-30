@@ -15,9 +15,13 @@ export function siteHost(): string {
   return /^(localhost|127\.|\[::1\])/.test(host) ? PUBLIC_HOST : host.replace(/^www\./, '')
 }
 
-/** Landing page link tagged so the visit is credited to sharing. */
-export function shareUrl(method: ShareMethod, placement: SharePlacement): string {
+/**
+ * Landing page link tagged so the visit is credited to sharing. With an audience the friend
+ * lands on the matching page (a "ирээдүйтэй юу?" card opens the early-stage version).
+ */
+export function shareUrl(method: ShareMethod, placement: SharePlacement, audience?: Track): string {
   const url = new URL('/', window.location.origin)
+  if (audience) url.searchParams.set('for', audience)
   url.searchParams.set('utm_source', 'share')
   url.searchParams.set('utm_medium', method)
   url.searchParams.set('utm_campaign', placement)
