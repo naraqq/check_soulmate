@@ -41,6 +41,20 @@ class Questionnaire
         return $this->data['version'];
     }
 
+    /**
+     * "early" (talking / dating) or "couple" — which question flow and report
+     * the user gets. Mirrors frontend/src/data/track.ts.
+     *
+     * @param  array<string, string|null>  $answers
+     */
+    public function track(array $answers): string
+    {
+        $rule = $this->data['tracks'];
+        $stage = $answers[$rule['stage_question']] ?? null;
+
+        return in_array($stage, $rule['early_stages'], true) ? 'early' : 'couple';
+    }
+
     /** @return list<array<string, mixed>> */
     public function questions(): array
     {
@@ -83,7 +97,6 @@ class Questionnaire
         }
 
         $normalized = [];
-        $answered = 0;
 
         foreach ($this->questionsById as $id => $question) {
             $value = $answers[$id] ?? null;
@@ -115,15 +128,21 @@ class Questionnaire
             }
 
             $normalized[$id] = $value;
-            if ($question['category'] !== 'basics') {
-                $answered++;
-            }
         }
 
-        // Drop answers to questions that don't apply (e.g. "how often do you meet" for married couples).
+        // Drop answers to questions that don't apply (e.g. "how often do you meet" for married couples,
+        // or the couple questions for someone who is only talking).
         foreach ($this->questionsById as $id => $question) {
             if (! $this->isVisible($question, $normalized)) {
                 $normalized[$id] = null;
+            }
+        }
+
+        // Count only answers that survived — answers to the other track's questions don't make a report meaningful.
+        $answered = 0;
+        foreach ($this->questionsById as $id => $question) {
+            if ($question['category'] !== 'basics' && $question['type'] !== 'text' && ($normalized[$id] ?? null) !== null) {
+                $answered++;
             }
         }
 
@@ -185,6 +204,9 @@ class Questionnaire
         $result = ['context' => [], 'categories' => [], 'open_reflection' => null, 'flags' => [], 'skipped' => 0];
 
         foreach ($this->data['questions'] as $question) {
+            if (! $this->isVisible($question, $answers)) {
+                continue;
+            }
             $value = $answers[$question['id']] ?? null;
 
             if ($value === null) {
@@ -206,7 +228,7 @@ class Questionnaire
                 continue;
             }
 
-            $entry = ['question' => $question['text'], 'answer' => $option['label']];
+            $entry = ['question_id' => $question['id'], 'question' => $question['text'], 'answer' => $option['label']];
 
             if ($question['category'] === 'basics') {
                 $result['context'][] = $entry;
@@ -236,20 +258,21 @@ class Questionnaire
      */
     public function isVisible(array $question, array $answers): bool
     {
-        $rule = $question['show_if'] ?? null;
-        if (! is_array($rule)) {
-            return true;
+        $rules = $question['visible_when'] ?? [];
+        if (is_array($question['show_if'] ?? null)) {
+            $rules[] = $question['show_if'];
         }
-
-        $value = $answers[$rule['question']] ?? null;
-        if ($value === null) {
-            return ($rule['in'] ?? null) === null;
-        }
-        if (is_array($rule['in'] ?? null) && ! in_array($value, $rule['in'], true)) {
-            return false;
-        }
-        if (is_array($rule['not_in'] ?? null) && in_array($value, $rule['not_in'], true)) {
-            return false;
+        foreach ($rules as $rule) {
+            $value = $answers[$rule['question']] ?? null;
+            if ($value === null) {
+                return false;
+            }
+            if (is_array($rule['in'] ?? null) && ! in_array($value, $rule['in'], true)) {
+                return false;
+            }
+            if (is_array($rule['not_in'] ?? null) && in_array($value, $rule['not_in'], true)) {
+                return false;
+            }
         }
 
         return true;

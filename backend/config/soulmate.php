@@ -55,4 +55,13 @@ return [
     // Hard cap on OpenAI calls per assessment, so retries can't run up costs.
     'max_generation_attempts' => 4,
 
+    // Analytics dashboard (/admin). Empty key = dashboard disabled. Use a long random string.
+    'analytics_key' => env('ANALYTICS_DASHBOARD_KEY', ''),
+
+    // Days are grouped in this time zone, so "today" matches your business day.
+    'analytics_timezone' => env('ANALYTICS_TIMEZONE', 'Asia/Ulaanbaatar'),
+
+    // Anonymous analytics events older than this are pruned daily (model:prune).
+    'analytics_retention_days' => (int) env('ANALYTICS_RETENTION_DAYS', 400),
+
 ];

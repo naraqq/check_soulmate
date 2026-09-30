@@ -1,13 +1,15 @@
 import { Printer, RefreshCw, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
+import { ReportFeedbackForm } from '../components/report/ReportFeedbackForm'
 import { ReportView } from '../components/report/ReportView'
+import { ShareCta } from '../components/share/ShareCta'
 import { Button, ButtonLink } from '../components/ui/Button'
 import { Eyebrow } from '../components/ui/Card'
 import { RetestButton } from '../components/ui/RetestButton'
 import { ErrorView, LoadingView } from '../components/ui/StateView'
 import { track } from '../lib/analytics'
-import { api, ApiError, isValidToken, type RelationshipReport, type ReportState } from '../lib/api'
+import { api, ApiError, isValidToken, type CheckInComparison, type RelationshipReport, type ReportState } from '../lib/api'
 import { friendlyError } from '../lib/errors'
 import { storage } from '../lib/storage'
 
@@ -16,7 +18,7 @@ const POLL_INTERVAL_MS = 4000
 type State =
   | { kind: 'loading' }
   | { kind: 'generating' }
-  | { kind: 'ready'; report: RelationshipReport; createdAt: string }
+  | { kind: 'ready'; report: RelationshipReport; createdAt: string; comparison?: CheckInComparison; feedbackSubmitted: boolean }
   | { kind: 'failed'; message: string; canRetry: boolean }
   | { kind: 'error'; title: string; message: string }
 
@@ -37,7 +39,7 @@ export function ReportPage() {
   const apply = useCallback(
     (result: ReportState) => {
       if (result.status === 'completed') {
-        setState({ kind: 'ready', report: result.report, createdAt: result.created_at })
+        setState({ kind: 'ready', report: result.report, createdAt: result.created_at, comparison: result.comparison, feedbackSubmitted: result.feedback_submitted ?? false })
         track({ name: 'report_viewed' })
       } else {
         setState({ kind: 'generating' })
@@ -176,10 +178,20 @@ export function ReportPage() {
           </p>
         </header>
 
-        <ReportView report={state.report} createdAt={state.createdAt} />
+        <ReportView report={state.report} createdAt={state.createdAt} comparison={state.comparison} />
 
-        <div className="no-print mt-16 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <RetestButton variant="primary" />
+        <ReportFeedbackForm key={token} token={token} submitted={state.feedbackSubmitted} />
+
+        <ShareCta
+          placement="report"
+          flow={state.report.track ?? 'couple'}
+          strengths={state.report.strengths.map((s) => s.title)}
+          className="no-print mt-12"
+        />
+
+        <div className="no-print mt-16 flex flex-wrap flex-col items-center justify-center gap-3 sm:flex-row">
+          <RetestButton variant="primary" previousToken={token} label="Ижил хүнтэйгээ дахин шалгах" />
+          <RetestButton variant="quiet" label="Өөр харилцааг шалгах" />
           <Button variant="secondary" onClick={() => window.print()}>
             <Printer className="size-4" /> Хэвлэх / PDF хадгалах
           </Button>
@@ -188,7 +200,7 @@ export function ReportPage() {
           </Button>
         </div>
         <p className="no-print mt-4 text-center text-xs text-ink-muted">
-          Энэ хуудасны холбоосыг хадгалж аваарай — дахин шалгасан ч энэ тайлан руугаа холбоосоор орох боломжтой.
+          Шинэ тайлан тусдаа төлбөртэй. Өөрчлөлтөө харахын тулд 2–4 долоо хоногийн дараа дахин шалгаж болно. Энэ хуудасны холбоосыг хадгалж аваарай — дахин шалгасан ч энэ тайлан руугаа холбоосоор орох боломжтой.
         </p>
       </div>
     </div>

@@ -104,6 +104,8 @@ class ReportController extends Controller
         return response()->json([
             'status' => 'completed',
             'report' => $report->report_json,
+            'comparison' => app(\App\Services\CheckInComparison::class)->forAssessment($assessment),
+            'feedback_submitted' => $assessment->feedback_submitted_at !== null,
             'created_at' => $report->created_at?->toIso8601String(),
         ]);
     }

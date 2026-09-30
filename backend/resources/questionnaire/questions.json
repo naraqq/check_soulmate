@@ -1,5 +1,12 @@
 {
-  "version": "2026.09.3",
+  "version": "2026.10.3",
+  "tracks": {
+    "stage_question": "basics_type",
+    "early_stages": [
+      "talking",
+      "dating"
+    ]
+  },
   "categories": [
     {
       "id": "basics",
@@ -32,6 +39,34 @@
     {
       "id": "future",
       "label": "Ирээдүй"
+    },
+    {
+      "id": "interest",
+      "label": "Харилцан сонирхол"
+    },
+    {
+      "id": "consistency",
+      "label": "Тогтвортой байдал"
+    },
+    {
+      "id": "connection",
+      "label": "Холбоо"
+    },
+    {
+      "id": "intentions",
+      "label": "Зорилго"
+    },
+    {
+      "id": "respect",
+      "label": "Хүндэтгэл"
+    },
+    {
+      "id": "values",
+      "label": "Нийцэл"
+    },
+    {
+      "id": "feelings",
+      "label": "Таны мэдрэмж"
     }
   ],
   "questions": [
@@ -47,6 +82,7 @@
         "about_user"
       ],
       "show_if": null,
+      "visible_when": [],
       "options": [
         {
           "value": "female",
@@ -74,6 +110,7 @@
         "about_user"
       ],
       "show_if": null,
+      "visible_when": [],
       "options": [
         {
           "value": "18_24",
@@ -109,10 +146,11 @@
         "stage"
       ],
       "show_if": null,
+      "visible_when": [],
       "options": [
         {
           "value": "talking",
-          "label": "Зүгээр чатлаж, танилцаж байгаа"
+          "label": "Чатлаж, танилцаж байгаа"
         },
         {
           "value": "dating",
@@ -148,6 +186,7 @@
         "stage"
       ],
       "show_if": null,
+      "visible_when": [],
       "options": [
         {
           "value": "lt_1m",
@@ -176,6 +215,326 @@
       ]
     },
     {
+      "id": "checkin_communication",
+      "category": "basics",
+      "text": "Чухал зүйл ярихад нөгөө хүн тань анхааралтай сонсож, ойлгохыг хичээдэг үү?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "checkin",
+        "communication"
+      ],
+      "show_if": null,
+      "visible_when": [],
+      "options": [
+        {
+          "value": "never",
+          "label": "Огт үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэнхдээ"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        },
+        {
+          "value": "not_yet",
+          "label": "Одоохондоо хэлж мэдэхгүй / ийм зүйл тохиолдоогүй"
+        }
+      ]
+    },
+    {
+      "id": "checkin_effort",
+      "category": "basics",
+      "text": "Холбоотой байх, хамт цаг гаргахад та хоёр хоёулаа санаачилга гаргадаг уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "checkin",
+        "effort"
+      ],
+      "show_if": null,
+      "visible_when": [],
+      "options": [
+        {
+          "value": "never",
+          "label": "Огт үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэнхдээ"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        },
+        {
+          "value": "not_yet",
+          "label": "Одоохондоо хэлж мэдэхгүй / ийм зүйл тохиолдоогүй"
+        }
+      ]
+    },
+    {
+      "id": "checkin_boundaries",
+      "category": "basics",
+      "text": "Та хүсэхгүй зүйлдээ үгүй гэж хэлэхэд таны шийдвэрийг хүндэтгэдэг үү?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "checkin",
+        "boundaries"
+      ],
+      "show_if": null,
+      "visible_when": [],
+      "options": [
+        {
+          "value": "never",
+          "label": "Огт үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэнхдээ"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        },
+        {
+          "value": "not_yet",
+          "label": "Одоохондоо хэлж мэдэхгүй / ийм зүйл тохиолдоогүй"
+        }
+      ]
+    },
+    {
+      "id": "basics_recent_change",
+      "category": "basics",
+      "text": "Сүүлийн үед та хоёрын хооронд юу өөрчлөгдсөн бэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "trajectory"
+      ],
+      "show_if": null,
+      "visible_when": [],
+      "options": [
+        {
+          "value": "closer",
+          "label": "Илүү дотно болж байна"
+        },
+        {
+          "value": "steady",
+          "label": "Ерөнхийдөө хэвээрээ"
+        },
+        {
+          "value": "distant",
+          "label": "Холдоод байгаа юм шиг санагддаг"
+        },
+        {
+          "value": "repairing",
+          "label": "Хэцүү үеийн дараа дахин ойлголцохыг хичээж байна"
+        },
+        {
+          "value": "too_soon",
+          "label": "Дүгнэхэд арай эрт байна"
+        }
+      ]
+    },
+    {
+      "id": "basics_change_context",
+      "category": "basics",
+      "text": "Энэ өөрчлөлттэй давхацсан зүйл бий юу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "recent_stress"
+      ],
+      "show_if": null,
+      "visible_when": [
+        {
+          "question": "basics_recent_change",
+          "in": [
+            "distant",
+            "repairing"
+          ],
+          "not_in": null
+        }
+      ],
+      "options": [
+        {
+          "value": "outside_stress",
+          "label": "Ажил, сургууль, эрүүл мэнд эсвэл гэр бүлийн ачаалал"
+        },
+        {
+          "value": "between_us",
+          "label": "Та хоёрын хооронд болсон зүйл"
+        },
+        {
+          "value": "both",
+          "label": "Аль аль нь"
+        },
+        {
+          "value": "unknown",
+          "label": "Шалтгааныг нь сайн мэдэхгүй"
+        }
+      ]
+    },
+    {
+      "id": "basics_met_how",
+      "category": "basics",
+      "text": "Та хоёр хэрхэн танилцсан бэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "stage"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "app",
+          "label": "Танилцах апп-аар"
+        },
+        {
+          "value": "social",
+          "label": "Сошиал сүлжээгээр"
+        },
+        {
+          "value": "friends",
+          "label": "Найз нөхдөөр дамжуулж"
+        },
+        {
+          "value": "work_school",
+          "label": "Ажил эсвэл сургууль дээр"
+        },
+        {
+          "value": "other",
+          "label": "Өөр газар"
+        }
+      ]
+    },
+    {
+      "id": "basics_met_in_person",
+      "category": "basics",
+      "text": "Та хоёр биечлэн уулзаж байсан уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "time_together"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "not_yet",
+          "label": "Одоохондоо үгүй, зөвхөн чатладаг"
+        },
+        {
+          "value": "once",
+          "label": "Нэг удаа"
+        },
+        {
+          "value": "few_times",
+          "label": "Хэд хэдэн удаа"
+        },
+        {
+          "value": "regularly",
+          "label": "Тогтмол уулздаг"
+        }
+      ]
+    },
+    {
+      "id": "basics_chat_frequency",
+      "category": "basics",
+      "text": "Та хоёр хэр олон чатлаж, ярьдаг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "time_together"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "all_day",
+          "label": "Өдөржин бараг тасралтгүй"
+        },
+        {
+          "value": "daily",
+          "label": "Өдөр бүр"
+        },
+        {
+          "value": "several_week",
+          "label": "Долоо хоногт хэд хэдэн удаа"
+        },
+        {
+          "value": "irregular",
+          "label": "Тогтмол бус, хааяа"
+        }
+      ]
+    },
+    {
       "id": "basics_frequency",
       "category": "basics",
       "text": "Одоогоор та хоёр хэр олон уулздаг вэ?",
@@ -190,10 +549,12 @@
         "question": "basics_type",
         "in": null,
         "not_in": [
+          "talking",
           "living_together",
           "married"
         ]
       },
+      "visible_when": [],
       "options": [
         {
           "value": "daily",
@@ -220,7 +581,7 @@
     {
       "id": "basics_quality_time",
       "category": "basics",
-      "text": "Хамтдаа чанартай цаг хэр их өнгөрөөдөг вэ?",
+      "text": "Та хоёр бие биедээ цаг гаргаж чаддаг уу?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -237,6 +598,7 @@
         ],
         "not_in": null
       },
+      "visible_when": [],
       "options": [
         {
           "value": "daily",
@@ -272,7 +634,15 @@
         "initiation",
         "balance"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "mostly_me",
@@ -300,7 +670,7 @@
     {
       "id": "comm_if_not_first",
       "category": "communication",
-      "text": "Хэрвээ та түрүүлж бичихгүй бол ихэвчлэн юу болдог вэ?",
+      "text": "Та түрүүлж бичээгүй үед хамтрагч тань өөрөө холбогддог уу?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -309,7 +679,24 @@
         "initiation",
         "reciprocity"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [
+        {
+          "question": "comm_initiates",
+          "in": [
+            "mostly_me",
+            "slightly_me"
+          ],
+          "not_in": null
+        }
+      ],
       "options": [
         {
           "value": "quickly",
@@ -317,24 +704,28 @@
         },
         {
           "value": "eventually",
-          "label": "Эцэст нь тэр холбогддог"
+          "label": "Хэсэг хугацааны дараа холбогддог"
         },
         {
           "value": "long_time",
-          "label": "Нэлээд удаан хугацаа өнгөрч магадгүй",
+          "label": "Нэлээд удсаны дараа холбогддог",
           "flag": "initiation_imbalance"
         },
         {
           "value": "no_contact",
-          "label": "Бид огт ярихгүй байж ч магадгүй",
+          "label": "Тэр өөрөө холбогдож байгаагүй",
           "flag": "initiation_imbalance"
+        },
+        {
+          "value": "not_yet",
+          "label": "Ийм үе тохиолдоогүй / хэлж мэдэхгүй"
         }
       ]
     },
     {
       "id": "comm_heard",
       "category": "communication",
-      "text": "Чухал зүйлийн талаар ярихад таныг сонсож байна гэж мэдрэгддэг үү?",
+      "text": "Дутуу ярилцсан сэдвээ хамтрагч тань дараа нь өөрөө сөхдөг үү?",
       "type": "scale",
       "optional": false,
       "max_length": null,
@@ -342,7 +733,25 @@
         "communication",
         "emotional_support"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [
+        {
+          "question": "checkin_communication",
+          "in": [
+            "never",
+            "rarely",
+            "sometimes"
+          ],
+          "not_in": null
+        }
+      ],
       "options": [
         {
           "value": "never",
@@ -369,7 +778,7 @@
     {
       "id": "comm_interest",
       "category": "communication",
-      "text": "Хамтрагч тань таны бодол, мэдрэмжийг үнэхээр сонирхдог юм шиг санагддаг уу?",
+      "text": "Хамтрагч тань таны бодол, мэдрэмжийг сонирхож асуудаг уу?",
       "type": "scale",
       "optional": false,
       "max_length": null,
@@ -378,7 +787,25 @@
         "emotional_support",
         "curiosity"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [
+        {
+          "question": "checkin_communication",
+          "in": [
+            "never",
+            "rarely",
+            "sometimes"
+          ],
+          "not_in": null
+        }
+      ],
       "options": [
         {
           "value": "never",
@@ -405,7 +832,7 @@
     {
       "id": "comm_share_hurt",
       "category": "communication",
-      "text": "Ямар нэг зүйл таныг гомдоосон үед та хамтрагчийнхаа хариу үйлдлээс айхгүйгээр хэлж чаддаг уу?",
+      "text": "Гомдсон зүйлээ хамтрагчдаа айхгүйгээр хэлж чаддаг уу?",
       "type": "scale",
       "optional": false,
       "max_length": null,
@@ -413,7 +840,15 @@
         "communication",
         "emotional_safety"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "never",
@@ -442,7 +877,7 @@
     {
       "id": "comm_calm",
       "category": "communication",
-      "text": "Санал зөрөлдөөнөө ихэвчлэн тайван ярилцаж чаддаг уу?",
+      "text": "Санал зөрсөн үедээ тайван ярилцаж чаддаг уу?",
       "type": "scale",
       "optional": false,
       "max_length": null,
@@ -450,7 +885,15 @@
         "communication",
         "conflict_style"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "never",
@@ -477,7 +920,7 @@
     {
       "id": "comm_begging",
       "category": "communication",
-      "text": "Та анхаарал гуйж байгаа юм шиг мэдрэмж төрдөг үү?",
+      "text": "Анхаарал тавиач гэж дахин дахин гуйх хэрэг гардаг уу?",
       "type": "scale",
       "optional": false,
       "max_length": null,
@@ -486,7 +929,25 @@
         "reciprocity",
         "attention"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [
+        {
+          "question": "checkin_effort",
+          "in": [
+            "never",
+            "rarely",
+            "sometimes"
+          ],
+          "not_in": null
+        }
+      ],
       "options": [
         {
           "value": "never",
@@ -515,7 +976,7 @@
     {
       "id": "comm_avoiding",
       "category": "communication",
-      "text": "Хамтрагчтайгаа ярихаас зайлсхийж байгаа чухал зүйл танд бий юу?",
+      "text": "Ярилцмаар байгаа ч хэлж зүрхлэхгүй зүйл танд бий юу?",
       "type": "yes_no",
       "optional": false,
       "max_length": null,
@@ -523,7 +984,25 @@
         "communication",
         "avoidance"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [
+        {
+          "question": "comm_share_hurt",
+          "in": [
+            "never",
+            "rarely",
+            "sometimes"
+          ],
+          "not_in": null
+        }
+      ],
       "options": [
         {
           "value": "yes",
@@ -538,7 +1017,7 @@
     {
       "id": "aff_initiates",
       "category": "affection",
-      "text": "Ихэвчлэн хэн нь энхрийлэл, дотно байдлыг санаачилдаг вэ?",
+      "text": "Тэврэх, үнсэх зэрэг дотно байдлыг хэн нь түрүүлж санаачилдаг вэ?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -547,7 +1026,15 @@
         "initiation",
         "balance"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "mostly_me",
@@ -574,7 +1061,7 @@
     {
       "id": "aff_wanted",
       "category": "affection",
-      "text": "Та хамтрагчдаа хүсэгдэж байна гэж мэдэрдэг үү?",
+      "text": "Хамтрагч тань тантай дотно байхыг хүсдэг нь мэдрэгддэг үү?",
       "type": "scale",
       "optional": false,
       "max_length": null,
@@ -583,7 +1070,15 @@
         "desire",
         "security"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "never",
@@ -610,7 +1105,7 @@
     {
       "id": "aff_unprompted",
       "category": "affection",
-      "text": "Хамтрагч тань таныг гуйгаагүй байхад хайр, энхрийллээ хэр олон илэрхийлдэг вэ?",
+      "text": "Хамтрагч тань өөрөө санаачилж хайр халамжаа илэрхийлдэг үү?",
       "type": "scale",
       "optional": false,
       "max_length": null,
@@ -618,7 +1113,25 @@
         "affection",
         "reciprocity"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [
+        {
+          "question": "aff_wanted",
+          "in": [
+            "never",
+            "rarely",
+            "sometimes"
+          ],
+          "not_in": null
+        }
+      ],
       "options": [
         {
           "value": "never",
@@ -653,15 +1166,23 @@
         "affection",
         "trajectory"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "much_closer",
-          "label": "Хамаагүй ойр болсон"
+          "label": "Илүү дотно болсон"
         },
         {
           "value": "little_closer",
-          "label": "Арай ойр болсон"
+          "label": "Бага зэрэг дотноссон"
         },
         {
           "value": "same",
@@ -682,7 +1203,7 @@
     {
       "id": "aff_share_news",
       "category": "affection",
-      "text": "Сэтгэл хөдөлгөм зүйл тохиоход хамтрагч тань таны хамгийн түрүүнд хэлэхийг хүсдэг хүмүүсийн нэг байдаг уу?",
+      "text": "Сайхан мэдээгээ хамтрагчдаа түрүүлж хэлмээр санагддаг уу?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -690,7 +1211,25 @@
         "affection",
         "friendship"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [
+        {
+          "question": "checkin_communication",
+          "in": [
+            "never",
+            "rarely",
+            "sometimes"
+          ],
+          "not_in": null
+        }
+      ],
       "options": [
         {
           "value": "always",
@@ -717,7 +1256,7 @@
     {
       "id": "aff_quiet_time",
       "category": "affection",
-      "text": "Онцгой зүйл хийхгүй байсан ч хамтдаа цагийг өнгөрөөх танд таатай байдаг уу?",
+      "text": "Зүгээр л хамт байх танд таатай юу?",
       "type": "scale",
       "optional": false,
       "max_length": null,
@@ -726,7 +1265,15 @@
         "friendship",
         "quality_time"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "never",
@@ -753,7 +1300,7 @@
     {
       "id": "effort_plans",
       "category": "effort",
-      "text": "Ихэвчлэн хэн нь болзоо, хамтдаа хийх зүйлсийг төлөвлөдөг вэ?",
+      "text": "Хамтдаа юу хийхээ ихэвчлэн хэн нь төлөвлөдөг вэ?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -762,7 +1309,15 @@
         "initiation",
         "balance"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "mostly_me",
@@ -789,7 +1344,7 @@
     {
       "id": "effort_resolves",
       "category": "effort",
-      "text": "Харилцаанд үүссэн асуудлыг ихэвчлэн хэн нь шийдэхийг хичээдэг вэ?",
+      "text": "Асуудал гарахад хэн нь шийдэхийг илүү хичээдэг вэ?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -798,7 +1353,15 @@
         "repair",
         "balance"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "mostly_me",
@@ -826,7 +1389,7 @@
     {
       "id": "effort_more",
       "category": "effort",
-      "text": "Та харилцаандаа хүлээн авч байгаагаасаа илүү хүч чармайлт гаргаж байна гэж санагддаг уу?",
+      "text": "Энэ харилцааны төлөө та илүү их хичээгээд байгаа юм шиг санагддаг уу?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -835,7 +1398,25 @@
         "reciprocity",
         "balance"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [
+        {
+          "question": "checkin_effort",
+          "in": [
+            "never",
+            "rarely",
+            "sometimes"
+          ],
+          "not_in": null
+        }
+      ],
       "options": [
         {
           "value": "balanced",
@@ -864,7 +1445,7 @@
     {
       "id": "effort_one_week",
       "category": "effort",
-      "text": "Хэрвээ та нэг долоо хоног хичээхээ багасгавал юу болно гэж бодож байна?",
+      "text": "Та ачааллаа багасгах хэрэгтэй үед хамтрагч тань яаж хүлээж авдаг вэ?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -873,25 +1454,88 @@
         "reciprocity",
         "security"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [
+        {
+          "question": "effort_more",
+          "in": [
+            "often",
+            "almost_always"
+          ],
+          "not_in": null
+        }
+      ],
       "options": [
         {
           "value": "nothing",
-          "label": "Бараг юу ч өөрчлөгдөхгүй"
+          "label": "Холбоо, халамж хэвээрээ байдаг"
         },
         {
           "value": "partner_steps_up",
-          "label": "Хамтрагч маань анзаарч, өөрөө хичээнэ"
+          "label": "Ойлгож, өөрөө илүү санаачилга гаргадаг"
         },
         {
           "value": "distant",
-          "label": "Бид мэдэгдэхүйц хөндийрнө",
+          "label": "Холбоо мэдэгдэхүйц багасдаг",
           "flag": "effort_imbalance"
         },
         {
           "value": "fall_apart",
           "label": "Харилцаа маань нурчих вий гэж айдаг",
           "flag": "effort_imbalance"
+        }
+      ]
+    },
+    {
+      "id": "couple_needs_response",
+      "category": "effort",
+      "text": "Хэрэгтэй байгаа зүйлээ хэлэхэд хамтрагч тань яаж хүлээж авдаг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "reciprocity",
+        "repair",
+        "boundaries"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "acts",
+          "label": "Сонсож, өөрчлөхийг хичээдэг"
+        },
+        {
+          "value": "inconsistent",
+          "label": "Сонсдог ч өөрчлөлт нь удаан үргэлжилдэггүй"
+        },
+        {
+          "value": "dismisses",
+          "label": "Үл тоодог эсвэл намайг хэт их зүйл хүсэж байна гэдэг",
+          "flag": "effort_imbalance"
+        },
+        {
+          "value": "afraid",
+          "label": "Яаж хүлээж авахаас нь айгаад хэлж чаддаггүй",
+          "flag": "fear_of_reaction"
+        },
+        {
+          "value": "not_discussed",
+          "label": "Одоохондоо энэ тухай ярилцаагүй"
         }
       ]
     },
@@ -905,7 +1549,15 @@
       "analysis_tags": [
         "trust"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "completely",
@@ -932,7 +1584,7 @@
     {
       "id": "trust_lose_interest",
       "category": "trust",
-      "text": "Хамтрагч тань танд сонирхолгүй болчих вий гэж та байнга санаа зовдог уу?",
+      "text": "Хамтрагч тань танд сонирхолгүй болох вий гэж санаа зовдог уу?",
       "type": "scale",
       "optional": false,
       "max_length": null,
@@ -941,7 +1593,15 @@
         "security",
         "anxiety"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "never",
@@ -977,7 +1637,15 @@
         "fidelity",
         "anxiety"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "never",
@@ -1006,7 +1674,7 @@
     {
       "id": "trust_reasons",
       "category": "trust",
-      "text": "Хамтрагч тань танд өөрт нь итгэхгүй байх бодит шалтгаан өгч байсан уу?",
+      "text": "Хамтрагч тань итгэлийг тань алдах зүйл хийж байсан уу?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -1015,7 +1683,15 @@
         "fidelity",
         "history"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "no",
@@ -1040,7 +1716,7 @@
     {
       "id": "trust_time_apart",
       "category": "trust",
-      "text": "Хамтрагч тань тантай хамт биш цагийг өнгөрөөхөд та хэр тайван байдаг вэ?",
+      "text": "Хамтрагчаасаа тусдаа байхдаа та хэр тайван байдаг вэ?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -1049,7 +1725,15 @@
         "security",
         "independence"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "very",
@@ -1084,11 +1768,23 @@
         "conflict",
         "frequency"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
+          "value": "never",
+          "label": "Одоохондоо ноцтой маргалдаж байгаагүй"
+        },
+        {
           "value": "rarely",
-          "label": "Ховор эсвэл огт гардаггүй"
+          "label": "Ховор"
         },
         {
           "value": "few_year",
@@ -1111,7 +1807,7 @@
     {
       "id": "conflict_harm",
       "category": "conflict",
-      "text": "Маргааны үеэр та хоёрын хэн нэг нь нөгөөгөө доромжлох, шоолох, сүрдүүлэх эсвэл санаатайгаар гутаах явдал гардаг уу?",
+      "text": "Маргааны үеэр хэн нэг нь нөгөөгөө доромжилж, гутааж эсвэл сүрдүүлдэг үү?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -1120,7 +1816,15 @@
         "respect",
         "safety"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "never",
@@ -1154,7 +1858,23 @@
         "conflict",
         "repair"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [
+        {
+          "question": "conflict_frequency",
+          "in": null,
+          "not_in": [
+            "never"
+          ]
+        }
+      ],
       "options": [
         {
           "value": "resolve",
@@ -1186,7 +1906,7 @@
     {
       "id": "conflict_recurring",
       "category": "conflict",
-      "text": "Ижил асуудлууд дахин дахин давтагддаг уу?",
+      "text": "Ижил асуудлаас болж дахин дахин маргалддаг уу?",
       "type": "scale",
       "optional": false,
       "max_length": null,
@@ -1195,7 +1915,23 @@
         "repair",
         "patterns"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [
+        {
+          "question": "conflict_frequency",
+          "in": null,
+          "not_in": [
+            "never"
+          ]
+        }
+      ],
       "options": [
         {
           "value": "never",
@@ -1233,7 +1969,23 @@
         "repair",
         "balance"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [
+        {
+          "question": "conflict_frequency",
+          "in": null,
+          "not_in": [
+            "never"
+          ]
+        }
+      ],
       "options": [
         {
           "value": "mostly_me",
@@ -1260,7 +2012,7 @@
     {
       "id": "indep_own_life",
       "category": "independence",
-      "text": "Та өөрийн хобби, найз нөхөд, зорилгоо хадгалж чаддаг уу?",
+      "text": "Харилцаанаасаа гадна өөрийн амьдралдаа цаг гаргаж чаддаг уу?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -1268,7 +2020,15 @@
         "independence",
         "identity"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "fully",
@@ -1295,7 +2055,7 @@
     {
       "id": "indep_anxiety",
       "category": "independence",
-      "text": "Хамтрагч тань хэдэн цагийн турш хариу өгөхгүй бол та хэр их түгшдэг вэ?",
+      "text": "Хамтрагч тань хэдэн цаг хариу бичихгүй бол хэр их санаа зовдог вэ?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -1304,11 +2064,19 @@
         "anxiety",
         "security"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "not_at_all",
-          "label": "Огт түгшдэггүй"
+          "label": "Огт санаа зовдоггүй"
         },
         {
           "value": "slightly",
@@ -1333,7 +2101,7 @@
     {
       "id": "indep_mood",
       "category": "independence",
-      "text": "Таны сэтгэл санаа тухайн өдөр хамтрагч тань тантай хэрхэн харьцсанаас их хамаардаг уу?",
+      "text": "Хамтрагчийн тань харьцаанаас тухайн өдрийн сэтгэл санаа тань их хамаардаг уу?",
       "type": "scale",
       "optional": false,
       "max_length": null,
@@ -1341,7 +2109,25 @@
         "independence",
         "emotional_regulation"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [
+        {
+          "question": "indep_anxiety",
+          "in": [
+            "moderately",
+            "very",
+            "extremely"
+          ],
+          "not_in": null
+        }
+      ],
       "options": [
         {
           "value": "never",
@@ -1370,7 +2156,7 @@
     {
       "id": "indep_day_apart",
       "category": "independence",
-      "text": "Хамтрагчтайгаа огт холбогдохгүйгээр бүтэн өдрийг тайван, таатай өнгөрөөж чадах уу?",
+      "text": "Нэг өдөр холбоо барихгүй байсан ч та тайван байж чадах уу?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -1378,7 +2164,15 @@
         "independence",
         "security"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "easily",
@@ -1403,6 +2197,106 @@
       ]
     },
     {
+      "id": "future_shared_decisions",
+      "category": "future",
+      "text": "Хамтын амьдралын чухал шийдвэрт таны саналыг хэр тусгадаг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "future",
+        "shared_decisions",
+        "reciprocity"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [
+        {
+          "question": "basics_type",
+          "in": [
+            "living_together",
+            "engaged",
+            "married"
+          ],
+          "not_in": null
+        }
+      ],
+      "options": [
+        {
+          "value": "together",
+          "label": "Хоёулангийн саналыг сонсож, хамт шийддэг"
+        },
+        {
+          "value": "uneven",
+          "label": "Заримдаа нэгнийх нь санал илүү давамгайлдаг"
+        },
+        {
+          "value": "excluded",
+          "label": "Миний саналыг бараг асуудаггүй",
+          "flag": "effort_imbalance"
+        },
+        {
+          "value": "not_yet",
+          "label": "Одоохондоо ийм шийдвэр гаргаагүй"
+        }
+      ]
+    },
+    {
+      "id": "future_readiness",
+      "category": "future",
+      "text": "Гэрлэх тухай бодоход танд одоо ямар санагддаг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "future",
+        "readiness",
+        "boundaries"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [
+        {
+          "question": "basics_type",
+          "in": [
+            "engaged"
+          ],
+          "not_in": null
+        }
+      ],
+      "options": [
+        {
+          "value": "ready",
+          "label": "Өөрөө хүсэж байгаа, шийдвэртээ итгэлтэй байна"
+        },
+        {
+          "value": "questions",
+          "label": "Хүсэж байгаа ч эхлээд ярилцах зүйлс бий"
+        },
+        {
+          "value": "more_time",
+          "label": "Надад илүү хугацаа хэрэгтэй"
+        },
+        {
+          "value": "pressure",
+          "label": "Бусдын хүлээлт, шахалтаас болж зөвшөөрсөн мэт санагддаг",
+          "flag": "boundary_pressure"
+        }
+      ]
+    },
+    {
       "id": "future_discussed",
       "category": "future",
       "text": "Та хоёр энэ харилцаанаас юу хүсэж байгаагаа ярилцаж байсан уу?",
@@ -1413,7 +2307,15 @@
         "future",
         "communication"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "clearly",
@@ -1440,7 +2342,7 @@
     {
       "id": "future_align",
       "category": "future",
-      "text": "Та хоёрын ирээдүйн хүлээлт нийцдэг гэж та бодож байна уу?",
+      "text": "Ирээдүйн тухай та хоёрын хүсэл, төлөвлөгөө хэр нийцдэг вэ?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -1448,7 +2350,15 @@
         "future",
         "alignment"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "completely",
@@ -1475,7 +2385,7 @@
     {
       "id": "future_build",
       "category": "future",
-      "text": "Та энэ хүнтэй хамт амьдралаа цогцлоохыг төсөөлж чадах уу?",
+      "text": "Энэ хүнтэй ирээдүйгээ хамт төсөөлж чаддаг уу?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -1483,7 +2393,15 @@
         "future",
         "commitment"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "definitely",
@@ -1499,7 +2417,7 @@
         },
         {
           "value": "probably_not",
-          "label": "Магадгүй үгүй"
+          "label": "Үгүй байх"
         },
         {
           "value": "no",
@@ -1510,7 +2428,7 @@
     {
       "id": "future_included",
       "category": "future",
-      "text": "Хамтрагч тань таныг ирээдүйнхээ нэг хэсэг гэж хардаг гэж та мэдэрдэг үү?",
+      "text": "Хамтрагч тань ирээдүйнхээ төлөвлөгөөнд таныг багтаадаг уу?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -1519,7 +2437,15 @@
         "security",
         "commitment"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "clearly",
@@ -1546,7 +2472,7 @@
     {
       "id": "future_three_years",
       "category": "future",
-      "text": "Хэрвээ ирэх 3 жилийн турш та хоёрын харилцаанд юу ч өөрчлөгдөхгүй бол та ямар мэдрэмж төрөх вэ?",
+      "text": "Харилцаа тань энэ хэвээрээ 3 жил үргэлжилбэл танд ямар санагдах вэ?",
       "type": "single_choice",
       "optional": false,
       "max_length": null,
@@ -1555,15 +2481,23 @@
         "satisfaction",
         "overall"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
       "options": [
         {
           "value": "very_happy",
-          "label": "Маш баяртай байна"
+          "label": "Маш сайхан санагдана"
         },
         {
           "value": "mostly_happy",
-          "label": "Ихэнхдээ баяртай байна"
+          "label": "Ерөнхийдөө сайхан санагдана"
         },
         {
           "value": "unsure",
@@ -1571,7 +2505,7 @@
         },
         {
           "value": "unhappy",
-          "label": "Баярлахгүй",
+          "label": "Сэтгэл хангалуун биш байна",
           "flag": "status_quo_unhappy"
         },
         {
@@ -1584,14 +2518,1845 @@
     {
       "id": "final_wish",
       "category": "future",
-      "text": "Хамтрагч тань таны мэдрэмжийн талаар ойлгоосой гэж хүсдэг ганц зүйл юу вэ?",
+      "text": "Таны мэдрэмжийн талаар хамтрагч тань юуг ойлгоосой гэж хүсдэг вэ?",
       "type": "text",
       "optional": true,
       "max_length": 1000,
       "analysis_tags": [
         "open_reflection"
       ],
-      "show_if": null,
+      "show_if": {
+        "question": "basics_type",
+        "in": null,
+        "not_in": [
+          "talking",
+          "dating"
+        ]
+      },
+      "visible_when": [],
+      "options": []
+    },
+    {
+      "id": "int_initiates",
+      "category": "interest",
+      "text": "Ихэвчлэн хэн нь түрүүлж бичдэг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "interest",
+        "initiation",
+        "balance"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "mostly_me",
+          "label": "Ихэвчлэн би",
+          "flag": "initiation_imbalance"
+        },
+        {
+          "value": "slightly_me",
+          "label": "Арай илүү би"
+        },
+        {
+          "value": "equal",
+          "label": "Ойролцоогоор адилхан"
+        },
+        {
+          "value": "slightly_partner",
+          "label": "Арай илүү тэр"
+        },
+        {
+          "value": "mostly_partner",
+          "label": "Ихэвчлэн тэр"
+        }
+      ]
+    },
+    {
+      "id": "int_if_not_first",
+      "category": "interest",
+      "text": "Та түрүүлж бичээгүй үед тэр өөрөө холбогддог уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "interest",
+        "initiation",
+        "reciprocity"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [
+        {
+          "question": "int_initiates",
+          "in": [
+            "mostly_me",
+            "slightly_me"
+          ],
+          "not_in": null
+        }
+      ],
+      "options": [
+        {
+          "value": "quickly",
+          "label": "Тэр удалгүй өөрөө бичдэг"
+        },
+        {
+          "value": "eventually",
+          "label": "Нэг хоёр хоногийн дараа бичдэг"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор бичдэг",
+          "flag": "initiation_imbalance"
+        },
+        {
+          "value": "never",
+          "label": "Бараг хэзээ ч бичдэггүй",
+          "flag": "initiation_imbalance"
+        },
+        {
+          "value": "always_me",
+          "label": "Мэдэхгүй — үргэлж би түрүүлж бичдэг"
+        }
+      ]
+    },
+    {
+      "id": "int_questions",
+      "category": "interest",
+      "text": "Тэр таны амьдрал, бодлыг сонирхож асуудаг уу?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "interest",
+        "curiosity",
+        "reciprocity"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        }
+      ]
+    },
+    {
+      "id": "int_remembers",
+      "category": "interest",
+      "text": "Таны өмнө нь хэлсэн жижиг зүйлсийг тэр санаж байдаг уу?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "interest",
+        "attentiveness"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [
+        {
+          "question": "int_questions",
+          "in": [
+            "never",
+            "rarely",
+            "sometimes"
+          ],
+          "not_in": null
+        }
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        }
+      ]
+    },
+    {
+      "id": "int_plans",
+      "category": "interest",
+      "text": "Уулзах эсвэл хамт юм хийх саналыг хэн нь гаргадаг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "interest",
+        "effort",
+        "balance"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [
+        {
+          "question": "basics_met_in_person",
+          "in": [
+            "once",
+            "few_times",
+            "regularly"
+          ],
+          "not_in": null
+        }
+      ],
+      "options": [
+        {
+          "value": "mostly_me",
+          "label": "Ихэвчлэн би"
+        },
+        {
+          "value": "slightly_me",
+          "label": "Арай илүү би"
+        },
+        {
+          "value": "equal",
+          "label": "Ойролцоогоор адилхан"
+        },
+        {
+          "value": "slightly_partner",
+          "label": "Арай илүү тэр"
+        },
+        {
+          "value": "mostly_partner",
+          "label": "Ихэвчлэн тэр"
+        }
+      ]
+    },
+    {
+      "id": "int_reply",
+      "category": "interest",
+      "text": "Тэр ихэвчлэн яаж хариу бичдэг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "interest",
+        "communication"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [
+        {
+          "question": "checkin_communication",
+          "in": [
+            "never",
+            "rarely",
+            "sometimes"
+          ],
+          "not_in": null
+        }
+      ],
+      "options": [
+        {
+          "value": "engaged",
+          "label": "Хурдан хариулж, яриа өрнүүлдэг"
+        },
+        {
+          "value": "slow_warm",
+          "label": "Удаж хариулдаг ч анхаарал тавьж ярилцдаг"
+        },
+        {
+          "value": "short",
+          "label": "Товчхон, нэг хоёр үгээр"
+        },
+        {
+          "value": "varies",
+          "label": "Заримдаа идэвхтэй, заримдаа алга болчихдог",
+          "flag": "mixed_signals"
+        }
+      ]
+    },
+    {
+      "id": "cons_hot_cold",
+      "category": "consistency",
+      "text": "Тэр дотно харьцаж байснаа гэнэт хөндий болдог уу?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "consistency",
+        "mixed_signals"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн",
+          "flag": "mixed_signals"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж",
+          "flag": "mixed_signals"
+        }
+      ]
+    },
+    {
+      "id": "cons_disappear",
+      "category": "consistency",
+      "text": "Тэр хэлэлгүйгээр хэд хоног холбоо тасалдаг уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "consistency",
+        "reliability"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [
+        {
+          "question": "cons_hot_cold",
+          "in": [
+            "sometimes",
+            "often",
+            "almost_always"
+          ],
+          "not_in": null
+        }
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Үгүй"
+        },
+        {
+          "value": "once",
+          "label": "Нэг удаа болсон"
+        },
+        {
+          "value": "few_times",
+          "label": "Хэд хэдэн удаа",
+          "flag": "disappearing"
+        },
+        {
+          "value": "often",
+          "label": "Байнга",
+          "flag": "disappearing"
+        }
+      ]
+    },
+    {
+      "id": "cons_follow_through",
+      "category": "consistency",
+      "text": "Уулзахаар тохирсон бол тэр хэлсэндээ хүрдэг үү?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "consistency",
+        "reliability",
+        "effort"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "always",
+          "label": "Тийм, үргэлж"
+        },
+        {
+          "value": "mostly",
+          "label": "Ихэнхдээ"
+        },
+        {
+          "value": "reschedules",
+          "label": "Заримдаа цуцалдаг ч өөр цаг санал болгодог"
+        },
+        {
+          "value": "cancels",
+          "label": "Ихэвчлэн цуцалдаг эсвэл тодорхойгүй болгодог",
+          "flag": "mixed_signals"
+        },
+        {
+          "value": "not_yet",
+          "label": "Одоохондоо уулзахаар тохироогүй"
+        }
+      ]
+    },
+    {
+      "id": "cons_words_actions",
+      "category": "consistency",
+      "text": "Түүний хэлсэн үг, хийсэн үйлдэл нийцдэг үү?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "consistency",
+        "trust"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй",
+          "flag": "mixed_signals"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор",
+          "flag": "mixed_signals"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        }
+      ]
+    },
+    {
+      "id": "cons_trend",
+      "category": "consistency",
+      "text": "Анх танилцсанаас хойш түүний сонирхол хэр өөрчлөгдсөн бэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "consistency",
+        "trajectory"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [
+        {
+          "question": "basics_duration",
+          "in": null,
+          "not_in": [
+            "lt_1m"
+          ]
+        }
+      ],
+      "options": [
+        {
+          "value": "growing",
+          "label": "Улам нэмэгдэж байна"
+        },
+        {
+          "value": "steady",
+          "label": "Тогтвортой хэвээрээ"
+        },
+        {
+          "value": "fading",
+          "label": "Бага зэрэг буурсан",
+          "flag": "fading_interest"
+        },
+        {
+          "value": "much_less",
+          "label": "Мэдэгдэхүйц буурсан",
+          "flag": "fading_interest"
+        }
+      ]
+    },
+    {
+      "id": "early_needs_response",
+      "category": "consistency",
+      "text": "Хэрэгтэй байгаа зүйлээ хэлэхэд тэр яаж хүлээж авдаг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "reciprocity",
+        "repair",
+        "boundaries"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "acts",
+          "label": "Сонсож, өөрчлөхийг хичээдэг"
+        },
+        {
+          "value": "inconsistent",
+          "label": "Сонсдог ч өөрчлөлт нь удаан үргэлжилдэггүй"
+        },
+        {
+          "value": "dismisses",
+          "label": "Үл тоодог эсвэл намайг хэт их зүйл хүсэж байна гэдэг",
+          "flag": "effort_imbalance"
+        },
+        {
+          "value": "afraid",
+          "label": "Яаж хүлээж авахаас нь айгаад хэлж чаддаггүй",
+          "flag": "fear_of_reaction"
+        },
+        {
+          "value": "not_discussed",
+          "label": "Одоохондоо энэ тухай ярилцаагүй"
+        }
+      ]
+    },
+    {
+      "id": "conn_flow",
+      "category": "connection",
+      "text": "Та хоёрын яриа хэр нийлдэг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "connection",
+        "communication"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "effortless",
+          "label": "Маш сайн, яриад суухад цаг хурдан өнгөрдөг"
+        },
+        {
+          "value": "mostly",
+          "label": "Ихэнхдээ сайн"
+        },
+        {
+          "value": "mixed",
+          "label": "Заримдаа нийлдэг, заримдаа ярих зүйл олддоггүй"
+        },
+        {
+          "value": "forced",
+          "label": "Ихэвчлэн би л яриа үргэлжлүүлэх гэж хичээдэг",
+          "flag": "initiation_imbalance"
+        }
+      ]
+    },
+    {
+      "id": "conn_laugh",
+      "category": "connection",
+      "text": "Та хоёр хамтдаа инээлдэж, хөгжилддөг үү?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "connection",
+        "fun"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [
+        {
+          "question": "conn_flow",
+          "in": [
+            "forced",
+            "mixed"
+          ],
+          "not_in": null
+        }
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        }
+      ]
+    },
+    {
+      "id": "conn_deep",
+      "category": "connection",
+      "text": "Та хоёр өөрт чухал зүйлсийнхээ талаар ярилцдаг уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "connection",
+        "depth"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "often",
+          "label": "Тийм, байнга"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "not_yet",
+          "label": "Одоохондоо үгүй"
+        }
+      ]
+    },
+    {
+      "id": "conn_yourself",
+      "category": "connection",
+      "text": "Түүнтэй харилцахдаа та өөрөөрөө байж чаддаг уу?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "connection",
+        "authenticity",
+        "emotional_safety"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй",
+          "flag": "self_silencing"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор",
+          "flag": "self_silencing"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        }
+      ]
+    },
+    {
+      "id": "conn_attraction",
+      "category": "connection",
+      "text": "Та түүнд хэр их татагддаг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "connection",
+        "attraction"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "strongly",
+          "label": "Маш их"
+        },
+        {
+          "value": "quite",
+          "label": "Нэлээд"
+        },
+        {
+          "value": "growing",
+          "label": "Аажмаар нэмэгдэж байна"
+        },
+        {
+          "value": "unsure",
+          "label": "Сайн мэдэхгүй"
+        },
+        {
+          "value": "not_really",
+          "label": "Тийм ч их биш"
+        }
+      ]
+    },
+    {
+      "id": "intent_you",
+      "category": "intentions",
+      "text": "Та энэ хүнтэй ямар харилцаатай байхыг хүсэж байна вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "intentions",
+        "about_user"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "serious",
+          "label": "Тогтвортой, урт хугацааны харилцаа"
+        },
+        {
+          "value": "see",
+          "label": "Юу болохыг харъя гэж бодож байна"
+        },
+        {
+          "value": "casual",
+          "label": "Урт хугацааны амлалтгүйгээр болзох"
+        },
+        {
+          "value": "unsure",
+          "label": "Одоохондоо мэдэхгүй"
+        }
+      ]
+    },
+    {
+      "id": "intent_them",
+      "category": "intentions",
+      "text": "Тэр ямар харилцаа хүсэж байна гэж хэлсэн бэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "intentions",
+        "about_other"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "serious",
+          "label": "Тогтвортой, урт хугацааны харилцаа"
+        },
+        {
+          "value": "see",
+          "label": "Юу болохыг харъя гэж байгаа"
+        },
+        {
+          "value": "casual",
+          "label": "Урт хугацааны амлалтгүйгээр болзох"
+        },
+        {
+          "value": "unclear",
+          "label": "Одоохондоо тодорхой хэлээгүй"
+        }
+      ]
+    },
+    {
+      "id": "intent_discussed",
+      "category": "intentions",
+      "text": "Ямар харилцаа хүсэж байгаагаа та хоёр ярилцсан уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "intentions",
+        "communication"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "clearly",
+          "label": "Тийм, нээлттэй ярилцсан"
+        },
+        {
+          "value": "hinted",
+          "label": "Цухас ярьж байсан"
+        },
+        {
+          "value": "not_yet",
+          "label": "Одоохондоо үгүй"
+        },
+        {
+          "value": "avoids",
+          "label": "Би асуухад тэр сэдвээ өөрчилдөг",
+          "flag": "unclear_intentions"
+        }
+      ]
+    },
+    {
+      "id": "intent_exclusive",
+      "category": "intentions",
+      "text": "Зөвхөн бие биетэйгээ болзох эсэхээ та хоёр тохирсон уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "intentions",
+        "exclusivity"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "agreed",
+          "label": "Тийм, бид тохиролцсон"
+        },
+        {
+          "value": "assume",
+          "label": "Тийм гэж бодож байгаа ч ярилцаагүй"
+        },
+        {
+          "value": "open",
+          "label": "Бусадтай ч болзож болно гэж тохирсон"
+        },
+        {
+          "value": "dont_know",
+          "label": "Мэдэхгүй, энэ нь намайг зовоодог",
+          "flag": "unclear_intentions"
+        }
+      ]
+    },
+    {
+      "id": "intent_public",
+      "category": "intentions",
+      "text": "Түүний найз нөхөд таны тухай мэдэх үү?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "intentions",
+        "commitment"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [
+        {
+          "question": "basics_duration",
+          "in": null,
+          "not_in": [
+            "lt_1m"
+          ]
+        }
+      ],
+      "options": [
+        {
+          "value": "introduced",
+          "label": "Тийм, танилцуулсан"
+        },
+        {
+          "value": "talks",
+          "label": "Миний тухай ярьдаг гэдгийг мэднэ"
+        },
+        {
+          "value": "too_early",
+          "label": "Одоохондоо эрт байна"
+        },
+        {
+          "value": "hides",
+          "label": "Намайг нуудаг юм шиг санагддаг",
+          "flag": "unclear_intentions"
+        }
+      ]
+    },
+    {
+      "id": "intent_pace",
+      "category": "intentions",
+      "text": "Та хоёр хэр хурдан дотносож байгаа нь танд ямар санагддаг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "intentions",
+        "pace"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "right",
+          "label": "Яг тохирсон"
+        },
+        {
+          "value": "slow_ok",
+          "label": "Удаан ч надад зүгээр"
+        },
+        {
+          "value": "too_slow",
+          "label": "Хэт удаан, урагшлахгүй байгаа юм шиг"
+        },
+        {
+          "value": "too_fast",
+          "label": "Хэт хурдан, намайг шахаж байгаа юм шиг",
+          "flag": "boundary_pressure"
+        }
+      ]
+    },
+    {
+      "id": "resp_boundaries",
+      "category": "respect",
+      "text": "Таныг «үгүй» гэхэд тэр хүндэтгэж хүлээж авдаг уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "respect",
+        "boundaries"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "always",
+          "label": "Тийм, үргэлж"
+        },
+        {
+          "value": "mostly",
+          "label": "Ихэнхдээ"
+        },
+        {
+          "value": "pushes",
+          "label": "Заримдаа шахаж, ятгадаг",
+          "flag": "boundary_pressure"
+        },
+        {
+          "value": "not_yet",
+          "label": "Одоохондоо ийм зүйл гараагүй"
+        }
+      ]
+    },
+    {
+      "id": "resp_pressure",
+      "category": "respect",
+      "text": "Тэр таныг бэлэн биш зүйлд шахаж байсан уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "respect",
+        "boundaries",
+        "safety"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "never",
+          "label": "Үгүй, хэзээ ч"
+        },
+        {
+          "value": "once",
+          "label": "Нэг удаа",
+          "flag": "boundary_pressure"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа",
+          "flag": "boundary_pressure"
+        },
+        {
+          "value": "often",
+          "label": "Байнга",
+          "flag": "boundary_pressure"
+        }
+      ]
+    },
+    {
+      "id": "resp_control",
+      "category": "respect",
+      "text": "Хаана, хэнтэй байгааг тань шалгах, хардах үе гардаг уу?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "respect",
+        "control",
+        "safety"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн",
+          "flag": "early_control"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж",
+          "flag": "early_control"
+        }
+      ]
+    },
+    {
+      "id": "resp_disagree",
+      "category": "respect",
+      "text": "Санал зөрөхөд тэр яаж ханддаг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "respect",
+        "conflict_style"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "calm",
+          "label": "Тайван, хүндэтгэлтэй"
+        },
+        {
+          "value": "defensive",
+          "label": "Өөрийгөө зөвтгөх гээд байдаг"
+        },
+        {
+          "value": "withdraws",
+          "label": "Дуугүй болж, алга болдог",
+          "flag": "disappearing"
+        },
+        {
+          "value": "harsh",
+          "label": "Доромжилдог, шоолдог эсвэл их уурладаг",
+          "flag": "harmful_conflict"
+        },
+        {
+          "value": "not_yet",
+          "label": "Одоохондоо санал зөрөөгүй"
+        }
+      ]
+    },
+    {
+      "id": "resp_honest",
+      "category": "respect",
+      "text": "Тэр танд үнэнээ хэлдэг гэж боддог уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "respect",
+        "honesty",
+        "trust"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Тийм"
+        },
+        {
+          "value": "mostly",
+          "label": "Ихэнхдээ"
+        },
+        {
+          "value": "unsure",
+          "label": "Сайн мэдэхгүй"
+        },
+        {
+          "value": "caught_lying",
+          "label": "Худал хэлж байсныг нь мэдсэн",
+          "flag": "trust_breach"
+        }
+      ]
+    },
+    {
+      "id": "resp_speak_up",
+      "category": "respect",
+      "text": "Таалагдахгүй зүйлээ түүнд хэлж чаддаг уу?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "respect",
+        "emotional_safety"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [
+        {
+          "question": "checkin_boundaries",
+          "in": [
+            "never",
+            "rarely",
+            "sometimes"
+          ],
+          "not_in": null
+        }
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй",
+          "flag": "fear_of_reaction"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор",
+          "flag": "fear_of_reaction"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж"
+        }
+      ]
+    },
+    {
+      "id": "val_lifestyle",
+      "category": "values",
+      "text": "Та хоёрын өдөр тутмын амьдралын хэв маяг хэр нийцдэг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "values",
+        "lifestyle"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "very",
+          "label": "Маш сайн нийцдэг"
+        },
+        {
+          "value": "mostly",
+          "label": "Ихэнхдээ нийцдэг"
+        },
+        {
+          "value": "some",
+          "label": "Зарим талаар"
+        },
+        {
+          "value": "very_different",
+          "label": "Их ялгаатай",
+          "flag": "values_mismatch"
+        }
+      ]
+    },
+    {
+      "id": "val_core",
+      "category": "values",
+      "text": "Чухал зүйлсийн талаар та хоёрын үзэл бодол хэр нийцдэг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "values",
+        "beliefs"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "very",
+          "label": "Маш сайн нийцдэг"
+        },
+        {
+          "value": "mostly",
+          "label": "Ихэнхдээ нийцдэг"
+        },
+        {
+          "value": "dont_know",
+          "label": "Одоохондоо мэдэхгүй"
+        },
+        {
+          "value": "some",
+          "label": "Зарим нь ялгаатай"
+        },
+        {
+          "value": "very_different",
+          "label": "Их ялгаатай",
+          "flag": "values_mismatch"
+        }
+      ]
+    },
+    {
+      "id": "val_future",
+      "category": "values",
+      "text": "Та хоёрын ирээдүйн төлөвлөгөө хэр нийцдэг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "values",
+        "future",
+        "alignment"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "align",
+          "label": "Тийм, нийцдэг"
+        },
+        {
+          "value": "probably",
+          "label": "Нийцэх байх"
+        },
+        {
+          "value": "not_discussed",
+          "label": "Одоохондоо ярилцаагүй"
+        },
+        {
+          "value": "differ",
+          "label": "Ялгаатай юм шиг",
+          "flag": "values_mismatch"
+        }
+      ]
+    },
+    {
+      "id": "val_habits",
+      "category": "values",
+      "text": "Түүний ямар нэг зуршил таны санааг зовоодог уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "values",
+        "habits",
+        "safety"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "no",
+          "label": "Үгүй"
+        },
+        {
+          "value": "a_little",
+          "label": "Бага зэрэг"
+        },
+        {
+          "value": "yes",
+          "label": "Тийм, нэлээд",
+          "flag": "concerning_habits"
+        }
+      ]
+    },
+    {
+      "id": "val_others_view",
+      "category": "values",
+      "text": "Таны ойр дотны хүмүүс түүний талаар юу гэж боддог вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "values",
+        "social_circle"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [
+        {
+          "question": "val_habits",
+          "in": [
+            "yes",
+            "a_little"
+          ],
+          "not_in": null
+        }
+      ],
+      "options": [
+        {
+          "value": "like",
+          "label": "Тэд түүнд дуртай"
+        },
+        {
+          "value": "neutral",
+          "label": "Тодорхой юм хэлээгүй"
+        },
+        {
+          "value": "havent_met",
+          "label": "Тэд түүнийг сайн мэдэхгүй"
+        },
+        {
+          "value": "worried",
+          "label": "Тэд санаа зовж байгаа",
+          "flag": "others_concerned"
+        }
+      ]
+    },
+    {
+      "id": "feel_waiting",
+      "category": "feelings",
+      "text": "Хариуг нь хүлээхдээ хэр их санаа зовдог вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "feelings",
+        "anxiety"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "not_at_all",
+          "label": "Огт санаа зовдоггүй"
+        },
+        {
+          "value": "slightly",
+          "label": "Бага зэрэг"
+        },
+        {
+          "value": "moderately",
+          "label": "Дунд зэрэг"
+        },
+        {
+          "value": "very",
+          "label": "Маш их",
+          "flag": "overthinking"
+        }
+      ]
+    },
+    {
+      "id": "feel_overthink",
+      "category": "feelings",
+      "text": "Түүний мессежийг юу гэсэн бол гэж дахин дахин уншдаг уу?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "feelings",
+        "anxiety",
+        "overthinking"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [
+        {
+          "question": "feel_waiting",
+          "in": [
+            "moderately",
+            "very"
+          ],
+          "not_in": null
+        }
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн",
+          "flag": "overthinking"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж",
+          "flag": "overthinking"
+        }
+      ]
+    },
+    {
+      "id": "feel_change_self",
+      "category": "feelings",
+      "text": "Түүнд таалагдахын тулд өөрийн хүсэл, бодлыг нуух үе гардаг уу?",
+      "type": "scale",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "feelings",
+        "authenticity",
+        "self_worth"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [
+        {
+          "question": "conn_yourself",
+          "in": [
+            "never",
+            "rarely",
+            "sometimes"
+          ],
+          "not_in": null
+        }
+      ],
+      "options": [
+        {
+          "value": "never",
+          "label": "Хэзээ ч үгүй"
+        },
+        {
+          "value": "rarely",
+          "label": "Ховор"
+        },
+        {
+          "value": "sometimes",
+          "label": "Заримдаа"
+        },
+        {
+          "value": "often",
+          "label": "Ихэвчлэн",
+          "flag": "self_silencing"
+        },
+        {
+          "value": "almost_always",
+          "label": "Бараг үргэлж",
+          "flag": "self_silencing"
+        }
+      ]
+    },
+    {
+      "id": "feel_after",
+      "category": "feelings",
+      "text": "Түүнтэй ярилцаж, уулзсаны дараа танд ихэвчлэн ямар санагддаг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "feelings",
+        "wellbeing"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "happy",
+          "label": "Баяртай, тайван"
+        },
+        {
+          "value": "excited_anxious",
+          "label": "Сэтгэл хөдөлсөн ч жаахан түгшүүртэй"
+        },
+        {
+          "value": "confused",
+          "label": "Эргэлзээтэй, ойлгомжгүй",
+          "flag": "mixed_signals"
+        },
+        {
+          "value": "drained",
+          "label": "Ядарсан эсвэл гунигтай",
+          "flag": "feeling_drained"
+        }
+      ]
+    },
+    {
+      "id": "feel_gut",
+      "category": "feelings",
+      "text": "Энэ хүний тухай бодоход танд ерөнхийдөө ямар санагддаг вэ?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "feelings",
+        "intuition",
+        "overall"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "good",
+          "label": "Сайхан санагддаг"
+        },
+        {
+          "value": "hopeful_unsure",
+          "label": "Найдвар байгаа ч эргэлзээтэй"
+        },
+        {
+          "value": "dont_know",
+          "label": "Мэдэхгүй"
+        },
+        {
+          "value": "worried",
+          "label": "Санаа зовж байна"
+        }
+      ]
+    },
+    {
+      "id": "feel_three_months",
+      "category": "feelings",
+      "text": "Энэ байдал дахиад 3 сар үргэлжилбэл та сэтгэл хангалуун байх уу?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "feelings",
+        "satisfaction",
+        "overall"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
+      "options": [
+        {
+          "value": "yes",
+          "label": "Тийм, баяртай байна"
+        },
+        {
+          "value": "mostly",
+          "label": "Ихэнхдээ"
+        },
+        {
+          "value": "unsure",
+          "label": "Эргэлзэж байна"
+        },
+        {
+          "value": "no",
+          "label": "Үгүй, илүү ихийг хүсч байна",
+          "flag": "status_quo_unhappy"
+        }
+      ]
+    },
+    {
+      "id": "early_final",
+      "category": "feelings",
+      "text": "Энэ хүний талаар өөр юу хуваалцмаар байна вэ?",
+      "type": "text",
+      "optional": true,
+      "max_length": 1000,
+      "analysis_tags": [
+        "open_reflection"
+      ],
+      "show_if": {
+        "question": "basics_type",
+        "in": [
+          "talking",
+          "dating"
+        ],
+        "not_in": null
+      },
+      "visible_when": [],
       "options": []
     }
   ],
@@ -1603,6 +4368,13 @@
     "strength:conflict": "Маргааны дараах эвлэрэл",
     "strength:independence": "Өөрийгөө хадгалах чадвар",
     "strength:future": "Нийтлэг чиг хандлага",
+    "strength:interest": "Хоёр талын сонирхол",
+    "strength:consistency": "Тогтвортой, найдвартай байдал",
+    "strength:connection": "Жинхэнэ холбоо",
+    "strength:intentions": "Ижил зүйл хайж буй байдал",
+    "strength:respect": "Хүндэтгэл ба аюулгүй мэдрэмж",
+    "strength:values": "Амьдралын нийцэл",
+    "strength:feelings": "Таны дотоод тайван байдал",
     "explore:communication": "Бүрэн сонсогдох мэдрэмж",
     "explore:affection": "Өдөр тутмын энхрийлэл",
     "explore:effort": "Хүчин чармайлтын хуваарилалт",
@@ -1610,9 +4382,22 @@
     "explore:conflict": "Маргаан ба эвлэрэл",
     "explore:independence": "Бие даасан байдал ба аюулгүй мэдрэмж",
     "explore:future": "Ирээдүйн хүлээлт",
+    "explore:interest": "Сонирхлын тэнцвэр",
+    "explore:consistency": "Үг ба үйлдлийн нийцэл",
+    "explore:connection": "Холбооны гүн",
+    "explore:intentions": "Та хоёр юу хайж байна вэ",
+    "explore:respect": "Хил хязгаар ба хүндэтгэл",
+    "explore:values": "Үнэт зүйлсийн нийцэл",
+    "explore:feelings": "Энэ харилцаа танд ямар санагддаг вэ",
     "pattern:harmful_conflict": "Маргааны үеийн харьцаа",
+    "pattern:boundary_pressure": "Таны хил хязгаарыг хүндэтгэх байдал",
+    "pattern:early_control": "Эрх чөлөө ба хяналт",
     "pattern:trust_breach": "Өнгөрсөн үйл явдлын дараах итгэл",
     "pattern:fear_of_reaction": "Гомдлоо хуваалцахад аюулгүй санагдах эсэх",
+    "pattern:intentions_mismatch": "Та хоёрын хүсэж буй зүйлийн зөрүү",
+    "pattern:mixed_signals": "Холимог дохионууд",
+    "pattern:disappearing": "Гэнэт алга болох хэв маяг",
+    "pattern:unclear_intentions": "Тодорхойгүй зорилго",
     "pattern:status_quo_unhappy": "Ирээдүйн замын талаарх таны мэдрэмж",
     "pattern:effort_imbalance": "Хүчин чармайлтын тэнцвэр",
     "pattern:initiation_imbalance": "Хэн нь түрүүлж холбогддог вэ",
@@ -1620,6 +4405,13 @@
     "pattern:drifting_apart": "Ойр дотно байдлын өөрчлөлт",
     "pattern:fidelity_worry": "Санаа зовнил ба итгэл",
     "pattern:emotional_dependence": "Таны сэтгэл санааны тэнцвэр",
-    "pattern:attention_seeking": "Анхаарал хүсэх мэдрэмж"
+    "pattern:attention_seeking": "Анхаарал хүсэх мэдрэмж",
+    "pattern:fading_interest": "Сонирхлын өөрчлөлт",
+    "pattern:concerning_habits": "Санаа зовоох зуршлууд",
+    "pattern:values_mismatch": "Амьдралын үнэт зүйлсийн ялгаа",
+    "pattern:others_concerned": "Ойр дотны хүмүүсийн санаа зовнил",
+    "pattern:self_silencing": "Өөрөөрөө байх эрх чөлөө",
+    "pattern:feeling_drained": "Энэ харилцааны таны сэтгэлд үзүүлэх нөлөө",
+    "pattern:overthinking": "Хүлээлт ба түгшүүр"
   }
 }

@@ -10,6 +10,7 @@
 #   ./deploy.sh ssl        Get an HTTPS certificate (after DOMAIN's DNS points at the server).
 #   ./deploy.sh rollback   Switch back to the previous release.
 #   ./deploy.sh logs       Show recent Laravel and queue-worker logs.
+#   ./deploy.sh analytics-key   Show the /admin analytics dashboard link and key.
 #
 # Configuration: deploy/deploy.env (copy from deploy/deploy.env.example).
 # Set SKIP_TESTS=1 to skip local tests during `deploy`.
@@ -242,6 +243,19 @@ ENV
   fi
   ln -sfn "$SHARED/.env" "$REL/backend/.env"
 
+  # Analytics dashboard (/admin): give every server its own random key, once.
+  if ! grep -qE '^ANALYTICS_DASHBOARD_KEY=.+' "$SHARED/.env"; then
+    KEY="$(openssl rand -hex 24)"
+    if grep -q '^ANALYTICS_DASHBOARD_KEY=' "$SHARED/.env"; then
+      sed -i "s/^ANALYTICS_DASHBOARD_KEY=.*/ANALYTICS_DASHBOARD_KEY=$KEY/" "$SHARED/.env"
+    else
+      printf '
+ANALYTICS_DASHBOARD_KEY=%s
+' "$KEY" >> "$SHARED/.env"
+    fi
+    say "Created the analytics dashboard key — show it with: ./deploy.sh analytics-key"
+  fi
+
   say "Installing PHP dependencies"
   (cd "$REL/backend" && composer install --no-dev --optimize-autoloader --no-interaction --no-progress --quiet)
   chown -R www-data:www-data "$REL/backend/bootstrap/cache"
@@ -307,6 +321,11 @@ rollback)
   artisan_in "$APP/current" config:cache
   reload_app
   say "Rolled back. Note: database migrations are not reversed."
+  ;;
+
+analytics-key)
+  say "Analytics dashboard: $(grep -E '^APP_URL=' "$SHARED/.env" | cut -d= -f2-)/admin"
+  grep -E '^ANALYTICS_DASHBOARD_KEY=' "$SHARED/.env" | cut -d= -f2- || fail "No key yet — run ./deploy.sh first"
   ;;
 
 logs)
@@ -420,6 +439,7 @@ case "${1:-deploy}" in
   ssl)      run_remote ssl ;;
   rollback) run_remote rollback ;;
   logs)     run_remote logs ;;
-  -h|--help|help) sed -n '3,21p' "$0" ;;
-  *) fail "Unknown command '$1'. Use: setup | deploy | env | ssl | rollback | logs" ;;
+  analytics-key) run_remote analytics-key ;;
+  -h|--help|help) sed -n '3,22p' "$0" ;;
+  *) fail "Unknown command '$1'. Use: setup | deploy | env | ssl | rollback | logs | analytics-key" ;;
 esac

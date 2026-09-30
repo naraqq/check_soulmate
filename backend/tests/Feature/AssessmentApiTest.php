@@ -102,6 +102,37 @@ class AssessmentApiTest extends TestCase
         $this->assertSame('rarely', $answers['basics_quality_time']);
     }
 
+    public function test_early_stage_keeps_only_early_answers(): void
+    {
+        $token = $this->postJson('/api/assessments', $this->submitPayload(['answers' => $this->validAnswers('talking')]))
+            ->assertCreated()
+            ->json('token');
+        $answers = Assessment::where('public_token', $token)->first()->answers_json;
+
+        $this->assertNotNull($answers['int_initiates']);
+        $this->assertNull($answers['comm_heard']);
+        $this->assertNull($answers['basics_frequency']); // people who only talk get the chat questions instead
+    }
+
+    public function test_answers_from_the_other_flow_do_not_count_toward_the_minimum(): void
+    {
+        // Plenty of couple answers, but the stage says "talking" — none of them apply.
+        $answers = collect($this->validAnswers())->filter(fn ($v, $id) => ! str_starts_with($id, 'int_')
+            && ! str_starts_with($id, 'cons_') && ! str_starts_with($id, 'conn_') && ! str_starts_with($id, 'intent_')
+            && ! str_starts_with($id, 'resp_') && ! str_starts_with($id, 'val_') && ! str_starts_with($id, 'feel_'))->all();
+        $answers['basics_type'] = 'talking';
+
+        $this->postJson('/api/assessments', $this->submitPayload(['answers' => $answers]))
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('answers');
+    }
+
+    public function test_status_endpoint_reports_the_track(): void
+    {
+        $this->getJson('/api/assessments/'.$this->createAssessment(stage: 'dating')->public_token)->assertJsonPath('track', 'early');
+        $this->getJson('/api/assessments/'.$this->createAssessment()->public_token)->assertJsonPath('track', 'couple');
+    }
+
     public function test_invalid_teaser_ids_are_dropped(): void
     {
         $token = $this->postJson('/api/assessments', $this->submitPayload([

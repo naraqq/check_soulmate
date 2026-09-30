@@ -7,9 +7,23 @@ export type CategoryId =
   | 'conflict'
   | 'independence'
   | 'future'
+  // Early stage (talking / dating)
+  | 'interest'
+  | 'consistency'
+  | 'connection'
+  | 'intentions'
+  | 'respect'
+  | 'values'
+  | 'feelings'
 
 /** Categories that are scored. "basics" only provides context. */
 export type ScoredCategoryId = Exclude<CategoryId, 'basics'>
+
+/**
+ * Which question flow and report the user gets, decided by the relationship stage:
+ * "early" for people who are talking or dating, "couple" for committed relationships.
+ */
+export type Track = 'early' | 'couple'
 
 export type QuestionType = 'single_choice' | 'scale' | 'yes_no' | 'text'
 
@@ -29,6 +43,20 @@ export type AnswerFlag =
   | 'fidelity_worry'
   | 'emotional_dependence'
   | 'attention_seeking'
+  // Early stage
+  | 'boundary_pressure'
+  | 'early_control'
+  | 'mixed_signals'
+  | 'disappearing'
+  | 'fading_interest'
+  | 'unclear_intentions'
+  | 'intentions_mismatch'
+  | 'values_mismatch'
+  | 'concerning_habits'
+  | 'others_concerned'
+  | 'self_silencing'
+  | 'overthinking'
+  | 'feeling_drained'
 
 export interface AnswerOption {
   value: string
@@ -62,6 +90,8 @@ export interface Question {
   optional?: boolean
   placeholder?: string
   maxLength?: number
+  /** Additional conditions; every rule must match. */
+  visibleWhen?: ShowIf[]
   showIf?: ShowIf
 }
 

@@ -1,9 +1,11 @@
 import { ArrowRight, Check, Clock, Heart, Lock, MessageCircleHeart, Quote, Sprout, UserX } from 'lucide-react'
+import { useEffect } from 'react'
 import { LemonMark } from '../components/layout/LemonMark'
 import { ButtonLink } from '../components/ui/Button'
 import { RetestButton } from '../components/ui/RetestButton'
 import { Card } from '../components/ui/Card'
 import { useAppConfig } from '../hooks/useAppConfig'
+import { track } from '../lib/analytics'
 import { formatPrice } from '../lib/format'
 import { storage } from '../lib/storage'
 
@@ -60,6 +62,7 @@ const FAQ = [
 
 export function LandingPage() {
   const { price, currency } = useAppConfig()
+  useEffect(() => track({ name: 'landing_viewed' }), [])
   const inProgress = storage.loadAssessment() !== null
   const primaryTo = inProgress ? '/complete' : '/check'
   const primaryLabel = inProgress ? 'Үргэлжлүүлэх' : 'Эхлэх'

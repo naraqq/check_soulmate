@@ -84,6 +84,56 @@ class ReportApiTest extends TestCase
         });
     }
 
+    public function test_early_stage_gets_its_own_report_with_a_potential_read(): void
+    {
+        Http::fake(['api.openai.com/*' => Http::response($this->openAiResponse($this->fakeReport('early')))]);
+        $assessment = $this->createAssessment(AssessmentStatus::Paid, stage: 'talking');
+
+        $this->postJson("/api/assessments/{$assessment->public_token}/generate-report")
+            ->assertOk()
+            ->assertJsonPath('report.track', 'early')
+            ->assertJsonPath('report.potential.level', 'unclear')
+            ->assertJsonPath('report.intentions.steps.0', 'Алхам нэг.')
+            ->assertJsonMissingPath('report.communication');
+
+        Http::assertSent(function (Request $request) {
+            $body = $request->data();
+            $schema = $body['response_format']['json_schema']['schema'];
+
+            return in_array('potential', $schema['required'], true)
+                && in_array('intentions', $schema['required'], true)
+                && ! in_array('conflict', $schema['required'], true)
+                && str_contains($body['messages'][0]['content'], 'Is this going to work?')
+                // Only the early-stage questions reach the model.
+                && str_contains($body['messages'][1]['content'], 'Ихэвчлэн хэн нь түрүүлж бичдэг вэ?')
+                && ! str_contains($body['messages'][1]['content'], 'Ноцтой маргаан хэр олон гардаг вэ?');
+        });
+    }
+
+    public function test_couple_report_is_tagged_and_has_no_potential_read(): void
+    {
+        Http::fake(['api.openai.com/*' => Http::response($this->openAiResponse($this->fakeReport()))]);
+        $assessment = $this->createAssessment(AssessmentStatus::Paid, stage: 'married');
+
+        $this->postJson("/api/assessments/{$assessment->public_token}/generate-report")
+            ->assertOk()
+            ->assertJsonPath('report.track', 'couple')
+            ->assertJsonMissingPath('report.potential');
+    }
+
+    public function test_early_report_without_potential_read_is_rejected(): void
+    {
+        $report = $this->fakeReport('early');
+        unset($report['potential']);
+        Http::fake(['api.openai.com/*' => Http::response($this->openAiResponse($report))]);
+        $assessment = $this->createAssessment(AssessmentStatus::Paid, stage: 'dating');
+
+        $this->postJson("/api/assessments/{$assessment->public_token}/generate-report");
+
+        $this->assertSame(AssessmentStatus::Failed, $assessment->refresh()->status);
+        $this->assertDatabaseCount('reports', 0);
+    }
+
     public function test_invalid_ai_json_marks_failed_and_allows_retry(): void
     {
         Http::fakeSequence('api.openai.com/*')

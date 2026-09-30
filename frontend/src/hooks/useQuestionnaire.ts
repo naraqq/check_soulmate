@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { QUESTIONNAIRE_VERSION } from '../data/questions'
+import { STAGE_QUESTION, trackFor } from '../data/track'
 import type { Answers, CategoryId, Question } from '../data/types'
-import { isVisible } from '../data/visibility'
+import { isVisible, visibleAnswers } from '../data/visibility'
 import { track } from '../lib/analytics'
 import { storage } from '../lib/storage'
 
@@ -67,19 +68,37 @@ export function useQuestionnaire(questions: Question[]) {
   const setAnswer = useCallback(
     (value: string | null, { autoAdvance = false } = {}) => {
       const current = questions[state.index]
-      setState((s) => ({ ...s, answers: { ...s.answers, [current.id]: value } }))
+      setState((s) => ({ ...s, answers: visibleAnswers(questions, { ...s.answers, [current.id]: value }), completed: false }))
 
       if (autoAdvance) {
-        // Position only — never the question or the answer.
-        track({ name: 'question_answered', props: { index: position + 1, total: visible.length } })
+        // Which question was reached (for drop-off) — never the answer. The flow is known once the stage is answered.
+        const answered = { ...state.answers, [current.id]: value }
+        track({
+          name: 'question_answered',
+          props: {
+            index: position + 1,
+            total: visible.length,
+            question: current.id,
+            track: answered[STAGE_QUESTION] ? trackFor(answered) : undefined,
+          },
+        })
         window.clearTimeout(advanceTimer.current)
         // A caring reply stays on screen until the user continues — they read at their own pace.
         const hasReply = Boolean(current.options?.find((o) => o.value === value)?.reply)
         if (!hasReply) advanceTimer.current = window.setTimeout(next, AUTO_ADVANCE_MS)
       }
     },
-    [questions, state.index, position, visible.length, next],
+    [questions, state.index, state.answers, position, visible.length, next],
   )
+
+  /** Step back to the previous question that applies — its answer stays and can be changed. */
+  const back = useCallback(() => {
+    window.clearTimeout(advanceTimer.current)
+    setState((s) => {
+      const prev = findVisible(questions, s.answers, s.index - 1, -1)
+      return prev === null ? s : { ...s, index: prev }
+    })
+  }, [questions])
 
   const dismissIntro = useCallback(() => {
     setState((s) => ({ ...s, seenIntros: [...new Set([...s.seenIntros, questions[s.index].category])] }))
@@ -100,8 +119,10 @@ export function useQuestionnaire(questions: Question[]) {
     completed: state.completed,
     showIntro: !state.seenIntros.includes(question.category),
     finishedCategory,
+    canGoBack: previousIndex !== null,
     setAnswer,
     next,
+    back,
     dismissIntro,
   }
 }

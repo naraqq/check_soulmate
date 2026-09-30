@@ -1,11 +1,13 @@
-import type { Answers, Question } from './types'
+import type { Answers, Question, ShowIf } from './types'
 
 /** Whether a question applies, given the answers so far (see Question.showIf). */
 export function isVisible(question: Question, answers: Answers): boolean {
-  const rule = question.showIf
-  if (!rule) return true
+  return [question.showIf, ...(question.visibleWhen ?? [])].every((rule) => !rule || matches(rule, answers))
+}
+
+function matches(rule: ShowIf, answers: Answers): boolean {
   const value = answers[rule.question]
-  if (value == null) return rule.in === undefined // unknown yet: show "notIn" questions, hide "in" questions
+  if (value == null) return false // A follow-up requires known context.
   if (rule.in && !rule.in.includes(value)) return false
   if (rule.notIn && rule.notIn.includes(value)) return false
   return true
@@ -15,7 +17,7 @@ export function isVisible(question: Question, answers: Answers): boolean {
 export function visibleAnswers(questions: Question[], answers: Answers): Answers {
   const result: Answers = {}
   for (const q of questions) {
-    if (q.id in answers && isVisible(q, answers)) result[q.id] = answers[q.id]
+    if (q.id in answers && isVisible(q, result)) result[q.id] = answers[q.id]
   }
   return result
 }

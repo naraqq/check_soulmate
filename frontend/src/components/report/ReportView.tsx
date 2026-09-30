@@ -2,6 +2,7 @@ import {
   Anchor,
   CalendarCheck,
   Compass,
+  Eye,
   Flame,
   HandHeart,
   Handshake,
@@ -9,39 +10,99 @@ import {
   Leaf,
   MessageCircle,
   Repeat,
+  Scale,
   ShieldCheck,
   Sparkles,
   Sprout,
   Sun,
+  Target,
   Waypoints,
+  type LucideIcon,
 } from 'lucide-react'
-import type { RelationshipReport } from '../../lib/api'
+import { CheckInProgress } from './CheckInProgress'
+import { EvidenceDetails } from './EvidenceDetails'
+import type { Track } from '../../data/types'
+import type { CheckInComparison, RelationshipReport } from '../../lib/api'
 import {
   AreaCards,
   CategoryCard,
   CategoryOverview,
+  FlagLists,
+  PotentialCard,
   ReportBlock,
   SectionHeading,
   TitledCards,
   type CategoryItem,
 } from './ReportSections'
 
-const CATEGORY_SECTIONS = [
-  { key: 'communication', title: 'Харилцан яриа', icon: MessageCircle },
-  { key: 'affection', title: 'Энхрийлэл ба холбоо', icon: Flame },
-  { key: 'effort', title: 'Хүчин чармайлтын тэнцвэр', icon: Handshake },
-  { key: 'trust', title: 'Итгэлцэл', icon: ShieldCheck },
-  { key: 'conflict', title: 'Маргаан ба эвлэрэл', icon: Repeat },
-  { key: 'independence', title: 'Бие даасан байдал', icon: Anchor },
-  { key: 'future', title: 'Ирээдүйн нийцэл', icon: Compass },
-] as const
+type TopicKey = Exclude<
+  keyof RelationshipReport,
+  | 'evidence'
+  | 'uncertainty'
+  | 'track'
+  | 'headline'
+  | 'summary'
+  | 'strengths'
+  | 'areas_to_explore'
+  | 'potential'
+  | 'green_flags'
+  | 'red_flags'
+  | 'patterns'
+  | 'conversation_starters'
+  | 'closing'
+  | 'note_to_you'
+  | 'action_plan'
+  | 'self_care'
+>
+
+const CATEGORY_SECTIONS: Record<Track, { key: TopicKey; title: string; icon: LucideIcon }[]> = {
+  couple: [
+    { key: 'communication', title: 'Харилцан яриа', icon: MessageCircle },
+    { key: 'affection', title: 'Энхрийлэл ба холбоо', icon: Flame },
+    { key: 'effort', title: 'Хүчин чармайлтын тэнцвэр', icon: Handshake },
+    { key: 'trust', title: 'Итгэлцэл', icon: ShieldCheck },
+    { key: 'conflict', title: 'Маргаан ба эвлэрэл', icon: Repeat },
+    { key: 'independence', title: 'Бие даасан байдал', icon: Anchor },
+    { key: 'future', title: 'Ирээдүйн нийцэл', icon: Compass },
+  ],
+  early: [
+    { key: 'interest', title: 'Харилцан сонирхол', icon: Heart },
+    { key: 'consistency', title: 'Тогтвортой байдал', icon: Repeat },
+    { key: 'connection', title: 'Холбоо', icon: Flame },
+    { key: 'intentions', title: 'Зорилго', icon: Target },
+    { key: 'respect', title: 'Хүндэтгэл', icon: ShieldCheck },
+    { key: 'values', title: 'Нийцэл', icon: Scale },
+    { key: 'feelings', title: 'Таны мэдрэмж', icon: Eye },
+  ],
+}
+
+/** Wording that differs between people getting to know someone and couples. */
+const COPY: Record<Track, { snapshot: string; strengths: string; patterns: string; starters: string }> = {
+  couple: {
+    snapshot: 'Харилцааны ерөнхий зураглал',
+    strengths: 'Та хоёрын давуу талууд',
+    patterns: 'Та хоёрын харилцааны гол хэв маяг',
+    starters: 'Хамтрагчтайгаа ярилцах асуултууд',
+  },
+  early: {
+    snapshot: 'Танилцах үеийн зураглал',
+    strengths: 'Сайн эхлэлүүд',
+    patterns: 'Та хоёрын хооронд юу болж байна вэ',
+    starters: 'Түүнээс асууж болох асуултууд',
+  },
+}
 
 /**
  * Report order follows what the reader needs: feel understood → understand
  * the dynamic → see what healthy looks like per topic → know what to do next.
  */
-export function ReportView({ report, createdAt }: { report: RelationshipReport; createdAt: string }) {
-  const topicItems: CategoryItem[] = CATEGORY_SECTIONS.map(({ key, title, icon }) => ({ key, title, icon, section: report[key] }))
+export function ReportView({ report, createdAt, comparison }: { report: RelationshipReport; createdAt: string; comparison?: CheckInComparison }) {
+  const track: Track = report.track ?? 'couple'
+  const copy = COPY[track]
+  const topicItems: CategoryItem[] = CATEGORY_SECTIONS[track].flatMap(({ key, title, icon }) => {
+    const section = report[key]
+    return section ? [{ key, title, icon, section }] : []
+  })
   const date = new Intl.DateTimeFormat('mn-MN', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(createdAt))
 
   return (
@@ -49,12 +110,23 @@ export function ReportView({ report, createdAt }: { report: RelationshipReport; 
       {/* Snapshot */}
       <ReportBlock id="snapshot">
         <div className="relative overflow-hidden rounded-4xl surface-hero p-7 shadow-lift sm:p-12">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-clay-dark">Харилцааны ерөнхий зураглал</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-clay-dark">{copy.snapshot}</p>
           <p className="mt-4 font-display text-3xl leading-tight font-semibold text-balance sm:text-4xl">{report.headline}</p>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">{report.summary}</p>
+          <EvidenceDetails evidence={report.evidence} uncertainty={report.uncertainty} />
           <p className="mt-8 text-xs text-ink-muted">{date}</p>
         </div>
       </ReportBlock>
+
+      {comparison && <CheckInProgress comparison={comparison} />}
+
+      {/* Early stage: the answer they came for — is this going to work? */}
+      {report.potential && (
+        <ReportBlock id="potential" className="space-y-4">
+          <PotentialCard potential={report.potential} />
+          <FlagLists green={report.green_flags ?? []} red={report.red_flags ?? []} />
+        </ReportBlock>
+      )}
 
       {/* A personal note — comfort before analysis */}
       {report.note_to_you && (
@@ -69,13 +141,13 @@ export function ReportView({ report, createdAt }: { report: RelationshipReport; 
       )}
 
       <ReportBlock id="strengths">
-        <SectionHeading icon={Leaf} title="Та хоёрын давуу талууд" />
+        <SectionHeading icon={Leaf} title={copy.strengths} />
         <TitledCards items={report.strengths} tone="sage" />
       </ReportBlock>
 
       {report.patterns.length > 0 && (
         <ReportBlock id="patterns">
-          <SectionHeading icon={Sparkles} eyebrow="Гол ойлголт" title="Та хоёрын харилцааны гол хэв маяг" />
+          <SectionHeading icon={Sparkles} eyebrow="Гол ойлголт" title={copy.patterns} />
           <TitledCards items={report.patterns} tone="dusk" />
         </ReportBlock>
       )}
@@ -86,7 +158,7 @@ export function ReportView({ report, createdAt }: { report: RelationshipReport; 
       </ReportBlock>
 
       <ReportBlock id="categories" className="space-y-4">
-        <SectionHeading icon={Waypoints} eyebrow="7 чиглэл" title="Харилцаа тань чиглэл бүрээр" />
+        <SectionHeading icon={Waypoints} eyebrow={`${topicItems.length} чиглэл`} title="Харилцаа тань чиглэл бүрээр" />
         <CategoryOverview items={topicItems} />
         <div className="space-y-4 pt-4">
           {topicItems.map((item) => (
@@ -127,7 +199,7 @@ export function ReportView({ report, createdAt }: { report: RelationshipReport; 
       )}
 
       <ReportBlock id="starters">
-        <SectionHeading icon={HandHeart} title="Хамтрагчтайгаа ярилцах асуултууд" />
+        <SectionHeading icon={HandHeart} title={copy.starters} />
         <div className="grid gap-3">
           {report.conversation_starters.map((starter) => (
             <blockquote

@@ -10,8 +10,11 @@ use Illuminate\Support\Facades\Http;
 
 trait BuildsAssessments
 {
-    /** A complete, valid answer set: the first option for every choice question. */
-    protected function validAnswers(): array
+    /**
+     * A complete, valid answer set: the first option for every choice question.
+     * The stage decides the flow — "exclusive" (couple) by default, "talking"/"dating" for the early stage.
+     */
+    protected function validAnswers(string $stage = 'exclusive'): array
     {
         $answers = [];
         foreach (app(Questionnaire::class)->questions() as $question) {
@@ -19,6 +22,7 @@ trait BuildsAssessments
                 ? 'Намайг илүү их сонсоосой гэж хүсдэг.'
                 : $question['options'][0]['value'];
         }
+        $answers['basics_type'] = $stage;
 
         return $answers;
     }
@@ -36,22 +40,24 @@ trait BuildsAssessments
         ], $overrides);
     }
 
-    protected function createAssessment(AssessmentStatus $status = AssessmentStatus::Created): Assessment
+    protected function createAssessment(AssessmentStatus $status = AssessmentStatus::Created, string $stage = 'exclusive'): Assessment
     {
         $questionnaire = app(Questionnaire::class);
 
         return Assessment::create([
             'public_token' => Assessment::generateToken(),
             'questionnaire_version' => $questionnaire->version(),
-            'answers_json' => $questionnaire->normalizeAnswers($this->validAnswers()),
+            'answers_json' => $questionnaire->normalizeAnswers($this->validAnswers($stage)),
             'teaser_json' => ['strengths' => ['strength:trust'], 'explore' => ['explore:effort'], 'attention' => null],
             'status' => $status,
         ]);
     }
 
-    protected function fakeReport(): array
+    protected function fakeReport(string $track = 'couple'): array
     {
         $section = [
+            'evidence_question_ids' => [],
+            'uncertainty' => 'Өөрчлөлт хэр удаан үргэлжлэх нь тодорхойгүй.',
             'state' => 'mixed',
             'insight' => 'Ойр дотно байдлыг хүсэх нь хүн бүрийн хэвийн хэрэгцээ.',
             'healthy' => 'Эрүүл харилцаанд хоёулаа түрүүлж холбогддог.',
@@ -59,6 +65,8 @@ trait BuildsAssessments
             'try_saying' => 'Чамаас мессеж ирэхэд би их баярладаг.',
         ];
         $report = [
+            'evidence_question_ids' => [$track === 'early' ? 'int_initiates' : 'comm_initiates'],
+            'uncertainty' => 'Нөгөө хүний бодлыг шууд мэдэх боломжгүй.',
             'headline' => 'Та хоёрын харилцаанд дулаан суурь байна.',
             'summary' => 'Та хоёрын харилцаанд итгэлцэл бат бөх байна.',
             'note_to_you' => 'Таны мэдэрч буй зүйл бүрэн ойлгомжтой.',
@@ -70,8 +78,17 @@ trait BuildsAssessments
             'conversation_starters' => ['Бид хоёр ... талаар ярилцаж болох уу?'],
             'closing' => 'Та хоёрт сайн сайхан бүхнийг хүсье.',
         ];
-        foreach (RelationshipReportService::CATEGORY_SECTIONS as $category) {
+        foreach (RelationshipReportService::sectionsFor($track) as $category) {
             $report[$category] = $section;
+        }
+        if ($track === 'early') {
+            $report['potential'] = [
+                'level' => 'unclear',
+                'title' => 'Сайн эхлэл ч одоохондоо эрт байна.',
+                'explanation' => 'Сонирхол хоёр талаас байгаа ч зорилгоо ярилцаагүй байна.',
+            ];
+            $report['green_flags'] = ['Тэр таныг сонирхож асуудаг.'];
+            $report['red_flags'] = [];
         }
 
         return $report;

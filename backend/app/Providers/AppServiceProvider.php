@@ -52,6 +52,12 @@ class AppServiceProvider extends ServiceProvider
             Limit::perDay(100)->by($request->ip())->response($tooMany),
         ]);
 
+        // Analytics beacons: ≈45 per check, and mobile carriers put many people behind one IP (CGNAT).
+        RateLimiter::for('analytics', fn (Request $request) => Limit::perMinute(600)->by($request->ip())->response($tooMany));
+
+        // Dashboard key guessing is throttled hard.
+        RateLimiter::for('admin', fn (Request $request) => Limit::perMinute(20)->by($request->ip())->response($tooMany));
+
         RateLimiter::for('payment', fn (Request $request) => Limit::perMinute(20)->by($request->ip())->response($tooMany));
 
         RateLimiter::for('payment-status', fn (Request $request) => Limit::perMinute(60)->by($request->ip())->response($tooMany));

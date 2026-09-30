@@ -11,18 +11,20 @@ interface Props {
   /** Ask before discarding unsent answers. */
   confirmMessage?: string
   label?: string
+  previousToken?: string
 }
 
 /**
  * Starts a brand-new check on this device. Only local progress is cleared —
  * an existing report is not deleted and still opens from its link.
  */
-export function RetestButton({ variant = 'secondary', size = 'md', className, confirmMessage, label = 'Дахин шалгах' }: Props) {
+export function RetestButton({ variant = 'secondary', size = 'md', className, confirmMessage, label = 'Дахин шалгах', previousToken }: Props) {
   const navigate = useNavigate()
 
   function startOver() {
     if (confirmMessage && !window.confirm(confirmMessage)) return
     storage.clearAll()
+    if (previousToken) storage.saveComparisonToken(previousToken)
     track({ name: 'check_started' })
     navigate('/check')
   }

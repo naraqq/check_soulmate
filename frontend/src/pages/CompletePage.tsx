@@ -1,17 +1,20 @@
-import { Compass, Leaf, Sparkles } from 'lucide-react'
+import { Compass, HelpCircle, Leaf, Sparkles } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router'
 import { AnalyzingView } from '../components/teaser/AnalyzingView'
+import { ShareCta } from '../components/share/ShareCta'
 import { PaywallCard } from '../components/teaser/PaywallCard'
 import { TeaserList } from '../components/teaser/TeaserList'
-import { ButtonLink } from '../components/ui/Button'
+import { Button, ButtonLink } from '../components/ui/Button'
 import { Eyebrow } from '../components/ui/Card'
 import { RetestButton } from '../components/ui/RetestButton'
 import { LoadingView } from '../components/ui/StateView'
 import { QUESTIONNAIRE_VERSION, questions } from '../data/questions'
+import { trackFor } from '../data/track'
+import type { Track } from '../data/types'
 import { visibleAnswers } from '../data/visibility'
 import { buildTeaser } from '../lib/analysis/teaser'
-import { track } from '../lib/analytics'
+import { getAttribution, track } from '../lib/analytics'
 import { api, ApiError, type AssessmentSummary } from '../lib/api'
 import { friendlyError } from '../lib/errors'
 import { storage } from '../lib/storage'
@@ -28,6 +31,8 @@ export function CompletePage() {
   const [stored, setStored] = useState(() => storage.loadAssessment())
   const [remote, setRemote] = useState<AssessmentSummary | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  const [comparisonToken, setComparisonToken] = useState(() => storage.loadComparisonToken())
+  const [comparisonUnavailable, setComparisonUnavailable] = useState(false)
   const [error, setError] = useState<string | null>(null)
   // Straight from the last question: show the short "understanding you" moment first.
   const location = useLocation()
@@ -76,6 +81,7 @@ export function CompletePage() {
         attention: localTeaser.attention?.title ?? null,
       }
     : remote!.teaser
+  const flow: Track = progress?.completed ? trackFor(progress.answers) : (remote?.track ?? 'couple')
 
   const alreadyPaid = remote?.paid ?? false
 
@@ -91,18 +97,24 @@ export function CompletePage() {
     try {
       const { token } = await api.createAssessment({
         questionnaire_version: QUESTIONNAIRE_VERSION,
+        previous_assessment_token: comparisonToken,
         answers: visibleAnswers(questions, progress.answers),
         teaser: {
           strengths: localTeaser.strengths.map((t) => t.id),
           explore: localTeaser.explore.map((t) => t.id),
           attention: localTeaser.attention?.id ?? null,
         },
+        // The server records "checkout started" (and later the verified payment) against this.
+        attribution: getAttribution(),
       })
       storage.saveAssessment(token)
-      track({ name: 'check_completed', props: { answered: localTeaser.answeredCount, skipped: localTeaser.skippedCount } })
+      storage.clearComparisonToken()
       navigate(`/payment/${token}`)
     } catch (e) {
-      setError(friendlyError(e))
+      if (e instanceof ApiError && e.status === 422 && (e.body.errors as Record<string, unknown> | undefined)?.previous_assessment_token) {
+        setComparisonUnavailable(true)
+        setError('Өмнөх шалгалт олдсонгүй. Харьцуулалтгүйгээр үргэлжлүүлж болно.')
+      } else setError(friendlyError(e))
       setSubmitting(false)
     }
   }
@@ -110,6 +122,12 @@ export function CompletePage() {
   return (
     <div className="relative">
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[480px] glow-warm" />
+      {comparisonUnavailable && (
+        <div role="alert" className="mx-auto max-w-2xl px-4 pt-8">
+          <p>Өмнөх шалгалт устсан эсвэл ашиглах боломжгүй байна.</p>
+          <Button onClick={() => { storage.clearComparisonToken(); setComparisonToken(null); setComparisonUnavailable(false); setError(null) }}>Харьцуулалтгүй үргэлжлүүлэх</Button>
+        </div>
+      )}
       <div className="relative mx-auto max-w-2xl px-4 pt-10 pb-20 sm:px-6 sm:pt-16">
         <div className="animate-fade-up text-center">
           <Eyebrow>Шалгалт дууслаа</Eyebrow>
@@ -120,6 +138,9 @@ export function CompletePage() {
         </div>
 
         <div className="mt-10 space-y-8 animate-fade-up [animation-delay:120ms]">
+          {flow === 'early' && (
+            <TeaserList heading="Таны гол асуулт" items={['Энэ харилцаа ирээдүйтэй юу?']} tone="clay" icon={HelpCircle} />
+          )}
           <TeaserList heading="Боломжит давуу талууд" items={teaser.strengths} tone="sage" icon={Leaf} />
           <TeaserList heading="Судлах нь зүйтэй чиглэлүүд" items={teaser.explore} tone="dusk" icon={Compass} />
           <TeaserList
@@ -141,10 +162,13 @@ export function CompletePage() {
           ) : (
             <>
               <p className="mb-5 text-center font-display text-xl font-semibold">Таны бүрэн, хувийн тайлан бэлэн боллоо.</p>
-              <PaywallCard onUnlock={unlock} loading={submitting} error={error} />
+              <PaywallCard track={flow} onUnlock={unlock} loading={submitting} error={error} />
             </>
           )}
         </div>
+
+        {/* Everyone who finishes can share — not just payers — so the free preview also brings people in. */}
+        {teaser.strengths.length > 0 && <ShareCta placement="teaser" flow={flow} strengths={teaser.strengths} className="mt-10" />}
 
         <div className="mt-8 flex flex-col items-center gap-3 text-sm text-ink-muted">
           <RetestButton

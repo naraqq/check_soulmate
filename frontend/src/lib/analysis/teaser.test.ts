@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { questions } from '../../data/questions'
 import type { Answers, Question } from '../../data/types'
+import { isVisible } from '../../data/visibility'
 import { analyzeCategories, buildTeaser, collectFlags, countAnswers, sectionMood } from './teaser'
 
 /** Answer every choice question with the option scoring highest (or lowest). */
@@ -131,9 +132,35 @@ describe('sectionMood', () => {
 
 describe('countAnswers', () => {
   it('counts blank text and null as skipped, but not questions that do not apply', () => {
-    const counts = countAnswers(questions, { basics_duration: '1_3y', final_wish: '   ', comm_heard: null })
+    const answers: Answers = { basics_duration: '1_3y', final_wish: '   ', comm_heard: null }
+    const counts = countAnswers(questions, answers)
     expect(counts.answeredCount).toBe(1)
-    // basics_quality_time only applies to couples who live together, so it isn't "skipped".
-    expect(counts.skippedCount).toBe(questions.length - 2)
+    // Early-stage questions and basics_quality_time don't apply here, so they aren't "skipped".
+    const applicable = questions.filter((q) => isVisible(q, answers)).length
+    expect(applicable).toBeLessThan(questions.length)
+    expect(counts.skippedCount).toBe(applicable - 1)
+  })
+})
+
+describe('early stage', () => {
+  it('scores only the early sections and leaves couple sections empty', () => {
+    const answers = { ...answerAll('best'), basics_type: 'talking' }
+    const shown = questions.filter((q) => isVisible(q, answers))
+    const indicators = analyzeCategories(shown, answers)
+    expect(indicators.interest.score).toBe(1)
+    expect(indicators.communication.score).toBeNull()
+    const teaser = buildTeaser(shown, answers)
+    expect(teaser.strengths.every((s) => /interest|consistency|connection|intentions|respect|values|feelings/.test(s.id))).toBe(true)
+  })
+
+  it('flags when one wants something serious and the other something casual', () => {
+    const answers: Answers = { basics_type: 'dating', intent_you: 'serious', intent_them: 'casual' }
+    expect(collectFlags(questions, answers).get('intentions_mismatch')).toBe('intentions')
+    expect(collectFlags(questions, { ...answers, intent_them: 'see' }).has('intentions_mismatch')).toBe(false)
+  })
+
+  it('puts a boundary or safety concern ahead of every other early pattern', () => {
+    const answers: Answers = { basics_type: 'talking', resp_pressure: 'sometimes', cons_hot_cold: 'often', feel_after: 'drained' }
+    expect(buildTeaser(questions, answers).attention?.id).toBe('pattern:boundary_pressure')
   })
 })

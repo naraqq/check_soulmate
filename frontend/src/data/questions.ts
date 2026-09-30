@@ -1,4 +1,5 @@
-import type { AnswerFlag, AnswerOption, Category, Question } from './types'
+import { SHOW_FOR } from './track'
+import type { AnswerFlag, AnswerOption, Category, Question, Track } from './types'
 
 /**
  * The questionnaire. Edit wording, options, scores and order here — no
@@ -9,7 +10,7 @@ import type { AnswerFlag, AnswerOption, Category, Question } from './types'
  * Option `value`s are stable identifiers — change labels freely, but bump
  * QUESTIONNAIRE_VERSION whenever question ids or option values change.
  */
-export const QUESTIONNAIRE_VERSION = '2026.09.3'
+export const QUESTIONNAIRE_VERSION = '2026.10.3'
 
 export const categories: Category[] = [
   {
@@ -18,7 +19,7 @@ export const categories: Category[] = [
     description: 'Таны болон та хоёрын харилцааны талаар бага зэрэг мэдээлэл.',
     intro: {
       title: 'Эхлээд таныг бага зэрэг танъя',
-      text: 'Хэдэн энгийн асуултаар таныг болон та хоёрын харилцааг ойлгоё. Зөв, буруу хариулт гэж байхгүй — хамгийн үнэн санагдсанаа сонгоорой.',
+      text: 'Зөв, буруу хариулт гэж байхгүй. Сүүлийн 2–4 долоо хоногт ямар байснаа бодоорой. Дөнгөж танилцсан бол танилцсанаас хойших хугацаагаа бодоорой.',
     },
     // Context only, not scored — the same gentle line whatever the answers.
     outro: {
@@ -33,10 +34,10 @@ export const categories: Category[] = [
     description: 'Хэрхэн ярилцаж, сонсож, холбогддог вэ.',
     intro: {
       title: 'Одоо та хоёрын харилцан ярианы тухай',
-      text: 'Хэн нь түрүүлж холбогддог, таныг сонсдог эсэх, сэтгэлээ хэр нээлттэй хуваалцаж чаддаг тухай асууя.',
+      text: 'Хэрхэн ярилцдаг, бие биедээ сэтгэлээ хэлж чаддаг эсэхийг асууя.',
     },
     outro: {
-      high: 'Та хоёрын хооронд яриа ихэнхдээ амархан урсдаг бололтой. Энэ бол маш сайхан суурь.',
+      high: 'Та хоёр ихэнхдээ яриа нийлдэг бололтой.',
       mid: 'Яриа тань заримдаа амархан, заримдаа хүндрэлтэй байдаг бололтой. Энэ их түгээмэл зүйл.',
       low: 'Сэтгэлээ хуваалцах нь танд амаргүй байгааг мэдэрлээ. Энэ хэсгийг тайландаа анхааралтай тайлбарлана.',
     },
@@ -47,7 +48,7 @@ export const categories: Category[] = [
     description: 'Дулаан сэтгэл, ойр дотно байдал, хүсэгдэх мэдрэмж.',
     intro: {
       title: 'Энхрийлэл ба ойр дотно байдал',
-      text: 'Өдөр тутмын дулаан харьцаа, хүсэгдэж буй мэдрэмж, хамтдаа байхдаа юу мэдэрдэг тухай.',
+      text: 'Халамжаа яаж илэрхийлдэг, хамт байхдаа танд ямар санагддаг тухай асууя.',
     },
     outro: {
       high: 'Та хоёрын дунд дулаан сэтгэл байгаа нь мэдрэгдэж байна.',
@@ -61,7 +62,7 @@ export const categories: Category[] = [
     description: 'Хэн санаачилж, төлөвлөж, асуудлыг засдаг вэ.',
     intro: {
       title: 'Хэн хэр их хичээдэг вэ?',
-      text: 'Төлөвлөх, санаачлах, асуудлыг засах үүрэг та хоёрын хооронд хэрхэн хуваагддаг тухай.',
+      text: 'Хэн нь санаачилдаг, асуудал гарахад хэрхэн хамт шийддэг тухай асууя.',
     },
     outro: {
       high: 'Та хоёр харилцаандаа хамтдаа хичээдэг бололтой. Энэ их үнэ цэнтэй.',
@@ -75,7 +76,7 @@ export const categories: Category[] = [
     description: 'Аюулгүй мэдрэмж, санаа зовнил, итгэл.',
     intro: {
       title: 'Итгэлцэл',
-      text: 'Та хамтрагчдаа хэр тайван, итгэлтэй байдаг тухай. Энд аль болох шударгаар хариулаарай — энэ бол зөвхөн таны төлөө.',
+      text: 'Хамтрагчдаа хэр итгэдэг, санаа зовдог зүйл бий эсэхийг асууя.',
     },
     outro: {
       high: 'Та хамтрагчдаа тайван итгэдэг нь харагдаж байна. Энэ бол том давуу тал.',
@@ -89,11 +90,11 @@ export const categories: Category[] = [
     description: 'Санал зөрөлдөөн хэрхэн өрнөж, шийдэгддэг вэ.',
     intro: {
       title: 'Маргаан ба эвлэрэл',
-      text: 'Санал зөрөлдөөн бүх харилцаанд байдаг. Чухал нь та хоёр түүнийг хэрхэн даван туулдаг вэ гэдэг.',
+      text: 'Санал зөрөх үедээ яаж харьцдаг, дараа нь хэрхэн ойлголцдог тухай асууя.',
     },
     outro: {
       high: 'Та хоёр санал зөрөлдөөнөө сайн даван туулдаг бололтой.',
-      mid: 'Маргаан заримдаа бүрэн шийдэгддэггүй бололтой. Энэ бол засаж болох зүйл.',
+      mid: 'Зарим маргааны дараа ярилцах зүйл үлддэг бололтой.',
       low: 'Маргаан танд хүнд тусдаг нь мэдрэгдлээ. Та хүндэтгэл хүлээх эрхтэй.',
     },
   },
@@ -106,7 +107,7 @@ export const categories: Category[] = [
       text: 'Харилцаанаас гадуурх таны амьдрал, найз нөхөд, сэтгэл санааны тэнцвэрийн тухай хэдэн асуулт.',
     },
     outro: {
-      high: 'Та өөрийгөө хадгалж чаддаг нь сайхан байна.',
+      high: 'Та өөрийн амьдралдаа ч цаг гаргадаг бололтой.',
       mid: 'Заримдаа сэтгэл санаа тань хамтрагчаас их хамаардаг бололтой. Энэ их түгээмэл.',
       low: 'Сэтгэл тань их зүйлийг дааж яваа юм шиг байна. Өөртөө ч анхаарал хэрэгтэй.',
     },
@@ -117,12 +118,112 @@ export const categories: Category[] = [
     description: 'Та хоёр энэ харилцааг хаашаа чиглэж байна гэж хардаг вэ.',
     intro: {
       title: 'Сүүлийн хэсэг: ирээдүй',
-      text: 'Бараг дууслаа. Та хоёр хаашаа явж байгаа, ирээдүйгээ хэрхэн төсөөлдөг тухай.',
+      text: 'Бараг дууслаа. Та хоёр ирээдүйгээ хэрхэн төсөөлдөг тухай асууя.',
     },
     outro: {
       high: 'Та хоёр нэг зүг рүү харж байгаа бололтой.',
       mid: 'Ирээдүйн талаар тодорхойгүй зүйлс байгаа бололтой.',
       low: 'Ирээдүйн талаар эргэлзээ байгааг ойлголоо.',
+    },
+  },
+
+  // Early stage (talking / dating) ------------------------------------------
+  {
+    id: 'interest',
+    label: 'Харилцан сонирхол',
+    description: 'Та хоёр бие биеэ хэр сонирхож, хэр хичээж байна вэ.',
+    intro: {
+      title: 'Та хоёр бие биеэ хэр сонирхож байна вэ?',
+      text: 'Хэн нь түрүүлж бичдэг, бие биеэ хэр сонирхдог тухай асууя.',
+    },
+    outro: {
+      high: 'Сонирхол хоёр талаас ирж байгаа бололтой. Энэ бол сайн эхлэл.',
+      mid: 'Сонирхол заримдаа тэнцүү, заримдаа нэг талд илүү байдаг бололтой. Эхэн үед энэ түгээмэл.',
+      low: 'Ихэнх хүчийг та гаргаж байгаа юм шиг санагдаж байна. Үүнийг тайландаа тодорхой тайлбарлана.',
+    },
+  },
+  {
+    id: 'consistency',
+    label: 'Тогтвортой байдал',
+    description: 'Тэр хэлсэндээ хүрдэг үү, тогтвортой байдаг уу.',
+    intro: {
+      title: 'Үг ба үйлдэл',
+      text: 'Хэлсэндээ хүрдэг эсэх, харьцаа нь өөрчлөгддөг эсэхийг асууя.',
+    },
+    outro: {
+      high: 'Тэр тогтвортой байдаг бололтой. Энэ бол маш сайн дохио.',
+      mid: 'Заримдаа тогтвортой, заримдаа тодорхойгүй байдаг бололтой.',
+      low: 'Тогтворгүй байдал таныг их эргэлзүүлж байгааг ойлголоо. Энэ бол чухал дохио.',
+    },
+  },
+  {
+    id: 'connection',
+    label: 'Холбоо',
+    description: 'Та хоёрын хооронд юу мэдрэгддэг вэ.',
+    intro: {
+      title: 'Та хоёрын хооронд юу мэдрэгддэг вэ?',
+      text: 'Яриа нийлдэг эсэх, түүний дэргэд өөрөөрөө байж чаддаг эсэхийг асууя.',
+    },
+    outro: {
+      high: 'Түүнтэй харилцахад танд таатай санагддаг бололтой.',
+      mid: 'Холбоо байгаа ч, одоохондоо бүрэн тодорхой биш бололтой.',
+      low: 'Холбоо одоохондоо сул мэдрэгдэж байна. Энэ нь юуг хэлж байгааг тайландаа харна.',
+    },
+  },
+  {
+    id: 'intentions',
+    label: 'Зорилго',
+    description: 'Та хоёр юу хайж байна вэ.',
+    intro: {
+      title: 'Та хоёр ямар харилцаа хүсэж байна вэ?',
+      text: 'Та өөрөө юу хүсэж байгаа, тэр юу хүсэж байгаагаа хэлсэн эсэхийг асууя.',
+    },
+    outro: {
+      high: 'Хүсэж буй харилцааныхаа талаар ярилцаж чаддаг бололтой.',
+      mid: 'Та хоёрын хүсэж буй зүйл одоохондоо бүрэн тодорхой биш бололтой.',
+      low: 'Та хоёр юу хайж байгаа нь тодорхойгүй эсвэл өөр байж магадгүй. Үүнийг анхааралтай харна.',
+    },
+  },
+  {
+    id: 'respect',
+    label: 'Хүндэтгэл',
+    description: 'Тэр таныг болон таны хил хязгаарыг хүндэтгэдэг үү.',
+    intro: {
+      title: 'Хүндэтгэл ба аюулгүй мэдрэмж',
+      text: 'Тэр таны хүсэл, шийдвэрийг хэр хүндэтгэдэг тухай асууя.',
+    },
+    outro: {
+      high: 'Тэр таныг хүндэтгэдэг бололтой. Энэ бол хамгийн чухал суурь.',
+      mid: 'Хүндэтгэл ихэнхдээ байгаа ч, зарим зүйл таныг бодогдуулж байгаа бололтой.',
+      low: 'Зарим зүйл таныг тавгүй болгож байгааг ойлголоо. Та хүндэтгэл хүлээх эрхтэй.',
+    },
+  },
+  {
+    id: 'values',
+    label: 'Нийцэл',
+    description: 'Амьдралын хэв маяг, үнэт зүйлс, ирээдүйн төлөвлөгөө.',
+    intro: {
+      title: 'Та хоёр хэр нийцдэг вэ?',
+      text: 'Та хоёрын амьдралын хэв маяг, хүсэл төлөвлөгөө хэр нийцдэгийг асууя.',
+    },
+    outro: {
+      high: 'Та хоёр олон зүйлээр нийцдэг бололтой.',
+      mid: 'Зарим зүйлээр нийцэж, зарим зүйл одоохондоо тодорхойгүй байна.',
+      low: 'Та хоёрын хооронд ялгаатай зүйлс байгаа бололтой. Эдгээр нь хэр чухал болохыг тайландаа харна.',
+    },
+  },
+  {
+    id: 'feelings',
+    label: 'Таны мэдрэмж',
+    description: 'Энэ харилцаа танд ямар мэдрэмж төрүүлдэг вэ.',
+    intro: {
+      title: 'Эцэст нь таны тухай',
+      text: 'Бараг дууслаа. Энэ хүнтэй харилцахад танд ямар санагддаг тухай асууя.',
+    },
+    outro: {
+      high: 'Энэ харилцаа танд тайван, сайхан мэдрэмж төрүүлдэг бололтой.',
+      mid: 'Сэтгэл хөдөлгөм ч, заримдаа түгшүүртэй байдаг бололтой.',
+      low: 'Энэ харилцаа танд хүнд тусаж байгааг мэдэрлээ. Таны мэдрэмж чухал.',
     },
   },
 ]
@@ -157,14 +258,22 @@ function negativeFrequency(flagHigh?: AnswerFlag): AnswerOption[] {
 }
 
 /** "Ихэвчлэн хэн…?" — balance questions. Equal effort scores highest. */
-function whoUsually(flagMostlyMe?: AnswerFlag): AnswerOption[] {
+function whoUsually(flagMostlyMe?: AnswerFlag, other = 'хамтрагч маань'): AnswerOption[] {
   return [
     { value: 'mostly_me', label: 'Ихэвчлэн би', balance: -1, score: 0.4, ...(flagMostlyMe ? { flag: flagMostlyMe } : {}) },
     { value: 'slightly_me', label: 'Арай илүү би', balance: -0.5, score: 0.8 },
     { value: 'equal', label: 'Ойролцоогоор адилхан', balance: 0, score: 1 },
-    { value: 'slightly_partner', label: 'Арай илүү хамтрагч маань', balance: 0.5, score: 0.8 },
-    { value: 'mostly_partner', label: 'Ихэвчлэн хамтрагч маань', balance: 1, score: 0.5 },
+    { value: 'slightly_partner', label: `Арай илүү ${other}`, balance: 0.5, score: 0.8 },
+    { value: 'mostly_partner', label: `Ихэвчлэн ${other}`, balance: 1, score: 0.5 },
   ]
+}
+
+/** Early-stage wording: the other person is "тэр", not yet "хамтрагч". */
+const whoUsuallyEarly = (flagMostlyMe?: AnswerFlag) => whoUsually(flagMostlyMe, 'тэр')
+
+/** Show these questions only on one track (see data/track.ts). */
+function onlyFor(track: Track, list: Question[]): Question[] {
+  return list.map((q) => ({ ...q, showIf: SHOW_FOR[track] }))
 }
 
 function yesNo(yesScore: number, noScore: number, flag?: { on: 'yes' | 'no'; flag: AnswerFlag }): AnswerOption[] {
@@ -180,10 +289,11 @@ function withReplies(options: AnswerOption[], replies: Record<string, string>): 
 }
 
 // ---------------------------------------------------------------------------
-// Questions — shown in array order.
+// Questions — shown in array order. The stage question (basics_type) splits the
+// flow: talking/dating get the early-stage set, everyone else the couple set.
 // ---------------------------------------------------------------------------
 
-export const questions: Question[] = [
+const basicsQuestions: Question[] = [
   // ТАНЫ ТУХАЙ ------------------------------------------------------------------
   {
     id: 'basics_gender',
@@ -218,7 +328,7 @@ export const questions: Question[] = [
     type: 'single_choice',
     analysisTags: ['context', 'stage'],
     options: [
-      { value: 'talking', label: 'Зүгээр чатлаж, танилцаж байгаа' },
+      { value: 'talking', label: 'Чатлаж, танилцаж байгаа' },
       { value: 'dating', label: 'Болзож байгаа' },
       { value: 'exclusive', label: 'Үерхэж байгаа' },
       { value: 'living_together', label: 'Хамт амьдарч байгаа' },
@@ -242,13 +352,123 @@ export const questions: Question[] = [
     ],
   },
   {
+    id: 'checkin_communication', category: 'basics', type: 'single_choice',
+    text: 'Чухал зүйл ярихад нөгөө хүн тань анхааралтай сонсож, ойлгохыг хичээдэг үү?',
+    helper: 'Сүүлийн 2–4 долоо хоногийг бодоорой. Дөнгөж танилцсан бол тэр хугацаагаа бодоорой.',
+    analysisTags: ['context', 'checkin', 'communication'],
+    options: [
+      { value: 'never', label: 'Огт үгүй' },
+      { value: 'rarely', label: 'Ховор' },
+      { value: 'sometimes', label: 'Заримдаа' },
+      { value: 'often', label: 'Ихэнхдээ' },
+      { value: 'almost_always', label: 'Бараг үргэлж' },
+      { value: 'not_yet', label: 'Одоохондоо хэлж мэдэхгүй / ийм зүйл тохиолдоогүй' },
+    ],
+  },
+  {
+    id: 'checkin_effort', category: 'basics', type: 'single_choice',
+    text: 'Холбоотой байх, хамт цаг гаргахад та хоёр хоёулаа санаачилга гаргадаг уу?',
+    helper: 'Сүүлийн 2–4 долоо хоногийг бодоорой. Дөнгөж танилцсан бол тэр хугацаагаа бодоорой.',
+    analysisTags: ['context', 'checkin', 'effort'],
+    options: [
+      { value: 'never', label: 'Огт үгүй' },
+      { value: 'rarely', label: 'Ховор' },
+      { value: 'sometimes', label: 'Заримдаа' },
+      { value: 'often', label: 'Ихэнхдээ' },
+      { value: 'almost_always', label: 'Бараг үргэлж' },
+      { value: 'not_yet', label: 'Одоохондоо хэлж мэдэхгүй / ийм зүйл тохиолдоогүй' },
+    ],
+  },
+  {
+    id: 'checkin_boundaries', category: 'basics', type: 'single_choice',
+    text: 'Та хүсэхгүй зүйлдээ үгүй гэж хэлэхэд таны шийдвэрийг хүндэтгэдэг үү?',
+    helper: 'Сүүлийн 2–4 долоо хоногийг бодоорой. Дөнгөж танилцсан бол тэр хугацаагаа бодоорой.',
+    analysisTags: ['context', 'checkin', 'boundaries'],
+    options: [
+      { value: 'never', label: 'Огт үгүй' },
+      { value: 'rarely', label: 'Ховор' },
+      { value: 'sometimes', label: 'Заримдаа' },
+      { value: 'often', label: 'Ихэнхдээ' },
+      { value: 'almost_always', label: 'Бараг үргэлж' },
+      { value: 'not_yet', label: 'Одоохондоо хэлж мэдэхгүй / ийм зүйл тохиолдоогүй' },
+    ],
+  },
+  {
+    id: 'basics_recent_change', category: 'basics', type: 'single_choice',
+    text: 'Сүүлийн үед та хоёрын хооронд юу өөрчлөгдсөн бэ?',
+    helper: 'Яг одоо ямар байгааг нь бодоорой. Өмнө нь шалгуулсан байсан ч өнөөдрийн байдлаар хариулж болно.',
+    analysisTags: ['context', 'trajectory'],
+    options: [
+      { value: 'closer', label: 'Илүү дотно болж байна' },
+      { value: 'steady', label: 'Ерөнхийдөө хэвээрээ' },
+      { value: 'distant', label: 'Холдоод байгаа юм шиг санагддаг' },
+      { value: 'repairing', label: 'Хэцүү үеийн дараа дахин ойлголцохыг хичээж байна' },
+      { value: 'too_soon', label: 'Дүгнэхэд арай эрт байна' },
+    ],
+  },
+  {
+    id: 'basics_change_context', category: 'basics', type: 'single_choice',
+    text: 'Энэ өөрчлөлттэй давхацсан зүйл бий юу?',
+    visibleWhen: [{ question: 'basics_recent_change', in: ['distant', 'repairing'] }],
+    analysisTags: ['context', 'recent_stress'],
+    options: [
+      { value: 'outside_stress', label: 'Ажил, сургууль, эрүүл мэнд эсвэл гэр бүлийн ачаалал' },
+      { value: 'between_us', label: 'Та хоёрын хооронд болсон зүйл' },
+      { value: 'both', label: 'Аль аль нь' },
+      { value: 'unknown', label: 'Шалтгааныг нь сайн мэдэхгүй' },
+    ],
+  },
+  {
+    id: 'basics_met_how',
+    category: 'basics',
+    text: 'Та хоёр хэрхэн танилцсан бэ?',
+    type: 'single_choice',
+    analysisTags: ['context', 'stage'],
+    showIf: SHOW_FOR.early,
+    options: [
+      { value: 'app', label: 'Танилцах апп-аар' },
+      { value: 'social', label: 'Сошиал сүлжээгээр' },
+      { value: 'friends', label: 'Найз нөхдөөр дамжуулж' },
+      { value: 'work_school', label: 'Ажил эсвэл сургууль дээр' },
+      { value: 'other', label: 'Өөр газар' },
+    ],
+  },
+  {
+    id: 'basics_met_in_person',
+    category: 'basics',
+    text: 'Та хоёр биечлэн уулзаж байсан уу?',
+    type: 'single_choice',
+    analysisTags: ['context', 'time_together'],
+    showIf: SHOW_FOR.early,
+    options: [
+      { value: 'not_yet', label: 'Одоохондоо үгүй, зөвхөн чатладаг' },
+      { value: 'once', label: 'Нэг удаа' },
+      { value: 'few_times', label: 'Хэд хэдэн удаа' },
+      { value: 'regularly', label: 'Тогтмол уулздаг' },
+    ],
+  },
+  {
+    id: 'basics_chat_frequency',
+    category: 'basics',
+    text: 'Та хоёр хэр олон чатлаж, ярьдаг вэ?',
+    type: 'single_choice',
+    analysisTags: ['context', 'time_together'],
+    showIf: { question: 'basics_type', in: ['talking'] },
+    options: [
+      { value: 'all_day', label: 'Өдөржин бараг тасралтгүй' },
+      { value: 'daily', label: 'Өдөр бүр' },
+      { value: 'several_week', label: 'Долоо хоногт хэд хэдэн удаа' },
+      { value: 'irregular', label: 'Тогтмол бус, хааяа' },
+    ],
+  },
+  {
     id: 'basics_frequency',
     category: 'basics',
     text: 'Одоогоор та хоёр хэр олон уулздаг вэ?',
     type: 'single_choice',
     analysisTags: ['context', 'time_together'],
-    // Couples who share a home get the quality-time question below instead.
-    showIf: { question: 'basics_type', notIn: ['living_together', 'married'] },
+    // People who are only talking get the chat questions above; couples who share a home get quality time below.
+    showIf: { question: 'basics_type', notIn: ['talking', 'living_together', 'married'] },
     options: [
       { value: 'daily', label: 'Бараг өдөр бүр' },
       { value: 'several_week', label: 'Долоо хоногт хэд хэдэн удаа' },
@@ -260,8 +480,8 @@ export const questions: Question[] = [
   {
     id: 'basics_quality_time',
     category: 'basics',
-    text: 'Хамтдаа чанартай цаг хэр их өнгөрөөдөг вэ?',
-    helper: 'Утас, ажил, гэрийн ажилгүйгээр — зөвхөн та хоёр.',
+    text: 'Та хоёр бие биедээ цаг гаргаж чаддаг уу?',
+    helper: 'Ажил, утас зэрэгт сатаарахгүйгээр хамт өнгөрөөдөг цагаа бодоорой.',
     type: 'single_choice',
     analysisTags: ['context', 'time_together', 'quality_time'],
     showIf: { question: 'basics_type', in: ['living_together', 'married'] },
@@ -273,7 +493,10 @@ export const questions: Question[] = [
       { value: 'almost_never', label: 'Бараг үгүй' },
     ],
   },
+]
 
+/** Committed relationships: exclusive, living together, engaged, married. */
+const coupleQuestions: Question[] = [
   // ХАРИЛЦАН ЯРИА ------------------------------------------------------------
   {
     id: 'comm_initiates',
@@ -285,21 +508,24 @@ export const questions: Question[] = [
   },
   {
     id: 'comm_if_not_first',
+    visibleWhen: [{ question: 'comm_initiates', in: ['mostly_me', 'slightly_me'] }],
     category: 'communication',
-    text: 'Хэрвээ та түрүүлж бичихгүй бол ихэвчлэн юу болдог вэ?',
+    text: 'Та түрүүлж бичээгүй үед хамтрагч тань өөрөө холбогддог уу?',
     type: 'single_choice',
     analysisTags: ['communication', 'initiation', 'reciprocity'],
     options: [
       { value: 'quickly', label: 'Тэр удалгүй өөрөө холбогддог', score: 1 },
-      { value: 'eventually', label: 'Эцэст нь тэр холбогддог', score: 0.7 },
-      { value: 'long_time', label: 'Нэлээд удаан хугацаа өнгөрч магадгүй', score: 0.3, flag: 'initiation_imbalance' },
-      { value: 'no_contact', label: 'Бид огт ярихгүй байж ч магадгүй', score: 0, flag: 'initiation_imbalance' },
+      { value: 'eventually', label: 'Хэсэг хугацааны дараа холбогддог', score: 0.7 },
+      { value: 'long_time', label: 'Нэлээд удсаны дараа холбогддог', score: 0.3, flag: 'initiation_imbalance' },
+      { value: 'no_contact', label: 'Тэр өөрөө холбогдож байгаагүй', score: 0, flag: 'initiation_imbalance' },
+      { value: 'not_yet', label: 'Ийм үе тохиолдоогүй / хэлж мэдэхгүй' },
     ],
   },
   {
     id: 'comm_heard',
+    visibleWhen: [{ question: 'checkin_communication', in: ['never', 'rarely', 'sometimes'] }],
     category: 'communication',
-    text: 'Чухал зүйлийн талаар ярихад таныг сонсож байна гэж мэдрэгддэг үү?',
+    text: 'Дутуу ярилцсан сэдвээ хамтрагч тань дараа нь өөрөө сөхдөг үү?',
     type: 'scale',
     weight: 1.5,
     analysisTags: ['communication', 'emotional_support'],
@@ -307,8 +533,9 @@ export const questions: Question[] = [
   },
   {
     id: 'comm_interest',
+    visibleWhen: [{ question: 'checkin_communication', in: ['never', 'rarely', 'sometimes'] }],
     category: 'communication',
-    text: 'Хамтрагч тань таны бодол, мэдрэмжийг үнэхээр сонирхдог юм шиг санагддаг уу?',
+    text: 'Хамтрагч тань таны бодол, мэдрэмжийг сонирхож асуудаг уу?',
     type: 'scale',
     analysisTags: ['communication', 'emotional_support', 'curiosity'],
     options: positiveFrequency(),
@@ -316,7 +543,8 @@ export const questions: Question[] = [
   {
     id: 'comm_share_hurt',
     category: 'communication',
-    text: 'Ямар нэг зүйл таныг гомдоосон үед та хамтрагчийнхаа хариу үйлдлээс айхгүйгээр хэлж чаддаг уу?',
+    text: 'Гомдсон зүйлээ хамтрагчдаа айхгүйгээр хэлж чаддаг уу?',
+    helper: 'Хэлсний дараа яаж хүлээж авах бол гэж айдаг эсэхээ бодоорой.',
     type: 'scale',
     weight: 1.5,
     analysisTags: ['communication', 'emotional_safety'],
@@ -328,15 +556,16 @@ export const questions: Question[] = [
   {
     id: 'comm_calm',
     category: 'communication',
-    text: 'Санал зөрөлдөөнөө ихэвчлэн тайван ярилцаж чаддаг уу?',
+    text: 'Санал зөрсөн үедээ тайван ярилцаж чаддаг уу?',
     type: 'scale',
     analysisTags: ['communication', 'conflict_style'],
     options: positiveFrequency(),
   },
   {
     id: 'comm_begging',
+    visibleWhen: [{ question: 'checkin_effort', in: ['never', 'rarely', 'sometimes'] }],
     category: 'communication',
-    text: 'Та анхаарал гуйж байгаа юм шиг мэдрэмж төрдөг үү?',
+    text: 'Анхаарал тавиач гэж дахин дахин гуйх хэрэг гардаг уу?',
     type: 'scale',
     analysisTags: ['communication', 'reciprocity', 'attention'],
     options: withReplies(negativeFrequency('attention_seeking'), {
@@ -346,8 +575,9 @@ export const questions: Question[] = [
   },
   {
     id: 'comm_avoiding',
+    visibleWhen: [{ question: 'comm_share_hurt', in: ['never', 'rarely', 'sometimes'] }],
     category: 'communication',
-    text: 'Хамтрагчтайгаа ярихаас зайлсхийж байгаа чухал зүйл танд бий юу?',
+    text: 'Ярилцмаар байгаа ч хэлж зүрхлэхгүй зүйл танд бий юу?',
     type: 'yes_no',
     analysisTags: ['communication', 'avoidance'],
     options: yesNo(0.3, 1),
@@ -357,7 +587,7 @@ export const questions: Question[] = [
   {
     id: 'aff_initiates',
     category: 'affection',
-    text: 'Ихэвчлэн хэн нь энхрийлэл, дотно байдлыг санаачилдаг вэ?',
+    text: 'Тэврэх, үнсэх зэрэг дотно байдлыг хэн нь түрүүлж санаачилдаг вэ?',
     type: 'single_choice',
     analysisTags: ['affection', 'initiation', 'balance'],
     options: whoUsually(),
@@ -365,7 +595,7 @@ export const questions: Question[] = [
   {
     id: 'aff_wanted',
     category: 'affection',
-    text: 'Та хамтрагчдаа хүсэгдэж байна гэж мэдэрдэг үү?',
+    text: 'Хамтрагч тань тантай дотно байхыг хүсдэг нь мэдрэгддэг үү?',
     type: 'scale',
     weight: 1.5,
     analysisTags: ['affection', 'desire', 'security'],
@@ -373,8 +603,9 @@ export const questions: Question[] = [
   },
   {
     id: 'aff_unprompted',
+    visibleWhen: [{ question: 'aff_wanted', in: ['never', 'rarely', 'sometimes'] }],
     category: 'affection',
-    text: 'Хамтрагч тань таныг гуйгаагүй байхад хайр, энхрийллээ хэр олон илэрхийлдэг вэ?',
+    text: 'Хамтрагч тань өөрөө санаачилж хайр халамжаа илэрхийлдэг үү?',
     type: 'scale',
     analysisTags: ['affection', 'reciprocity'],
     options: positiveFrequency(),
@@ -387,29 +618,30 @@ export const questions: Question[] = [
     weight: 1.25,
     analysisTags: ['affection', 'trajectory'],
     options: [
-      { value: 'much_closer', label: 'Хамаагүй ойр болсон', score: 1 },
-      { value: 'little_closer', label: 'Арай ойр болсон', score: 0.85 },
+      { value: 'much_closer', label: 'Илүү дотно болсон', score: 1 },
+      { value: 'little_closer', label: 'Бага зэрэг дотноссон', score: 0.85 },
       { value: 'same', label: 'Бараг хэвээрээ', score: 0.65 },
       {
         value: 'little_distant',
         label: 'Арай хөндийрсөн',
         score: 0.3,
         flag: 'drifting_apart',
-        reply: 'Ойлголоо. Ийм өөрчлөлтийг олон хос мэдэрдэг бөгөөд үүнийг засах боломжтой.',
+        reply: 'Хөндийрснийг анзаарах амаргүй байж болно. Хуваалцсанд баярлалаа.',
       },
       {
         value: 'much_distant',
         label: 'Нэлээд хөндийрсөн',
         score: 0,
         flag: 'drifting_apart',
-        reply: 'Ойлголоо. Ийм өөрчлөлтийг олон хос мэдэрдэг бөгөөд үүнийг засах боломжтой.',
+        reply: 'Хөндийрснийг анзаарах амаргүй байж болно. Хуваалцсанд баярлалаа.',
       },
     ],
   },
   {
     id: 'aff_share_news',
+    visibleWhen: [{ question: 'checkin_communication', in: ['never', 'rarely', 'sometimes'] }],
     category: 'affection',
-    text: 'Сэтгэл хөдөлгөм зүйл тохиоход хамтрагч тань таны хамгийн түрүүнд хэлэхийг хүсдэг хүмүүсийн нэг байдаг уу?',
+    text: 'Сайхан мэдээгээ хамтрагчдаа түрүүлж хэлмээр санагддаг уу?',
     type: 'single_choice',
     analysisTags: ['affection', 'friendship'],
     options: [
@@ -423,7 +655,8 @@ export const questions: Question[] = [
   {
     id: 'aff_quiet_time',
     category: 'affection',
-    text: 'Онцгой зүйл хийхгүй байсан ч хамтдаа цагийг өнгөрөөх танд таатай байдаг уу?',
+    text: 'Зүгээр л хамт байх танд таатай юу?',
+    helper: 'Заавал гадуур гарах, онцгой зүйл хийхгүй байсан ч гэсэн.',
     type: 'scale',
     analysisTags: ['affection', 'friendship', 'quality_time'],
     options: withReplies(positiveFrequency(), {
@@ -436,7 +669,7 @@ export const questions: Question[] = [
   {
     id: 'effort_plans',
     category: 'effort',
-    text: 'Ихэвчлэн хэн нь болзоо, хамтдаа хийх зүйлсийг төлөвлөдөг вэ?',
+    text: 'Хамтдаа юу хийхээ ихэвчлэн хэн нь төлөвлөдөг вэ?',
     type: 'single_choice',
     analysisTags: ['effort', 'initiation', 'balance'],
     options: whoUsually(),
@@ -444,7 +677,7 @@ export const questions: Question[] = [
   {
     id: 'effort_resolves',
     category: 'effort',
-    text: 'Харилцаанд үүссэн асуудлыг ихэвчлэн хэн нь шийдэхийг хичээдэг вэ?',
+    text: 'Асуудал гарахад хэн нь шийдэхийг илүү хичээдэг вэ?',
     type: 'single_choice',
     weight: 1.25,
     analysisTags: ['effort', 'repair', 'balance'],
@@ -452,8 +685,9 @@ export const questions: Question[] = [
   },
   {
     id: 'effort_more',
+    visibleWhen: [{ question: 'checkin_effort', in: ['never', 'rarely', 'sometimes'] }],
     category: 'effort',
-    text: 'Та харилцаандаа хүлээн авч байгаагаасаа илүү хүч чармайлт гаргаж байна гэж санагддаг уу?',
+    text: 'Энэ харилцааны төлөө та илүү их хичээгээд байгаа юм шиг санагддаг уу?',
     type: 'single_choice',
     weight: 1.5,
     analysisTags: ['effort', 'reciprocity', 'balance'],
@@ -481,15 +715,16 @@ export const questions: Question[] = [
   },
   {
     id: 'effort_one_week',
+    visibleWhen: [{ question: 'effort_more', in: ['often', 'almost_always'] }],
     category: 'effort',
-    text: 'Хэрвээ та нэг долоо хоног хичээхээ багасгавал юу болно гэж бодож байна?',
+    text: 'Та ачааллаа багасгах хэрэгтэй үед хамтрагч тань яаж хүлээж авдаг вэ?',
     type: 'single_choice',
     weight: 1.25,
     analysisTags: ['effort', 'reciprocity', 'security'],
     options: [
-      { value: 'nothing', label: 'Бараг юу ч өөрчлөгдөхгүй', score: 0.8 },
-      { value: 'partner_steps_up', label: 'Хамтрагч маань анзаарч, өөрөө хичээнэ', score: 1 },
-      { value: 'distant', label: 'Бид мэдэгдэхүйц хөндийрнө', score: 0.3, flag: 'effort_imbalance' },
+      { value: 'nothing', label: 'Холбоо, халамж хэвээрээ байдаг', score: 0.8 },
+      { value: 'partner_steps_up', label: 'Ойлгож, өөрөө илүү санаачилга гаргадаг', score: 1 },
+      { value: 'distant', label: 'Холбоо мэдэгдэхүйц багасдаг', score: 0.3, flag: 'effort_imbalance' },
       {
         value: 'fall_apart',
         label: 'Харилцаа маань нурчих вий гэж айдаг',
@@ -501,6 +736,19 @@ export const questions: Question[] = [
   },
 
   // ИТГЭЛЦЭЛ -----------------------------------------------------------------
+  {
+    id: 'couple_needs_response', category: 'effort', type: 'single_choice',
+    text: 'Хэрэгтэй байгаа зүйлээ хэлэхэд хамтрагч тань яаж хүлээж авдаг вэ?',
+    helper: 'Жишээ нь хамт цаг өнгөрөөх, холбоо барих эсвэл өөртөө цаг гаргах тухай.',
+    analysisTags: ['reciprocity', 'repair', 'boundaries'],
+    options: [
+      { value: 'acts', label: 'Сонсож, өөрчлөхийг хичээдэг', score: 1 },
+      { value: 'inconsistent', label: 'Сонсдог ч өөрчлөлт нь удаан үргэлжилдэггүй', score: 0.5 },
+      { value: 'dismisses', label: 'Үл тоодог эсвэл намайг хэт их зүйл хүсэж байна гэдэг', score: 0.1, flag: 'effort_imbalance' },
+      { value: 'afraid', label: 'Яаж хүлээж авахаас нь айгаад хэлж чаддаггүй', score: 0, flag: 'fear_of_reaction' },
+      { value: 'not_discussed', label: 'Одоохондоо энэ тухай ярилцаагүй' },
+    ],
+  },
   {
     id: 'trust_level',
     category: 'trust',
@@ -519,7 +767,7 @@ export const questions: Question[] = [
   {
     id: 'trust_lose_interest',
     category: 'trust',
-    text: 'Хамтрагч тань танд сонирхолгүй болчих вий гэж та байнга санаа зовдог уу?',
+    text: 'Хамтрагч тань танд сонирхолгүй болох вий гэж санаа зовдог уу?',
     type: 'scale',
     analysisTags: ['trust', 'security', 'anxiety'],
     options: negativeFrequency(),
@@ -535,8 +783,8 @@ export const questions: Question[] = [
   {
     id: 'trust_reasons',
     category: 'trust',
-    text: 'Хамтрагч тань танд өөрт нь итгэхгүй байх бодит шалтгаан өгч байсан уу?',
-    helper: 'Ерөнхий санаа зовнил биш, бодит тохиолдлуудыг бодоорой.',
+    text: 'Хамтрагч тань итгэлийг тань алдах зүйл хийж байсан уу?',
+    helper: 'Таамаг биш, болсон явдлыг бодоорой.',
     type: 'single_choice',
     weight: 1.5,
     analysisTags: ['trust', 'fidelity', 'history'],
@@ -562,7 +810,7 @@ export const questions: Question[] = [
   {
     id: 'trust_time_apart',
     category: 'trust',
-    text: 'Хамтрагч тань тантай хамт биш цагийг өнгөрөөхөд та хэр тайван байдаг вэ?',
+    text: 'Хамтрагчаасаа тусдаа байхдаа та хэр тайван байдаг вэ?',
     type: 'single_choice',
     analysisTags: ['trust', 'security', 'independence'],
     options: [
@@ -582,7 +830,8 @@ export const questions: Question[] = [
     type: 'single_choice',
     analysisTags: ['conflict', 'frequency'],
     options: [
-      { value: 'rarely', label: 'Ховор эсвэл огт гардаггүй', score: 1 },
+      { value: 'never', label: 'Одоохондоо ноцтой маргалдаж байгаагүй' },
+      { value: 'rarely', label: 'Ховор', score: 1 },
       { value: 'few_year', label: 'Жилд хэдхэн удаа', score: 0.8 },
       { value: 'monthly', label: 'Сард нэг орчим', score: 0.55 },
       { value: 'weekly', label: 'Долоо хоногт нэг орчим', score: 0.25 },
@@ -592,7 +841,8 @@ export const questions: Question[] = [
   {
     id: 'conflict_harm',
     category: 'conflict',
-    text: 'Маргааны үеэр та хоёрын хэн нэг нь нөгөөгөө доромжлох, шоолох, сүрдүүлэх эсвэл санаатайгаар гутаах явдал гардаг уу?',
+    text: 'Маргааны үеэр хэн нэг нь нөгөөгөө доромжилж, гутааж эсвэл сүрдүүлдэг үү?',
+    helper: 'Шоолох, зориуд эвгүй байдалд оруулах зэрэг үйлдлийг ч бодоорой.',
     type: 'single_choice',
     weight: 2,
     analysisTags: ['conflict', 'respect', 'safety'],
@@ -605,13 +855,14 @@ export const questions: Question[] = [
   },
   {
     id: 'conflict_after',
+    visibleWhen: [{ question: 'conflict_frequency', notIn: ['never'] }],
     category: 'conflict',
     text: 'Маргааны дараа ихэвчлэн юу болдог вэ?',
     type: 'single_choice',
     weight: 1.25,
     analysisTags: ['conflict', 'repair'],
     options: [
-      { value: 'resolve', label: 'Бид ярилцаж, шийддэг', score: 1, reply: 'Маш сайн. Энэ бол эрүүл харилцааны нэг шинж.' },
+      { value: 'resolve', label: 'Бид ярилцаж, шийддэг', score: 1, reply: 'Ярилцаад шийдэлд хүрч чаддаг нь чухал.' },
       { value: 'apologize', label: 'Бидний нэг нь уучлалт гуйдаг', score: 0.7 },
       { value: 'ignore', label: 'Юу ч болоогүй юм шиг байдаг', score: 0.35 },
       { value: 'gives_in', label: 'Нэг нь бууж өгдөг', score: 0.3 },
@@ -621,14 +872,16 @@ export const questions: Question[] = [
   },
   {
     id: 'conflict_recurring',
+    visibleWhen: [{ question: 'conflict_frequency', notIn: ['never'] }],
     category: 'conflict',
-    text: 'Ижил асуудлууд дахин дахин давтагддаг уу?',
+    text: 'Ижил асуудлаас болж дахин дахин маргалддаг уу?',
     type: 'scale',
     analysisTags: ['conflict', 'repair', 'patterns'],
     options: negativeFrequency('unresolved_conflict'),
   },
   {
     id: 'conflict_reach_out',
+    visibleWhen: [{ question: 'conflict_frequency', notIn: ['never'] }],
     category: 'conflict',
     text: 'Маргааны дараа ихэвчлэн хэн нь түрүүлж эвлэрэхийг оролддог вэ?',
     type: 'single_choice',
@@ -640,7 +893,8 @@ export const questions: Question[] = [
   {
     id: 'indep_own_life',
     category: 'independence',
-    text: 'Та өөрийн хобби, найз нөхөд, зорилгоо хадгалж чаддаг уу?',
+    text: 'Харилцаанаасаа гадна өөрийн амьдралдаа цаг гаргаж чаддаг уу?',
+    helper: 'Найз нөхөд, сонирхдог зүйлс, өөрийн зорилгодоо гаргадаг цагаа бодоорой.',
     type: 'single_choice',
     analysisTags: ['independence', 'identity'],
     options: [
@@ -654,11 +908,11 @@ export const questions: Question[] = [
   {
     id: 'indep_anxiety',
     category: 'independence',
-    text: 'Хамтрагч тань хэдэн цагийн турш хариу өгөхгүй бол та хэр их түгшдэг вэ?',
+    text: 'Хамтрагч тань хэдэн цаг хариу бичихгүй бол хэр их санаа зовдог вэ?',
     type: 'single_choice',
     analysisTags: ['independence', 'anxiety', 'security'],
     options: [
-      { value: 'not_at_all', label: 'Огт түгшдэггүй', score: 1 },
+      { value: 'not_at_all', label: 'Огт санаа зовдоггүй', score: 1 },
       { value: 'slightly', label: 'Бага зэрэг', score: 0.75 },
       { value: 'moderately', label: 'Дунд зэрэг', score: 0.45 },
       { value: 'very', label: 'Маш их', score: 0.2, flag: 'emotional_dependence' },
@@ -667,8 +921,9 @@ export const questions: Question[] = [
   },
   {
     id: 'indep_mood',
+    visibleWhen: [{ question: 'indep_anxiety', in: ['moderately', 'very', 'extremely'] }],
     category: 'independence',
-    text: 'Таны сэтгэл санаа тухайн өдөр хамтрагч тань тантай хэрхэн харьцсанаас их хамаардаг уу?',
+    text: 'Хамтрагчийн тань харьцаанаас тухайн өдрийн сэтгэл санаа тань их хамаардаг уу?',
     type: 'scale',
     analysisTags: ['independence', 'emotional_regulation'],
     options: negativeFrequency('emotional_dependence'),
@@ -676,7 +931,7 @@ export const questions: Question[] = [
   {
     id: 'indep_day_apart',
     category: 'independence',
-    text: 'Хамтрагчтайгаа огт холбогдохгүйгээр бүтэн өдрийг тайван, таатай өнгөрөөж чадах уу?',
+    text: 'Нэг өдөр холбоо барихгүй байсан ч та тайван байж чадах уу?',
     type: 'single_choice',
     analysisTags: ['independence', 'security'],
     options: [
@@ -689,6 +944,31 @@ export const questions: Question[] = [
   },
 
   // ИРЭЭДҮЙ ------------------------------------------------------------------
+  {
+    id: 'future_shared_decisions', category: 'future', type: 'single_choice',
+    text: 'Хамтын амьдралын чухал шийдвэрт таны саналыг хэр тусгадаг вэ?',
+    helper: 'Мөнгө, амьдрах газар эсвэл өдөр тутмын үүргээ хэрхэн шийддэгээ бодоорой.',
+    visibleWhen: [{ question: 'basics_type', in: ['living_together', 'engaged', 'married'] }],
+    analysisTags: ['future', 'shared_decisions', 'reciprocity'],
+    options: [
+      { value: 'together', label: 'Хоёулангийн саналыг сонсож, хамт шийддэг', score: 1 },
+      { value: 'uneven', label: 'Заримдаа нэгнийх нь санал илүү давамгайлдаг', score: 0.5 },
+      { value: 'excluded', label: 'Миний саналыг бараг асуудаггүй', score: 0.1, flag: 'effort_imbalance' },
+      { value: 'not_yet', label: 'Одоохондоо ийм шийдвэр гаргаагүй' },
+    ],
+  },
+  {
+    id: 'future_readiness', category: 'future', type: 'single_choice',
+    text: 'Гэрлэх тухай бодоход танд одоо ямар санагддаг вэ?',
+    visibleWhen: [{ question: 'basics_type', in: ['engaged'] }],
+    analysisTags: ['future', 'readiness', 'boundaries'],
+    options: [
+      { value: 'ready', label: 'Өөрөө хүсэж байгаа, шийдвэртээ итгэлтэй байна', score: 1 },
+      { value: 'questions', label: 'Хүсэж байгаа ч эхлээд ярилцах зүйлс бий', score: 0.6 },
+      { value: 'more_time', label: 'Надад илүү хугацаа хэрэгтэй' },
+      { value: 'pressure', label: 'Бусдын хүлээлт, шахалтаас болж зөвшөөрсөн мэт санагддаг', score: 0, flag: 'boundary_pressure' },
+    ],
+  },
   {
     id: 'future_discussed',
     category: 'future',
@@ -706,7 +986,7 @@ export const questions: Question[] = [
   {
     id: 'future_align',
     category: 'future',
-    text: 'Та хоёрын ирээдүйн хүлээлт нийцдэг гэж та бодож байна уу?',
+    text: 'Ирээдүйн тухай та хоёрын хүсэл, төлөвлөгөө хэр нийцдэг вэ?',
     type: 'single_choice',
     weight: 1.25,
     analysisTags: ['future', 'alignment'],
@@ -721,7 +1001,7 @@ export const questions: Question[] = [
   {
     id: 'future_build',
     category: 'future',
-    text: 'Та энэ хүнтэй хамт амьдралаа цогцлоохыг төсөөлж чадах уу?',
+    text: 'Энэ хүнтэй ирээдүйгээ хамт төсөөлж чаддаг уу?',
     type: 'single_choice',
     weight: 1.25,
     analysisTags: ['future', 'commitment'],
@@ -729,14 +1009,14 @@ export const questions: Question[] = [
       { value: 'definitely', label: 'Мэдээж', score: 1 },
       { value: 'probably', label: 'Магадгүй', score: 0.75 },
       { value: 'not_sure', label: 'Сайн мэдэхгүй', score: 0.4 },
-      { value: 'probably_not', label: 'Магадгүй үгүй', score: 0.15 },
+      { value: 'probably_not', label: 'Үгүй байх', score: 0.15 },
       { value: 'no', label: 'Үгүй', score: 0 },
     ],
   },
   {
     id: 'future_included',
     category: 'future',
-    text: 'Хамтрагч тань таныг ирээдүйнхээ нэг хэсэг гэж хардаг гэж та мэдэрдэг үү?',
+    text: 'Хамтрагч тань ирээдүйнхээ төлөвлөгөөнд таныг багтаадаг уу?',
     type: 'single_choice',
     analysisTags: ['future', 'security', 'commitment'],
     options: [
@@ -750,22 +1030,22 @@ export const questions: Question[] = [
   {
     id: 'future_three_years',
     category: 'future',
-    text: 'Хэрвээ ирэх 3 жилийн турш та хоёрын харилцаанд юу ч өөрчлөгдөхгүй бол та ямар мэдрэмж төрөх вэ?',
+    text: 'Харилцаа тань энэ хэвээрээ 3 жил үргэлжилбэл танд ямар санагдах вэ?',
     type: 'single_choice',
     weight: 2,
     analysisTags: ['future', 'satisfaction', 'overall'],
     options: [
-      { value: 'very_happy', label: 'Маш баяртай байна', score: 1, reply: 'Сайхан байна. Энэ бол маш том давуу тал.' },
-      { value: 'mostly_happy', label: 'Ихэнхдээ баяртай байна', score: 0.75 },
+      { value: 'very_happy', label: 'Маш сайхан санагдана', score: 1, reply: 'Сайхан байна. Энэ бол маш том давуу тал.' },
+      { value: 'mostly_happy', label: 'Ерөнхийдөө сайхан санагдана', score: 0.75 },
       { value: 'unsure', label: 'Эргэлзэж байна', score: 0.4 },
-      { value: 'unhappy', label: 'Баярлахгүй', score: 0.15, flag: 'status_quo_unhappy', reply: 'Үнэнээ хэлсэнд баярлалаа. Өөрчлөлт хүсэх нь зүйн хэрэг.' },
-      { value: 'would_not_want', label: 'Би ийм байхыг хүсэхгүй', score: 0, flag: 'status_quo_unhappy', reply: 'Үнэнээ хэлсэнд баярлалаа. Өөрчлөлт хүсэх нь зүйн хэрэг.' },
+      { value: 'unhappy', label: 'Сэтгэл хангалуун биш байна', score: 0.15, flag: 'status_quo_unhappy', reply: 'Хуваалцсанд баярлалаа. Өөрчлөлт хүсэж болно.' },
+      { value: 'would_not_want', label: 'Би ийм байхыг хүсэхгүй', score: 0, flag: 'status_quo_unhappy', reply: 'Хуваалцсанд баярлалаа. Өөрчлөлт хүсэж болно.' },
     ],
   },
   {
     id: 'final_wish',
     category: 'future',
-    text: 'Хамтрагч тань таны мэдрэмжийн талаар ойлгоосой гэж хүсдэг ганц зүйл юу вэ?',
+    text: 'Таны мэдрэмжийн талаар хамтрагч тань юуг ойлгоосой гэж хүсдэг вэ?',
     helper: 'Заавал биш. Нэр болон таныг таних боломжтой мэдээлэл бичихгүй байхыг хүсье.',
     type: 'text',
     optional: true,
@@ -774,3 +1054,580 @@ export const questions: Question[] = [
     analysisTags: ['open_reflection'],
   },
 ]
+
+/**
+ * Talking / dating: people getting to know each other who mostly want to know
+ * whether this could work. Focus on mutual interest, consistency, intentions,
+ * respect and fit — the early signals that matter most.
+ */
+const earlyQuestions: Question[] = [
+  // ХАРИЛЦАН СОНИРХОЛ --------------------------------------------------------
+  {
+    id: 'int_initiates',
+    category: 'interest',
+    text: 'Ихэвчлэн хэн нь түрүүлж бичдэг вэ?',
+    type: 'single_choice',
+    analysisTags: ['interest', 'initiation', 'balance'],
+    options: whoUsuallyEarly('initiation_imbalance'),
+  },
+  {
+    id: 'int_if_not_first',
+    visibleWhen: [{ question: 'int_initiates', in: ['mostly_me', 'slightly_me'] }],
+    category: 'interest',
+    text: 'Та түрүүлж бичээгүй үед тэр өөрөө холбогддог уу?',
+    type: 'single_choice',
+    weight: 1.5,
+    analysisTags: ['interest', 'initiation', 'reciprocity'],
+    options: [
+      { value: 'quickly', label: 'Тэр удалгүй өөрөө бичдэг', score: 1 },
+      { value: 'eventually', label: 'Нэг хоёр хоногийн дараа бичдэг', score: 0.6 },
+      { value: 'rarely', label: 'Ховор бичдэг', score: 0.2, flag: 'initiation_imbalance' },
+      {
+        value: 'never',
+        label: 'Бараг хэзээ ч бичдэггүй',
+        score: 0,
+        flag: 'initiation_imbalance',
+        reply: 'Ойлголоо. Ганцаараа холбоог барих их ядраадаг. Үүнийг тайландаа тодорхой харна.',
+      },
+      { value: 'always_me', label: 'Мэдэхгүй — үргэлж би түрүүлж бичдэг' },
+    ],
+  },
+  {
+    id: 'int_questions',
+    category: 'interest',
+    text: 'Тэр таны амьдрал, бодлыг сонирхож асуудаг уу?',
+    type: 'scale',
+    weight: 1.25,
+    analysisTags: ['interest', 'curiosity', 'reciprocity'],
+    options: positiveFrequency(),
+  },
+  {
+    id: 'int_remembers',
+    visibleWhen: [{ question: 'int_questions', in: ['never', 'rarely', 'sometimes'] }],
+    category: 'interest',
+    text: 'Таны өмнө нь хэлсэн жижиг зүйлсийг тэр санаж байдаг уу?',
+    type: 'scale',
+    analysisTags: ['interest', 'attentiveness'],
+    options: positiveFrequency(),
+  },
+  {
+    id: 'int_plans',
+    visibleWhen: [{ question: 'basics_met_in_person', in: ['once', 'few_times', 'regularly'] }],
+    category: 'interest',
+    text: 'Уулзах эсвэл хамт юм хийх саналыг хэн нь гаргадаг вэ?',
+    type: 'single_choice',
+    analysisTags: ['interest', 'effort', 'balance'],
+    options: whoUsuallyEarly(),
+  },
+  {
+    id: 'int_reply',
+    visibleWhen: [{ question: 'checkin_communication', in: ['never', 'rarely', 'sometimes'] }],
+    category: 'interest',
+    text: 'Тэр ихэвчлэн яаж хариу бичдэг вэ?',
+    type: 'single_choice',
+    analysisTags: ['interest', 'communication'],
+    options: [
+      { value: 'engaged', label: 'Хурдан хариулж, яриа өрнүүлдэг', score: 1 },
+      { value: 'slow_warm', label: 'Удаж хариулдаг ч анхаарал тавьж ярилцдаг', score: 0.8 },
+      { value: 'short', label: 'Товчхон, нэг хоёр үгээр', score: 0.3 },
+      { value: 'varies', label: 'Заримдаа идэвхтэй, заримдаа алга болчихдог', score: 0.2, flag: 'mixed_signals' },
+    ],
+  },
+
+  // ТОГТВОРТОЙ БАЙДАЛ --------------------------------------------------------
+  {
+    id: 'cons_hot_cold',
+    category: 'consistency',
+    text: 'Тэр дотно харьцаж байснаа гэнэт хөндий болдог уу?',
+    type: 'scale',
+    weight: 1.5,
+    analysisTags: ['consistency', 'mixed_signals'],
+    options: withReplies(negativeFrequency('mixed_signals'), {
+      often: 'Ийм байдал хүнийг их эргэлзүүлдэг. Эргэлзэж байгаагаа хэлж болно.',
+      almost_always: 'Ийм байдал хүнийг их эргэлзүүлдэг. Эргэлзэж байгаагаа хэлж болно.',
+    }),
+  },
+  {
+    id: 'cons_disappear',
+    visibleWhen: [{ question: 'cons_hot_cold', in: ['sometimes', 'often', 'almost_always'] }],
+    category: 'consistency',
+    text: 'Тэр хэлэлгүйгээр хэд хоног холбоо тасалдаг уу?',
+    type: 'single_choice',
+    weight: 1.25,
+    analysisTags: ['consistency', 'reliability'],
+    options: [
+      { value: 'never', label: 'Үгүй', score: 1 },
+      { value: 'once', label: 'Нэг удаа болсон', score: 0.6 },
+      { value: 'few_times', label: 'Хэд хэдэн удаа', score: 0.2, flag: 'disappearing' },
+      {
+        value: 'often',
+        label: 'Байнга',
+        score: 0,
+        flag: 'disappearing',
+        reply: 'Хариу хүлээж суух их хэцүү. Таны мэдрэмж бүрэн ойлгомжтой.',
+      },
+    ],
+  },
+  {
+    id: 'cons_follow_through',
+    category: 'consistency',
+    text: 'Уулзахаар тохирсон бол тэр хэлсэндээ хүрдэг үү?',
+    type: 'single_choice',
+    weight: 1.25,
+    analysisTags: ['consistency', 'reliability', 'effort'],
+    options: [
+      { value: 'always', label: 'Тийм, үргэлж', score: 1 },
+      { value: 'mostly', label: 'Ихэнхдээ', score: 0.75 },
+      { value: 'reschedules', label: 'Заримдаа цуцалдаг ч өөр цаг санал болгодог', score: 0.55 },
+      { value: 'cancels', label: 'Ихэвчлэн цуцалдаг эсвэл тодорхойгүй болгодог', score: 0.1, flag: 'mixed_signals' },
+      { value: 'not_yet', label: 'Одоохондоо уулзахаар тохироогүй' },
+    ],
+  },
+  {
+    id: 'cons_words_actions',
+    category: 'consistency',
+    text: 'Түүний хэлсэн үг, хийсэн үйлдэл нийцдэг үү?',
+    type: 'scale',
+    weight: 1.25,
+    analysisTags: ['consistency', 'trust'],
+    options: positiveFrequency('mixed_signals'),
+  },
+  {
+    id: 'cons_trend',
+    visibleWhen: [{ question: 'basics_duration', notIn: ['lt_1m'] }],
+    category: 'consistency',
+    text: 'Анх танилцсанаас хойш түүний сонирхол хэр өөрчлөгдсөн бэ?',
+    type: 'single_choice',
+    weight: 1.25,
+    analysisTags: ['consistency', 'trajectory'],
+    options: [
+      { value: 'growing', label: 'Улам нэмэгдэж байна', score: 1 },
+      { value: 'steady', label: 'Тогтвортой хэвээрээ', score: 0.8 },
+      { value: 'fading', label: 'Бага зэрэг буурсан', score: 0.3, flag: 'fading_interest' },
+      {
+        value: 'much_less',
+        label: 'Мэдэгдэхүйц буурсан',
+        score: 0,
+        flag: 'fading_interest',
+        reply: 'Ийм өөрчлөлтийг анзаарах амаргүй. Үнэнээ хэлсэнд баярлалаа.',
+      },
+    ],
+  },
+
+  // ХОЛБОО -------------------------------------------------------------------
+  {
+    id: 'early_needs_response', category: 'consistency', type: 'single_choice',
+    text: 'Хэрэгтэй байгаа зүйлээ хэлэхэд тэр яаж хүлээж авдаг вэ?',
+    helper: 'Жишээ нь хамт цаг өнгөрөөх, холбоо барих эсвэл өөртөө цаг гаргах тухай.',
+    analysisTags: ['reciprocity', 'repair', 'boundaries'],
+    options: [
+      { value: 'acts', label: 'Сонсож, өөрчлөхийг хичээдэг', score: 1 },
+      { value: 'inconsistent', label: 'Сонсдог ч өөрчлөлт нь удаан үргэлжилдэггүй', score: 0.5 },
+      { value: 'dismisses', label: 'Үл тоодог эсвэл намайг хэт их зүйл хүсэж байна гэдэг', score: 0.1, flag: 'effort_imbalance' },
+      { value: 'afraid', label: 'Яаж хүлээж авахаас нь айгаад хэлж чаддаггүй', score: 0, flag: 'fear_of_reaction' },
+      { value: 'not_discussed', label: 'Одоохондоо энэ тухай ярилцаагүй' },
+    ],
+  },
+  {
+    id: 'conn_flow',
+    category: 'connection',
+    text: 'Та хоёрын яриа хэр нийлдэг вэ?',
+    type: 'single_choice',
+    analysisTags: ['connection', 'communication'],
+    options: [
+      { value: 'effortless', label: 'Маш сайн, яриад суухад цаг хурдан өнгөрдөг', score: 1 },
+      { value: 'mostly', label: 'Ихэнхдээ сайн', score: 0.75 },
+      { value: 'mixed', label: 'Заримдаа нийлдэг, заримдаа ярих зүйл олддоггүй', score: 0.45 },
+      { value: 'forced', label: 'Ихэвчлэн би л яриа үргэлжлүүлэх гэж хичээдэг', score: 0.15, flag: 'initiation_imbalance' },
+    ],
+  },
+  {
+    id: 'conn_laugh',
+    visibleWhen: [{ question: 'conn_flow', in: ['forced', 'mixed'] }],
+    category: 'connection',
+    text: 'Та хоёр хамтдаа инээлдэж, хөгжилддөг үү?',
+    type: 'scale',
+    analysisTags: ['connection', 'fun'],
+    options: positiveFrequency(),
+  },
+  {
+    id: 'conn_deep',
+    category: 'connection',
+    text: 'Та хоёр өөрт чухал зүйлсийнхээ талаар ярилцдаг уу?',
+    helper: 'Жишээ нь хүсэл мөрөөдөл, санаа зовж байгаа зүйл, өөрийн үзэл бодол.',
+    type: 'single_choice',
+    analysisTags: ['connection', 'depth'],
+    options: [
+      { value: 'often', label: 'Тийм, байнга', score: 1 },
+      { value: 'sometimes', label: 'Заримдаа', score: 0.7 },
+      { value: 'rarely', label: 'Ховор', score: 0.35 },
+      { value: 'not_yet', label: 'Одоохондоо үгүй', score: 0.3 },
+    ],
+  },
+  {
+    id: 'conn_yourself',
+    category: 'connection',
+    text: 'Түүнтэй харилцахдаа та өөрөөрөө байж чаддаг уу?',
+    type: 'scale',
+    weight: 1.25,
+    analysisTags: ['connection', 'authenticity', 'emotional_safety'],
+    options: positiveFrequency('self_silencing'),
+  },
+  {
+    id: 'conn_attraction',
+    category: 'connection',
+    text: 'Та түүнд хэр их татагддаг вэ?',
+    type: 'single_choice',
+    analysisTags: ['connection', 'attraction'],
+    options: [
+      { value: 'strongly', label: 'Маш их', score: 1 },
+      { value: 'quite', label: 'Нэлээд', score: 0.8 },
+      { value: 'growing', label: 'Аажмаар нэмэгдэж байна', score: 0.75 },
+      { value: 'unsure', label: 'Сайн мэдэхгүй', score: 0.35 },
+      { value: 'not_really', label: 'Тийм ч их биш', score: 0.1 },
+    ],
+  },
+
+  // ЗОРИЛГО ------------------------------------------------------------------
+  {
+    id: 'intent_you',
+    category: 'intentions',
+    text: 'Та энэ хүнтэй ямар харилцаатай байхыг хүсэж байна вэ?',
+    type: 'single_choice',
+    analysisTags: ['intentions', 'about_user'],
+    // Context: no "right" answer, so not scored. Compared with intent_them in the teaser.
+    options: [
+      { value: 'serious', label: 'Тогтвортой, урт хугацааны харилцаа' },
+      { value: 'see', label: 'Юу болохыг харъя гэж бодож байна' },
+      { value: 'casual', label: 'Урт хугацааны амлалтгүйгээр болзох' },
+      { value: 'unsure', label: 'Одоохондоо мэдэхгүй' },
+    ],
+  },
+  {
+    id: 'intent_them',
+    category: 'intentions',
+    text: 'Тэр ямар харилцаа хүсэж байна гэж хэлсэн бэ?',
+    type: 'single_choice',
+    weight: 1.25,
+    analysisTags: ['intentions', 'about_other'],
+    options: [
+      { value: 'serious', label: 'Тогтвортой, урт хугацааны харилцаа' },
+      { value: 'see', label: 'Юу болохыг харъя гэж байгаа' },
+      { value: 'casual', label: 'Урт хугацааны амлалтгүйгээр болзох' },
+      { value: 'unclear', label: 'Одоохондоо тодорхой хэлээгүй' },
+    ],
+  },
+  {
+    id: 'intent_discussed',
+    category: 'intentions',
+    text: 'Ямар харилцаа хүсэж байгаагаа та хоёр ярилцсан уу?',
+    type: 'single_choice',
+    analysisTags: ['intentions', 'communication'],
+    options: [
+      { value: 'clearly', label: 'Тийм, нээлттэй ярилцсан', score: 1 },
+      { value: 'hinted', label: 'Цухас ярьж байсан', score: 0.55 },
+      { value: 'not_yet', label: 'Одоохондоо үгүй' },
+      {
+        value: 'avoids',
+        label: 'Би асуухад тэр сэдвээ өөрчилдөг',
+        score: 0,
+        flag: 'unclear_intentions',
+        reply: 'Тэр юу хүсэж байгааг мэдэхийг хүсэх нь ойлгомжтой.',
+      },
+    ],
+  },
+  {
+    id: 'intent_exclusive',
+    category: 'intentions',
+    text: 'Зөвхөн бие биетэйгээ болзох эсэхээ та хоёр тохирсон уу?',
+    type: 'single_choice',
+    analysisTags: ['intentions', 'exclusivity'],
+    options: [
+      { value: 'agreed', label: 'Тийм, бид тохиролцсон', score: 1 },
+      { value: 'assume', label: 'Тийм гэж бодож байгаа ч ярилцаагүй', score: 0.55 },
+      { value: 'open', label: 'Бусадтай ч болзож болно гэж тохирсон', score: 1 },
+      { value: 'dont_know', label: 'Мэдэхгүй, энэ нь намайг зовоодог', score: 0.2, flag: 'unclear_intentions' },
+    ],
+  },
+  {
+    id: 'intent_public',
+    visibleWhen: [{ question: 'basics_duration', notIn: ['lt_1m'] }],
+    category: 'intentions',
+    text: 'Түүний найз нөхөд таны тухай мэдэх үү?',
+    type: 'single_choice',
+    analysisTags: ['intentions', 'commitment'],
+    options: [
+      { value: 'introduced', label: 'Тийм, танилцуулсан', score: 1 },
+      { value: 'talks', label: 'Миний тухай ярьдаг гэдгийг мэднэ', score: 0.8 },
+      { value: 'too_early', label: 'Одоохондоо эрт байна' },
+      { value: 'hides', label: 'Намайг нуудаг юм шиг санагддаг', score: 0, flag: 'unclear_intentions' },
+    ],
+  },
+  {
+    id: 'intent_pace',
+    category: 'intentions',
+    text: 'Та хоёр хэр хурдан дотносож байгаа нь танд ямар санагддаг вэ?',
+    type: 'single_choice',
+    analysisTags: ['intentions', 'pace'],
+    options: [
+      { value: 'right', label: 'Яг тохирсон', score: 1 },
+      { value: 'slow_ok', label: 'Удаан ч надад зүгээр', score: 0.8 },
+      { value: 'too_slow', label: 'Хэт удаан, урагшлахгүй байгаа юм шиг', score: 0.35 },
+      { value: 'too_fast', label: 'Хэт хурдан, намайг шахаж байгаа юм шиг', score: 0.2, flag: 'boundary_pressure' },
+    ],
+  },
+
+  // ХҮНДЭТГЭЛ ----------------------------------------------------------------
+  {
+    id: 'resp_boundaries',
+    category: 'respect',
+    text: 'Таныг «үгүй» гэхэд тэр хүндэтгэж хүлээж авдаг уу?',
+    type: 'single_choice',
+    weight: 1.5,
+    analysisTags: ['respect', 'boundaries'],
+    options: [
+      { value: 'always', label: 'Тийм, үргэлж', score: 1 },
+      { value: 'mostly', label: 'Ихэнхдээ', score: 0.75 },
+      { value: 'pushes', label: 'Заримдаа шахаж, ятгадаг', score: 0.2, flag: 'boundary_pressure' },
+      { value: 'not_yet', label: 'Одоохондоо ийм зүйл гараагүй' },
+    ],
+  },
+  {
+    id: 'resp_pressure',
+    category: 'respect',
+    text: 'Тэр таныг бэлэн биш зүйлд шахаж байсан уу?',
+    helper: 'Жишээ нь дотно харилцаанд орох, зураг явуулах эсвэл уулзахыг шаардах.',
+    type: 'single_choice',
+    weight: 2,
+    analysisTags: ['respect', 'boundaries', 'safety'],
+    options: [
+      { value: 'never', label: 'Үгүй, хэзээ ч', score: 1 },
+      { value: 'once', label: 'Нэг удаа', score: 0.35, flag: 'boundary_pressure', reply: 'Хуваалцсанд баярлалаа. Та хүсээгүй зүйлдээ зөвшөөрөх албагүй.' },
+      { value: 'sometimes', label: 'Заримдаа', score: 0.1, flag: 'boundary_pressure', reply: 'Хуваалцсанд баярлалаа. Та хүсээгүй зүйлдээ зөвшөөрөх албагүй.' },
+      { value: 'often', label: 'Байнга', score: 0, flag: 'boundary_pressure', reply: 'Хуваалцсанд баярлалаа. Та хүсээгүй зүйлдээ зөвшөөрөх албагүй.' },
+    ],
+  },
+  {
+    id: 'resp_control',
+    category: 'respect',
+    text: 'Хаана, хэнтэй байгааг тань шалгах, хардах үе гардаг уу?',
+    type: 'scale',
+    weight: 1.5,
+    analysisTags: ['respect', 'control', 'safety'],
+    options: negativeFrequency('early_control'),
+  },
+  {
+    id: 'resp_disagree',
+    category: 'respect',
+    text: 'Санал зөрөхөд тэр яаж ханддаг вэ?',
+    type: 'single_choice',
+    weight: 1.5,
+    analysisTags: ['respect', 'conflict_style'],
+    options: [
+      { value: 'calm', label: 'Тайван, хүндэтгэлтэй', score: 1 },
+      { value: 'defensive', label: 'Өөрийгөө зөвтгөх гээд байдаг', score: 0.6 },
+      { value: 'withdraws', label: 'Дуугүй болж, алга болдог', score: 0.3, flag: 'disappearing' },
+      {
+        value: 'harsh',
+        label: 'Доромжилдог, шоолдог эсвэл их уурладаг',
+        score: 0,
+        flag: 'harmful_conflict',
+        reply: 'Хуваалцсанд баярлалаа. Хүн бүр хүндэтгэл хүлээх эрхтэй.',
+      },
+      { value: 'not_yet', label: 'Одоохондоо санал зөрөөгүй' },
+    ],
+  },
+  {
+    id: 'resp_honest',
+    category: 'respect',
+    text: 'Тэр танд үнэнээ хэлдэг гэж боддог уу?',
+    type: 'single_choice',
+    weight: 1.25,
+    analysisTags: ['respect', 'honesty', 'trust'],
+    options: [
+      { value: 'yes', label: 'Тийм', score: 1 },
+      { value: 'mostly', label: 'Ихэнхдээ', score: 0.75 },
+      { value: 'unsure', label: 'Сайн мэдэхгүй', score: 0.4 },
+      { value: 'caught_lying', label: 'Худал хэлж байсныг нь мэдсэн', score: 0, flag: 'trust_breach' },
+    ],
+  },
+  {
+    id: 'resp_speak_up',
+    visibleWhen: [{ question: 'checkin_boundaries', in: ['never', 'rarely', 'sometimes'] }],
+    category: 'respect',
+    text: 'Таалагдахгүй зүйлээ түүнд хэлж чаддаг уу?',
+    type: 'scale',
+    analysisTags: ['respect', 'emotional_safety'],
+    options: positiveFrequency('fear_of_reaction'),
+  },
+
+  // НИЙЦЭЛ -------------------------------------------------------------------
+  {
+    id: 'val_lifestyle',
+    category: 'values',
+    text: 'Та хоёрын өдөр тутмын амьдралын хэв маяг хэр нийцдэг вэ?',
+    helper: 'Ажлын цаг, амралт, найз нөхөдтэйгөө өнгөрөөх цаг зэргээ бодоорой.',
+    type: 'single_choice',
+    analysisTags: ['values', 'lifestyle'],
+    options: [
+      { value: 'very', label: 'Маш сайн нийцдэг', score: 1 },
+      { value: 'mostly', label: 'Ихэнхдээ нийцдэг', score: 0.75 },
+      { value: 'some', label: 'Зарим талаар', score: 0.45 },
+      { value: 'very_different', label: 'Их ялгаатай', score: 0.15, flag: 'values_mismatch' },
+    ],
+  },
+  {
+    id: 'val_core',
+    category: 'values',
+    text: 'Чухал зүйлсийн талаар та хоёрын үзэл бодол хэр нийцдэг вэ?',
+    helper: 'Жишээ нь гэр бүл, итгэл үнэмшил, мөнгөнд хандах хандлага.',
+    type: 'single_choice',
+    weight: 1.25,
+    analysisTags: ['values', 'beliefs'],
+    options: [
+      { value: 'very', label: 'Маш сайн нийцдэг', score: 1 },
+      { value: 'mostly', label: 'Ихэнхдээ нийцдэг', score: 0.75 },
+      { value: 'dont_know', label: 'Одоохондоо мэдэхгүй', score: 0.45 },
+      { value: 'some', label: 'Зарим нь ялгаатай', score: 0.35 },
+      { value: 'very_different', label: 'Их ялгаатай', score: 0.1, flag: 'values_mismatch' },
+    ],
+  },
+  {
+    id: 'val_future',
+    category: 'values',
+    text: 'Та хоёрын ирээдүйн төлөвлөгөө хэр нийцдэг вэ?',
+    helper: 'Хүүхэдтэй болох, гэрлэх, хаана амьдрах зэрэг ярилцсан зүйлсээ бодоорой.',
+    type: 'single_choice',
+    weight: 1.25,
+    analysisTags: ['values', 'future', 'alignment'],
+    options: [
+      { value: 'align', label: 'Тийм, нийцдэг', score: 1 },
+      { value: 'probably', label: 'Нийцэх байх', score: 0.75 },
+      { value: 'not_discussed', label: 'Одоохондоо ярилцаагүй', score: 0.45 },
+      { value: 'differ', label: 'Ялгаатай юм шиг', score: 0.1, flag: 'values_mismatch' },
+    ],
+  },
+  {
+    id: 'val_habits',
+    category: 'values',
+    text: 'Түүний ямар нэг зуршил таны санааг зовоодог уу?',
+    helper: 'Жишээ нь архи уух, мөрийтэй тоглох эсвэл мөнгөө хэт үрэх.',
+    type: 'single_choice',
+    weight: 1.25,
+    analysisTags: ['values', 'habits', 'safety'],
+    options: [
+      { value: 'no', label: 'Үгүй', score: 1 },
+      { value: 'a_little', label: 'Бага зэрэг', score: 0.55 },
+      { value: 'yes', label: 'Тийм, нэлээд', score: 0.1, flag: 'concerning_habits' },
+    ],
+  },
+  {
+    id: 'val_others_view',
+    visibleWhen: [{ question: 'val_habits', in: ['yes', 'a_little'] }],
+    category: 'values',
+    text: 'Таны ойр дотны хүмүүс түүний талаар юу гэж боддог вэ?',
+    type: 'single_choice',
+    analysisTags: ['values', 'social_circle'],
+    options: [
+      { value: 'like', label: 'Тэд түүнд дуртай', score: 1 },
+      { value: 'neutral', label: 'Тодорхой юм хэлээгүй', score: 0.7 },
+      { value: 'havent_met', label: 'Тэд түүнийг сайн мэдэхгүй' },
+      { value: 'worried', label: 'Тэд санаа зовж байгаа', score: 0.2, flag: 'others_concerned' },
+    ],
+  },
+
+  // ТАНЫ МЭДРЭМЖ -------------------------------------------------------------
+  {
+    id: 'feel_waiting',
+    category: 'feelings',
+    text: 'Хариуг нь хүлээхдээ хэр их санаа зовдог вэ?',
+    type: 'single_choice',
+    analysisTags: ['feelings', 'anxiety'],
+    options: [
+      { value: 'not_at_all', label: 'Огт санаа зовдоггүй', score: 1 },
+      { value: 'slightly', label: 'Бага зэрэг', score: 0.75 },
+      { value: 'moderately', label: 'Дунд зэрэг', score: 0.45 },
+      { value: 'very', label: 'Маш их', score: 0.15, flag: 'overthinking' },
+    ],
+  },
+  {
+    id: 'feel_overthink',
+    visibleWhen: [{ question: 'feel_waiting', in: ['moderately', 'very'] }],
+    category: 'feelings',
+    text: 'Түүний мессежийг юу гэсэн бол гэж дахин дахин уншдаг уу?',
+    type: 'scale',
+    analysisTags: ['feelings', 'anxiety', 'overthinking'],
+    options: negativeFrequency('overthinking'),
+  },
+  {
+    id: 'feel_change_self',
+    visibleWhen: [{ question: 'conn_yourself', in: ['never', 'rarely', 'sometimes'] }],
+    category: 'feelings',
+    text: 'Түүнд таалагдахын тулд өөрийн хүсэл, бодлыг нуух үе гардаг уу?',
+    type: 'scale',
+    weight: 1.25,
+    analysisTags: ['feelings', 'authenticity', 'self_worth'],
+    options: negativeFrequency('self_silencing'),
+  },
+  {
+    id: 'feel_after',
+    category: 'feelings',
+    text: 'Түүнтэй ярилцаж, уулзсаны дараа танд ихэвчлэн ямар санагддаг вэ?',
+    type: 'single_choice',
+    weight: 1.5,
+    analysisTags: ['feelings', 'wellbeing'],
+    options: [
+      { value: 'happy', label: 'Баяртай, тайван', score: 1, reply: 'Сайхан байна. Энэ бол чухал дохио.' },
+      { value: 'excited_anxious', label: 'Сэтгэл хөдөлсөн ч жаахан түгшүүртэй', score: 0.55 },
+      { value: 'confused', label: 'Эргэлзээтэй, ойлгомжгүй', score: 0.2, flag: 'mixed_signals' },
+      {
+        value: 'drained',
+        label: 'Ядарсан эсвэл гунигтай',
+        score: 0,
+        flag: 'feeling_drained',
+        reply: 'Үүнийг анзаарсан нь чухал. Таны мэдрэмж танд их зүйлийг хэлж байна.',
+      },
+    ],
+  },
+  {
+    id: 'feel_gut',
+    category: 'feelings',
+    text: 'Энэ хүний тухай бодоход танд ерөнхийдөө ямар санагддаг вэ?',
+    type: 'single_choice',
+    weight: 1.25,
+    analysisTags: ['feelings', 'intuition', 'overall'],
+    options: [
+      { value: 'good', label: 'Сайхан санагддаг', score: 1 },
+      { value: 'hopeful_unsure', label: 'Найдвар байгаа ч эргэлзээтэй', score: 0.55 },
+      { value: 'dont_know', label: 'Мэдэхгүй', score: 0.45 },
+      { value: 'worried', label: 'Санаа зовж байна', score: 0.15 },
+    ],
+  },
+  {
+    id: 'feel_three_months',
+    category: 'feelings',
+    text: 'Энэ байдал дахиад 3 сар үргэлжилбэл та сэтгэл хангалуун байх уу?',
+    type: 'single_choice',
+    weight: 2,
+    analysisTags: ['feelings', 'satisfaction', 'overall'],
+    options: [
+      { value: 'yes', label: 'Тийм, баяртай байна', score: 1 },
+      { value: 'mostly', label: 'Ихэнхдээ', score: 0.75 },
+      { value: 'unsure', label: 'Эргэлзэж байна', score: 0.4 },
+      { value: 'no', label: 'Үгүй, илүү ихийг хүсч байна', score: 0.1, flag: 'status_quo_unhappy' },
+    ],
+  },
+  {
+    id: 'early_final',
+    category: 'feelings',
+    text: 'Энэ хүний талаар өөр юу хуваалцмаар байна вэ?',
+    helper: 'Заавал бичих хэрэггүй. Сайхан санагддаг эсвэл санаа зовоодог зүйл байж болно. Нэр, утас зэрэг хувийн мэдээлэл бүү бичээрэй.',
+    type: 'text',
+    optional: true,
+    placeholder: 'Хүссэн хэмжээгээрээ бичээрэй…',
+    maxLength: 1000,
+    analysisTags: ['open_reflection'],
+  },
+]
+
+export const questions: Question[] = [...basicsQuestions, ...onlyFor('couple', coupleQuestions), ...onlyFor('early', earlyQuestions)]

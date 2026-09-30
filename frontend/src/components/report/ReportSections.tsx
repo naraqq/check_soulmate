@@ -1,7 +1,65 @@
-import { Lightbulb, MessageCircleHeart, Sprout, type LucideIcon } from 'lucide-react'
+import { CircleAlert, CircleCheck, Lightbulb, MessageCircleHeart, Sprout, type LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
-import type { RelationshipReport, ReportSection, SectionState } from '../../lib/api'
+import type { PotentialLevel, RelationshipReport, ReportSection, SectionState } from '../../lib/api'
+import { EvidenceDetails } from './EvidenceDetails'
 import { cn } from '../../lib/format'
+
+/** Same neutral palette as the topic chips — a read on the signals, not a traffic light. */
+const potentialStyles: Record<PotentialLevel, { label: string; chip: string; dot: string; active: number }> = {
+  promising: { label: 'Ирээдүйтэй дохио', chip: 'bg-sage-soft text-sage', dot: 'bg-sage', active: 3 },
+  unclear: { label: 'Одоохондоо тодорхойгүй', chip: 'bg-clay-soft text-clay-dark', dot: 'bg-clay', active: 2 },
+  mixed_signals: { label: 'Холимог дохио', chip: 'bg-dusk-soft text-dusk', dot: 'bg-dusk', active: 1 },
+}
+
+/** Early stage: "is this going to work?" answered as what the signals show so far. */
+export function PotentialCard({ potential }: { potential: NonNullable<RelationshipReport['potential']> }) {
+  const style = potentialStyles[potential.level] ?? potentialStyles.unclear
+  return (
+    <article className="rounded-4xl border border-line bg-paper p-7 shadow-lift sm:p-10">
+      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted">Энэ харилцаа ирээдүйтэй юу?</p>
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <span className={cn('inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-semibold', style.chip)}>
+          <span className="flex gap-0.5" aria-hidden>
+            {[1, 2, 3].map((n) => (
+              <span key={n} className={cn('size-2 rounded-full', n <= style.active ? style.dot : 'bg-current opacity-20')} />
+            ))}
+          </span>
+          {style.label}
+        </span>
+      </div>
+      <h2 className="mt-4 font-display text-2xl font-semibold text-balance sm:text-3xl">{potential.title}</h2>
+      <p className="mt-3 text-[17px] leading-relaxed text-ink-soft">{potential.explanation}</p>
+      <p className="mt-5 text-xs text-ink-muted">Энэ бол одоогийн дохионууд дээр суурилсан дүгнэлт — баталгаа биш.</p>
+    </article>
+  )
+}
+
+export function FlagLists({ green, red }: { green: string[]; red: string[] }) {
+  if (green.length === 0 && red.length === 0) return null
+  const lists = [
+    { title: 'Сайн дохионууд', items: green, icon: CircleCheck, color: 'text-sage' },
+    { title: 'Анхаарах дохионууд', items: red, icon: CircleAlert, color: 'text-dusk' },
+  ].filter((l) => l.items.length > 0)
+  return (
+    <div className="grid gap-3 sm:grid-cols-2">
+      {lists.map(({ title, items, icon: Icon, color }) => (
+        <div key={title} className="rounded-3xl border border-line/80 bg-paper p-5 shadow-soft sm:p-6">
+          <h3 className={cn('flex items-center gap-2 font-semibold', color)}>
+            <Icon className="size-5" aria-hidden /> {title}
+          </h3>
+          <ul className="mt-3 space-y-2.5">
+            {items.map((item) => (
+              <li key={item} className="flex gap-3 text-[15px] leading-relaxed text-ink-soft">
+                <span aria-hidden className={cn('mt-2.5 size-1.5 shrink-0 rounded-full bg-current', color)} />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  )
+}
 
 export function SectionHeading({ icon: Icon, eyebrow, title }: { icon: LucideIcon; eyebrow?: string; title: string }) {
   return (
@@ -137,6 +195,8 @@ export function CategoryCard({ item }: { item: CategoryItem }) {
       </header>
 
       <p className="text-[17px] leading-relaxed text-ink">{section.insight ?? section.summary}</p>
+
+      <EvidenceDetails evidence={section.evidence} uncertainty={section.uncertainty} />
 
       {section.healthy && (
         <div className="mt-6 rounded-2xl border border-teal-300/15 bg-sage-soft p-4 sm:p-5">

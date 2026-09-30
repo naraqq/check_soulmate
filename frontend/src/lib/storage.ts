@@ -8,6 +8,7 @@ import type { Answers } from '../data/types'
  */
 
 const PROGRESS_KEY = 'soulmate.progress.v1'
+const COMPARISON_KEY = 'soulmate.comparison.v1'
 const ASSESSMENT_KEY = 'soulmate.assessment.v1'
 
 export interface StoredProgress {
@@ -65,9 +66,17 @@ export const storage = {
   saveAssessment: (token: string) => write(ASSESSMENT_KEY, { token, createdAt: new Date().toISOString() }),
   clearAssessment: () => remove(ASSESSMENT_KEY),
 
+  loadComparisonToken: (): string | null => {
+    const token = read<unknown>(COMPARISON_KEY)
+    return typeof token === 'string' && /^[a-f0-9]{48}$/.test(token) ? token : null
+  },
+  saveComparisonToken: (token: string) => write(COMPARISON_KEY, token),
+  clearComparisonToken: () => remove(COMPARISON_KEY),
+
   /** Forget everything about the current check on this device. */
   clearAll() {
     remove(PROGRESS_KEY)
     remove(ASSESSMENT_KEY)
+    remove(COMPARISON_KEY)
   },
 }

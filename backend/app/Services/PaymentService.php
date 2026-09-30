@@ -22,7 +22,10 @@ class PaymentService
     /** Reuse an unpaid invoice for this long instead of issuing a new one. */
     private const INVOICE_REUSE_HOURS = 12;
 
-    public function __construct(private readonly PaymentGateway $gateway) {}
+    public function __construct(
+        private readonly PaymentGateway $gateway,
+        private readonly Analytics $analytics,
+    ) {}
 
     /**
      * Return the current pending invoice for an assessment, creating one if needed.
@@ -120,11 +123,12 @@ class PaymentService
 
     public function markPaid(Payment $payment, PaymentCheckResult $result): void
     {
-        DB::transaction(function () use ($payment, $result) {
+        $newlyPaid = DB::transaction(function () use ($payment, $result) {
             /** @var Payment $locked */
             $locked = Payment::query()->lockForUpdate()->findOrFail($payment->id);
+            $newlyPaid = $locked->status !== PaymentStatus::Paid;
 
-            if ($locked->status !== PaymentStatus::Paid) {
+            if ($newlyPaid) {
                 $locked->update([
                     'status' => PaymentStatus::Paid,
                     'paid_at' => now(),
@@ -141,7 +145,16 @@ class PaymentService
                     ->whereIn('status', [AssessmentStatus::Created, AssessmentStatus::PaymentPending])
                     ->update(['status' => AssessmentStatus::Paid, 'paid_at' => now()]);
             }
+
+            return $newlyPaid;
         });
+
+        // Once per payment, after commit. Test unlocks are tracked apart so they never count as revenue.
+        if ($newlyPaid && ($assessment = $payment->assessment()->first())) {
+            $payment->provider === 'dev_bypass'
+                ? $this->analytics->recordForAssessment('test_unlock', $assessment)
+                : $this->analytics->recordForAssessment('payment_confirmed', $assessment, $payment->amount);
+        }
     }
 
     /** Development bypass: record a synthetic paid payment. Callers must check PaymentBypass::enabled(). */

@@ -10,6 +10,14 @@ export const SCORED_CATEGORIES: ScoredCategoryId[] = [
   'conflict',
   'independence',
   'future',
+  // Early stage — only one set is ever answered, the other scores null.
+  'interest',
+  'consistency',
+  'connection',
+  'intentions',
+  'respect',
+  'values',
+  'feelings',
 ]
 
 export interface CategoryIndicator {
@@ -65,23 +73,37 @@ export function analyzeCategories(questions: Question[], answers: Answers): Reco
   ) as Record<ScoredCategoryId, CategoryIndicator>
 }
 
+/** One wants something serious, the other something casual (early stage). */
+function intentionsDiffer(answers: Answers): boolean {
+  const you = answers.intent_you
+  const them = answers.intent_them
+  return (you === 'serious' && them === 'casual') || (you === 'casual' && them === 'serious')
+}
+
 /** Flags raised by the selected answers, mapped to the category they came from. */
 export function collectFlags(questions: Question[], answers: Answers): Map<AnswerFlag, ScoredCategoryId> {
   const flags = new Map<AnswerFlag, ScoredCategoryId>()
   const balances: number[] = []
+  let balanceCategory: ScoredCategoryId | undefined
 
   for (const question of questions) {
     if (question.category === 'basics') continue
     const option = selectedOption(question, answers)
     if (!option) continue
     if (option.flag && !flags.has(option.flag)) flags.set(option.flag, question.category)
-    if (question.analysisTags.includes('balance') && option.balance !== undefined) balances.push(option.balance)
+    if (question.analysisTags.includes('balance') && option.balance !== undefined) {
+      balances.push(option.balance)
+      balanceCategory ??= question.category
+    }
   }
 
-  // Leading across many "who usually…" questions is a pattern even if no single answer was flagged.
-  if (balances.length >= 3 && !flags.has('effort_imbalance') && !flags.has('initiation_imbalance')) {
+  if (intentionsDiffer(answers)) flags.set('intentions_mismatch', 'intentions')
+
+  // Leading across the "who usually…" questions is a pattern even if no single answer was flagged.
+  // The early flow has only two of them, so it needs both to lean the user's way.
+  if (balances.length >= 2 && !flags.has('effort_imbalance') && !flags.has('initiation_imbalance')) {
     const mean = balances.reduce((a, b) => a + b, 0) / balances.length
-    if (mean <= LEADING_BALANCE_THRESHOLD) flags.set('initiation_imbalance', 'effort')
+    if (mean <= LEADING_BALANCE_THRESHOLD) flags.set('initiation_imbalance', balanceCategory ?? 'effort')
   }
 
   return flags

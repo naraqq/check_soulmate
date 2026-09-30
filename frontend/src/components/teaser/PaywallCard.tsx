@@ -1,24 +1,36 @@
 import { Check, Lock, ShieldCheck } from 'lucide-react'
+import type { Track } from '../../data/types'
 import { useAppConfig } from '../../hooks/useAppConfig'
 import { formatPrice } from '../../lib/format'
 import { Button } from '../ui/Button'
 
-const COVERED = [
-  'Та хоёрын харилцааны гол хэв маяг',
-  '7 чиглэл тус бүрийн гүн тайлбар',
-  'Эрүүл харилцаа ямар байдаг вэ',
-  'Танд тохирсон, хийж болох алхмууд',
-  'Хамтрагчдаа хэлж болох үгс',
-  'Ирэх 7 хоногийн төлөвлөгөө',
-]
+const COVERED: Record<Track, string[]> = {
+  couple: [
+    'Та хоёрын харилцааны гол хэв маяг',
+    '7 чиглэл тус бүрийн гүн тайлбар',
+    'Эрүүл харилцаа ямар байдаг вэ',
+    'Танд тохирсон, хийж болох алхмууд',
+    'Хамтрагчдаа хэлж болох үгс',
+    'Ирэх 7 хоногийн төлөвлөгөө',
+  ],
+  early: [
+    'Энэ харилцаа ирээдүйтэй юу — шударга дүгнэлт',
+    'Сайн ба анхаарах дохионууд',
+    '7 чиглэл тус бүрийн гүн тайлбар',
+    'Түүний үйлдлийг хэрхэн ойлгох вэ',
+    'Түүнд хэлж, асууж болох үгс',
+    'Ирэх 7 хоногийн төлөвлөгөө',
+  ],
+}
 
 interface Props {
+  track?: Track
   onUnlock: () => void
   loading: boolean
   error: string | null
 }
 
-export function PaywallCard({ onUnlock, loading, error }: Props) {
+export function PaywallCard({ track = 'couple', onUnlock, loading, error }: Props) {
   const { price, currency } = useAppConfig()
 
   return (
@@ -31,7 +43,7 @@ export function PaywallCard({ onUnlock, loading, error }: Props) {
         <p className="mt-3 text-ink-soft">Таны харилцааг ойлгож, урагшлахад тань туслах хувийн тайлан:</p>
 
         <ul className="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-          {COVERED.map((item) => (
+          {COVERED[track].map((item) => (
             <li key={item} className="flex items-center gap-2.5 text-[15px]">
               <span className="grid size-5 place-items-center rounded-full bg-accent">
                 <Check className="size-3 text-white" strokeWidth={3} aria-hidden />

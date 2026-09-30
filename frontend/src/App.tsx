@@ -23,6 +23,8 @@ const router = createBrowserRouter([
       { path: '*', element: <NotFoundPage /> },
     ],
   },
+  // Owner-only analytics, outside the site chrome and loaded on demand (not in the visitor bundle).
+  { path: '/admin', lazy: () => import('./pages/AdminPage').then((m) => ({ Component: m.AdminPage })) },
 ])
 
 export function App() {
