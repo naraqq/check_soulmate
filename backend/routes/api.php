@@ -4,10 +4,14 @@ use App\Http\Controllers\Api\AnalyticsDashboardController;
 use App\Http\Controllers\Api\AnalyticsEventController;
 use App\Http\Controllers\Api\AssessmentController;
 use App\Http\Controllers\Api\ConfigController;
+use App\Http\Controllers\Api\PartnerShareController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\ReportFeedbackController;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/shared-reports/{shareToken}', [PartnerShareController::class, 'publicShow'])
+    ->where('shareToken', '[a-f0-9]{64}')->middleware('throttle:api');
 
 Route::get('/config', ConfigController::class)->middleware('throttle:api');
 
@@ -27,6 +31,9 @@ Route::prefix('/assessments/{assessment}')->group(function () {
 
     Route::post('/generate-report', [ReportController::class, 'generate'])->middleware('throttle:report-generate');
     Route::post('/feedback', [ReportFeedbackController::class, 'store'])->middleware('throttle:api');
+    Route::get('/partner-share', [PartnerShareController::class, 'show'])->middleware('throttle:api');
+    Route::post('/partner-share', [PartnerShareController::class, 'store'])->middleware('throttle:api');
+    Route::delete('/partner-share', [PartnerShareController::class, 'destroy'])->middleware('throttle:api');
     Route::get('/report', [ReportController::class, 'show'])->middleware('throttle:api');
 
     // Test payment bypass. Always routed (so route:cache can't freeze the setting);

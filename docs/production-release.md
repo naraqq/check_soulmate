@@ -36,3 +36,9 @@ Follow `docs/user-testing.md` for actual participant sessions.
 ## If a release fails
 
 The deploy command now returns failure instead of swallowing it during cleanup. Check logs and worker status. Use `./deploy.sh rollback` to restore the previous code release if needed; migrations are not rolled back automatically. Back up the database and `APP_KEY` before production changes. Losing `APP_KEY` makes encrypted answers and reports unreadable.
+
+### Partner result sharing
+
+Run migrations before publishing the frontend (`2026_09_30_000003_create_partner_shares_table`). The paid, completed report offers a selectable preview and a separate `/shared/<64-character token>` read-only link. Only strengths, areas to discuss, and conversation starters can be shared; raw answers, evidence, and owner tokens are excluded. New links replace old links. Owners can revoke access; deleting the assessment cascades to its share. Stored snapshots and tokens are encrypted. Anyone with a share link can read its selected content until revoked.
+
+Deploy the updated Nginx snippet for `noindex`/`no-store` headers on shared pages. Verify create, recipient view, replacement, and revocation on a completed paid report. Do not use an owner `/report/` link when testing partner sharing.

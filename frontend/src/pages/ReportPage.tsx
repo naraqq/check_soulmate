@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { ReportFeedbackForm } from '../components/report/ReportFeedbackForm'
 import { ReportView } from '../components/report/ReportView'
+import { PartnerShareButton } from '../components/share/PartnerShareButton'
 import { ShareCta } from '../components/share/ShareCta'
 import { loadLoveStyle } from '../data/loveStyles'
 import { Button, ButtonLink } from '../components/ui/Button'
@@ -180,6 +181,8 @@ export function ReportPage() {
             Та хоёрын харилцааны дүр зураг, давуу тал, анхаарах зүйлс болон ярилцах сэдвүүд.
           </p>
         </header>
+
+        <PartnerShareButton key={`share-${token}`} token={token} report={state.report} />
 
         <ReportView report={state.report} createdAt={state.createdAt} comparison={state.comparison} />
 

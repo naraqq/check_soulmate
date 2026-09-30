@@ -16,6 +16,7 @@ const router = createBrowserRouter([
       { path: '/complete', lazy: () => import('./pages/CompletePage').then((m) => ({ Component: m.CompletePage })) },
       { path: '/payment/:token', lazy: () => import('./pages/PaymentPage').then((m) => ({ Component: m.PaymentPage })) },
       { path: '/report/:token', lazy: () => import('./pages/ReportPage').then((m) => ({ Component: m.ReportPage })) },
+      { path: '/shared/:shareToken', lazy: () => import('./pages/SharedReportPage').then((m) => ({ Component: m.SharedReportPage })) },
       // A friend guesses someone's love style (the code carries the answer; nothing is stored).
       { path: '/guess/:code', lazy: () => import('./pages/GuessPage').then((m) => ({ Component: m.GuessPage })) },
       { path: '/privacy', lazy: () => import('./pages/PrivacyPage').then((m) => ({ Component: m.PrivacyPage })) },

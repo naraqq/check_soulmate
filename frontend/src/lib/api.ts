@@ -191,6 +191,17 @@ export interface RelationshipReport {
   self_care?: string[]
 }
 
+export type PartnerShareSection = 'strengths' | 'areas_to_explore' | 'conversation_starters'
+export interface PartnerShareContent {
+  strengths?: { title: string; description: string }[]
+  areas_to_explore?: { title: string; description: string }[]
+  conversation_starters?: string[]
+}
+export interface PartnerShare {
+  token: string
+  content: PartnerShareContent
+}
+
 export type ReportState =
   | { status: 'completed'; report: RelationshipReport; created_at: string; comparison?: CheckInComparison; feedback_submitted?: boolean }
   | { status: 'paid' | 'generating' }
@@ -200,6 +211,10 @@ export type ReportState =
 // ---------------------------------------------------------------------------
 
 export const api = {
+  getPartnerShare: (token: string) => request<{ share: PartnerShare | null }>('GET', `/assessments/${token}/partner-share`).then((r) => r.data.share),
+  createPartnerShare: (token: string, sections: PartnerShareSection[]) => request<{ share: PartnerShare }>('POST', `/assessments/${token}/partner-share`, { sections }).then((r) => r.data.share),
+  revokePartnerShare: (token: string) => request<void>('DELETE', `/assessments/${token}/partner-share`),
+  getSharedReport: (token: string) => request<{ content: PartnerShareContent }>('GET', `/shared-reports/${token}`).then((r) => r.data.content),
   config: () => request<AppConfig>('GET', '/config').then((r) => r.data),
 
   createAssessment: (payload: {

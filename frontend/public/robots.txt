@@ -5,3 +5,4 @@ Disallow: /payment/
 Disallow: /complete
 Disallow: /check
 Disallow: /api/
+Disallow: /shared/
