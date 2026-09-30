@@ -520,6 +520,10 @@ const SHARE_METHOD_LABELS: Record<string, string> = {
   copy_link: 'Холбоос хуулсан',
   invite_friend: 'Найзаа урьсан',
   invite_partner: 'Нөгөө хүнээ урьсан',
+  guess_native: 'Таах тоглоом: утасны “Хуваалцах”',
+  guess_story: 'Таах тоглоом: Story',
+  guess_messenger: 'Таах тоглоом: Messenger',
+  guess_copy: 'Таах тоглоом: холбоос',
 }
 
 function SharingPanel({ data }: { data: Dashboard }) {
@@ -559,6 +563,13 @@ function SharingPanel({ data }: { data: Dashboard }) {
         ))}
       </div>
       <DataTable columns={columns} rows={s.by_method} rowKey={(r) => r.method} empty="Энэ хугацаанд хэн ч хуваалцаагүй байна." />
+      <div className="mt-5 rounded-2xl bg-white/[0.03] p-4">
+        <p className="text-sm font-semibold">Таах тоглоом</p>
+        <p className="mt-1 text-sm text-ink-soft">
+          {num(s.guess.shared)} хуваалцсан → {num(s.guess.opened)} найз нээсэн → {num(s.guess.guesses)} таасан (
+          {pct(ratio(s.guess.correct, s.guess.guesses), 0)} зөв) → {num(s.guess.started_check)} өөрөө тест эхэлсэн
+        </p>
+      </div>
     </Panel>
   )
 }

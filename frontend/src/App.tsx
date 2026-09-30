@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router'
 import { SiteLayout } from './components/layout/SiteLayout'
 import { CheckPage } from './pages/CheckPage'
 import { CompletePage } from './pages/CompletePage'
+import { GuessPage } from './pages/GuessPage'
 import { LandingPage } from './pages/LandingPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { PaymentPage } from './pages/PaymentPage'
@@ -18,6 +19,8 @@ const router = createBrowserRouter([
       { path: '/complete', element: <CompletePage /> },
       { path: '/payment/:token', element: <PaymentPage /> },
       { path: '/report/:token', element: <ReportPage /> },
+      // A friend guesses someone's love style (the code carries the answer; nothing is stored).
+      { path: '/guess/:code', element: <GuessPage /> },
       { path: '/privacy', element: <PrivacyPage /> },
       { path: '/terms', element: <TermsPage /> },
       { path: '*', element: <NotFoundPage /> },

@@ -15,6 +15,11 @@ export type ShareMethod =
   | 'copy_link'
   | 'invite_friend'
   | 'invite_partner'
+  // The guessing game ("Миний хайрын хэв маягийг тааж чадах уу?")
+  | 'guess_native'
+  | 'guess_story'
+  | 'guess_messenger'
+  | 'guess_copy'
 
 const PUBLIC_HOST = 'lemony.mn'
 
@@ -93,4 +98,29 @@ export function inviteText(kind: InviteKind, style: LoveStyle | null): string {
   return style
     ? `Миний хайрын хэв маяг “${style.name}” гарлаа 🍋 Чинийх юу болохыг хараач:`
     : 'Энэ харилцааны шалгалтыг хийгээд үзээч, надад их таалагдсан 🍋'
+}
+
+/** Link to the guessing game for this code, tagged so the dashboard credits the game. */
+export function guessUrl(code: string, method: ShareMethod): string {
+  const url = new URL(`/guess/${code}`, window.location.origin)
+  url.searchParams.set('utm_source', 'share')
+  url.searchParams.set('utm_medium', method)
+  url.searchParams.set('utm_campaign', 'guess')
+  return url.toString()
+}
+
+/** Story card for the game: three names to guess from, never the answer itself. */
+export function guessCard(hints: LoveStyle[]): CardContent {
+  return {
+    eyebrow: 'Хайрын хэв маяг',
+    title: 'Миний хайрын хэв маягийг тааж чадах уу?',
+    body: hints.map((h) => `${h.name}?`).join(' '),
+    cta: 'Таагаад үз →',
+    footnote: siteHost(),
+    theme: 'rose',
+  }
+}
+
+export function guessText(hints: LoveStyle[]): string {
+  return `Миний хайрын хэв маягийг тааж чадах уу? 💗 ${hints.map((h) => `${h.name}?`).join(' ')} Таагаад үз →`
 }

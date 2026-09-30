@@ -52,6 +52,7 @@ export interface Dashboard {
     visitors: number
     paid: number
     revenue: number
+    guess: { shared: number; opened: number; guesses: number; correct: number; started_check: number }
   }
   quality: {
     feedback: {

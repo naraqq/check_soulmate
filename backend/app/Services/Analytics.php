@@ -34,6 +34,8 @@ class Analytics
         'assessment_deleted',
         'share_opened',
         'share_completed',
+        'guess_opened',
+        'guess_made',
     ];
 
     private const IN_APP = [
@@ -362,6 +364,14 @@ class Analytics
             'visitors' => (int) (clone $fromShare)->whereIn('name', self::CLIENT_EVENTS)->distinct()->count('visitor_id'),
             'paid' => (int) (clone $fromShare)->where('name', 'payment_confirmed')->count(),
             'revenue' => (int) (clone $fromShare)->where('name', 'payment_confirmed')->sum('amount'),
+            // The guessing game: shared → opened by friends → guessed → friends starting their own check.
+            'guess' => [
+                'shared' => (int) $this->events($from, $to)->where('name', 'share_completed')->whereIn('step', ['guess_native', 'guess_story', 'guess_messenger', 'guess_copy'])->count(),
+                'opened' => (int) $this->events($from, $to)->where('name', 'guess_opened')->distinct()->count('visitor_id'),
+                'guesses' => (int) $this->events($from, $to)->where('name', 'guess_made')->count(),
+                'correct' => (int) $this->events($from, $to)->where('name', 'guess_made')->where('step', 'correct')->count(),
+                'started_check' => (int) (clone $fromShare)->where('campaign', 'guess')->where('name', 'check_started')->distinct()->count('visitor_id'),
+            ],
         ];
     }
 

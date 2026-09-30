@@ -1,9 +1,10 @@
-import { Share2, Sparkles, Users } from 'lucide-react'
+import { MessageCircleQuestion, Share2, Sparkles, Users } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import type { LoveStyle } from '../../data/loveStyles'
 import type { Track } from '../../data/types'
 import type { SharePlacement } from '../../lib/share'
 import { Button } from '../ui/Button'
+import { GuessShareSheet } from './GuessShareSheet'
 import { ShareSheet } from './ShareSheet'
 
 /**
@@ -24,6 +25,10 @@ export function ShareCta({
 }) {
   const [open, setOpen] = useState(false)
   const close = useCallback(() => setOpen(false), [])
+  const [guessOpen, setGuessOpen] = useState(false)
+  const closeGuess = useCallback(() => setGuessOpen(false), [])
+  // The guessing game comes after payment only — never before the paywall or during the check.
+  const offerGuess = placement === 'report' && loveStyle !== null
 
   return (
     <section className={className}>
@@ -38,6 +43,14 @@ export function ShareCta({
             <Button variant="secondary" onClick={() => setOpen(true)} className="mt-5">
               <Share2 className="size-4" /> Хуваалцах эсвэл найзаа урих
             </Button>
+            {offerGuess && (
+              <div className="mt-6 border-t border-line pt-6">
+                <p className="font-display text-lg font-semibold">Найзууд чинь чамайг ямар хэв маягтай гэж боддог бол? 👀</p>
+                <Button onClick={() => setGuessOpen(true)} className="mt-4">
+                  <MessageCircleQuestion className="size-4" /> Найзуудаасаа асуух
+                </Button>
+              </div>
+            )}
           </>
         ) : (
           <>
@@ -50,6 +63,7 @@ export function ShareCta({
         )}
       </div>
       <ShareSheet open={open} onClose={close} placement={placement} flow={flow} loveStyle={loveStyle} />
+      {offerGuess && <GuessShareSheet open={guessOpen} onClose={closeGuess} loveStyle={loveStyle} />}
     </section>
   )
 }

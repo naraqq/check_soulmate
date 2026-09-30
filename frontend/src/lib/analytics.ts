@@ -19,8 +19,10 @@ export type AnalyticsEvent =
   | { name: 'payment_confirmed' }
   | { name: 'report_viewed' }
   | { name: 'assessment_deleted' }
-  | { name: 'share_opened'; props: { detail: 'teaser' | 'report' } }
+  | { name: 'share_opened'; props: { detail: 'teaser' | 'report' | 'guess' } }
   | { name: 'share_completed'; props: { detail: string } }
+  | { name: 'guess_opened' }
+  | { name: 'guess_made'; props: { detail: 'correct' | 'wrong' } }
 
 /** First-touch acquisition, sent with every event and with the submitted check. */
 export interface Attribution {

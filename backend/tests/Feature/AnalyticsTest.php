@@ -178,6 +178,26 @@ class AnalyticsTest extends TestCase
         $this->assertSame(7900, $sharing['revenue']);
     }
 
+    public function test_dashboard_follows_the_guessing_game_loop(): void
+    {
+        config(['soulmate.analytics_key' => 'k']);
+
+        // Someone shares the game to their story…
+        $this->sendEvent(['name' => 'share_completed', 'detail' => 'guess_story', 'attribution' => $this->attribution()]);
+
+        // …two friends open it, guess (one right, one wrong), and one starts their own check.
+        $friend = fn (string $id) => ['visitor_id' => $id, 'source' => 'share', 'medium' => 'guess_story', 'campaign' => 'guess'];
+        foreach (['aaaaaaaaaaaaaaaaaaaaaaa1', 'aaaaaaaaaaaaaaaaaaaaaaa2'] as $i => $id) {
+            $this->sendEvent(['name' => 'guess_opened', 'attribution' => $friend($id)]);
+            $this->sendEvent(['name' => 'guess_made', 'detail' => $i === 0 ? 'correct' : 'wrong', 'attribution' => $friend($id)]);
+        }
+        $this->sendEvent(['name' => 'check_started', 'attribution' => $friend('aaaaaaaaaaaaaaaaaaaaaaa1')]);
+
+        $guess = $this->withToken('k')->getJson('/api/admin/analytics?days=7')->json('sharing.guess');
+
+        $this->assertSame(['shared' => 1, 'opened' => 2, 'guesses' => 2, 'correct' => 1, 'started_check' => 1], $guess);
+    }
+
     public function test_share_detail_must_be_a_simple_code(): void
     {
         $this->sendEvent(['name' => 'share_completed', 'detail' => '<script>'])->assertUnprocessable();
