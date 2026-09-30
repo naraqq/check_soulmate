@@ -4,7 +4,7 @@ import type { Track } from '../../data/types'
 import { track } from '../../lib/analytics'
 import { cn } from '../../lib/format'
 import { detectInAppBrowser } from '../../lib/inAppBrowser'
-import { canShareFile, isMobile, shareText, shareUrl, strengthsCard, type ShareMethod, type SharePlacement } from '../../lib/share'
+import { canShareFile, isMobile, messengerTarget, shareText, shareUrl, strengthsCard, type ShareMethod, type SharePlacement } from '../../lib/share'
 import { canvasToBlob, downloadBlob, renderCard, type CardFormat } from '../../lib/shareCard'
 
 interface Props {
@@ -132,13 +132,23 @@ export function ShareSheet({ open, onClose, placement, flow, strengths }: Props)
   }
 
   function shareMessenger() {
-    const url = shareUrl('messenger', placement)
-    if (isMobile()) {
-      window.location.href = `fb-messenger://share/?link=${encodeURIComponent(url)}`
+    const link = shareUrl('messenger', placement)
+    // Copy first (still inside the tap), so pasting works even if Messenger doesn't take the link.
+    void navigator.clipboard?.writeText(`${shareText(flow)} ${link}`).catch(() => {})
+    const { platform } = detectInAppBrowser(navigator.userAgent)
+    const target = messengerTarget(platform, link, import.meta.env.VITE_FACEBOOK_APP_ID, window.location.origin)
+    if (target.kind === 'app') {
+      window.location.href = target.url
+      completed('messenger', 'Messenger нээгдээгүй бол холбоос аль хэдийн хуулагдсан байгаа. Messenger-ээ нээгээд чатандаа буулгаарай.')
     } else {
-      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank', 'noopener,width=640,height=560')
+      window.open(target.url, '_blank', 'noopener,width=640,height=640')
+      completed(
+        'messenger',
+        target.kind === 'dialog'
+          ? 'Messenger-ийн цонхноос хүнээ сонгоод илгээгээрэй.'
+          : 'Холбоос хуулагдлаа. Нээгдсэн Messenger-т хүнээ сонгоод Ctrl+V дарж буулгаарай.',
+      )
     }
-    completed('messenger', 'Messenger нээгдээгүй бол “Холбоос хуулах” дараад чатандаа буулгаарай.')
   }
 
   async function copyLink() {

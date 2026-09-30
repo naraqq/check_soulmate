@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
-import { shareUrl, siteHost, strengthsCard } from './share'
+import { messengerTarget, shareUrl, siteHost, strengthsCard } from './share'
 
 // Tests run in Node: give the helpers a local-dev browser location.
 beforeAll(() => {
@@ -28,6 +28,26 @@ describe('strengthsCard', () => {
 
   it('still makes a card when there are no strengths', () => {
     expect(strengthsCard('couple', []).title).toBe('Би харилцаагаа гаднаас нь харлаа')
+  })
+})
+
+describe('messengerTarget', () => {
+  const link = 'https://lemony.mn/?utm_source=share'
+
+  it('opens the Messenger app on phones, never the Facebook feed', () => {
+    expect(messengerTarget('android', link, undefined, 'https://lemony.mn').url).toMatch(/^intent:\/\/share\/\?link=.*package=com\.facebook\.orca;end$/)
+    expect(messengerTarget('ios', link, undefined, 'https://lemony.mn').url).toBe(`fb-messenger://share/?link=${encodeURIComponent(link)}`)
+  })
+
+  it('uses Messenger’s send dialog on computers when an App ID is set', () => {
+    const t = messengerTarget('other', link, '123', 'https://lemony.mn')
+    expect(t.kind).toBe('dialog')
+    expect(t.url).toContain('facebook.com/dialog/send?app_id=123')
+    expect(t.url).not.toContain('sharer')
+  })
+
+  it('falls back to messenger.com on computers without an App ID', () => {
+    expect(messengerTarget('other', link, undefined, 'https://lemony.mn')).toEqual({ kind: 'web', url: 'https://www.messenger.com/' })
   })
 })
 

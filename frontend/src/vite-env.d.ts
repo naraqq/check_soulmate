@@ -6,6 +6,8 @@ interface ImportMetaEnv {
   /** Fallback display price used only until /api/config responds. */
   readonly VITE_REPORT_PRICE?: string
   readonly VITE_REPORT_CURRENCY?: string
+  /** Optional public Facebook App ID — enables Messenger's send dialog on computers. */
+  readonly VITE_FACEBOOK_APP_ID?: string
 }
 
 interface ImportMeta {

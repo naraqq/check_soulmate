@@ -30,6 +30,26 @@ export function shareText(track: Track): string {
     : 'Би Lemony-гоор харилцаагаа шалгалаа 🍋 Чи ч гэсэн шалгаад үз:'
 }
 
+/**
+ * Where the Messenger button goes — always Messenger itself, never the Facebook feed:
+ * - Android: an intent aimed at the Messenger app package (opens the app's share screen).
+ * - iOS: Messenger's share URL scheme.
+ * - Computer: Messenger's send dialog when a Facebook App ID is configured (it requires one);
+ *   otherwise messenger.com, with the link already copied for pasting.
+ */
+export function messengerTarget(platform: 'ios' | 'android' | 'other', link: string, appId: string | undefined, origin: string) {
+  const encoded = encodeURIComponent(link)
+  if (platform === 'android') return { kind: 'app' as const, url: `intent://share/?link=${encoded}#Intent;scheme=fb-messenger;package=com.facebook.orca;end` }
+  if (platform === 'ios') return { kind: 'app' as const, url: `fb-messenger://share/?link=${encoded}` }
+  if (appId) {
+    return {
+      kind: 'dialog' as const,
+      url: `https://www.facebook.com/dialog/send?app_id=${encodeURIComponent(appId)}&link=${encoded}&redirect_uri=${encodeURIComponent(origin)}`,
+    }
+  }
+  return { kind: 'web' as const, url: 'https://www.messenger.com/' }
+}
+
 export function isMobile(): boolean {
   return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)
 }
