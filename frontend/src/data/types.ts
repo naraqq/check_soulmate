@@ -75,6 +75,8 @@ export interface AnswerOption {
   flag?: AnswerFlag
   /** A short, caring reply shown right after this answer is chosen (only on meaningful answers). */
   reply?: string
+  /** Offer this option only when an earlier answer matches (e.g. a duration scale per stage). */
+  showIf?: ShowIf
 }
 
 /** Show a question only when an earlier answer matches (or doesn't match) these values. */

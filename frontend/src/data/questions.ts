@@ -1,5 +1,5 @@
 import { SHOW_FOR } from './track'
-import type { AnswerFlag, AnswerOption, Category, Question, Track } from './types'
+import type { AnswerFlag, AnswerOption, Category, Question, ShowIf, Track } from './types'
 
 /**
  * The questionnaire. Edit wording, options, scores and order here — no
@@ -308,6 +308,9 @@ function withReplies(options: AnswerOption[], replies: Record<string, string>): 
 // flow: talking/dating get the early-stage set, everyone else the couple set.
 // ---------------------------------------------------------------------------
 
+const SETTLED_STAGES: ShowIf = { question: 'basics_type', in: ['living_together', 'engaged', 'married'] }
+const DATING_STAGES: ShowIf = { question: 'basics_type', notIn: SETTLED_STAGES.in }
+
 const basicsQuestions: Question[] = [
   // ТАНЫ ТУХАЙ ------------------------------------------------------------------
   {
@@ -331,13 +334,18 @@ const basicsQuestions: Question[] = [
     text: 'Та хоёр танилцаад хэр удаж байна вэ?',
     type: 'single_choice',
     analysisTags: ['context', 'stage'],
+    // Months matter early on; couples who live together, are engaged or married get a scale in years.
     options: [
-      { value: 'lt_1m', label: '1 сараас бага' },
-      { value: '1_3m', label: '1–3 сар' },
-      { value: '3_6m', label: '3–6 сар' },
-      { value: '6_12m', label: '6–12 сар' },
+      { value: 'lt_1m', label: '1 сараас бага', showIf: DATING_STAGES },
+      { value: '1_3m', label: '1–3 сар', showIf: DATING_STAGES },
+      { value: '3_6m', label: '3–6 сар', showIf: DATING_STAGES },
+      { value: '6_12m', label: '6–12 сар', showIf: DATING_STAGES },
+      { value: 'lt_1y', label: '1 жилээс бага', showIf: SETTLED_STAGES },
       { value: '1_3y', label: '1–3 жил' },
-      { value: '3y_plus', label: '3-аас дээш жил' },
+      { value: '3y_plus', label: '3-аас дээш жил', showIf: DATING_STAGES },
+      { value: '3_5y', label: '3–5 жил', showIf: SETTLED_STAGES },
+      { value: '5_10y', label: '5–10 жил', showIf: SETTLED_STAGES },
+      { value: '10y_plus', label: '10-аас дээш жил', showIf: SETTLED_STAGES },
     ],
   },
   {

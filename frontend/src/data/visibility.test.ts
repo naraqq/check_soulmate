@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { categories, questions } from './questions'
-import { isVisible, visibleAnswers } from './visibility'
+import { isVisible, optionsFor, visibleAnswers } from './visibility'
 
 const byId = (id: string) => questions.find((q) => q.id === id)!
 
@@ -127,5 +127,19 @@ describe('focused follow-ups', () => {
     expect(isVisible(byId('resp_pressure'), answers)).toBe(true)
     expect(isVisible(byId('resp_control'), answers)).toBe(true)
     expect(isVisible(byId('conflict_harm'), { ...answers, basics_type: 'married' })).toBe(true)
+  })
+})
+
+describe('duration options by stage', () => {
+  const durations = (stage: string) => optionsFor(byId('basics_duration'), { basics_type: stage })!.map((o) => o.value)
+
+  it('counts months for dating and years for settled couples', () => {
+    expect(durations('dating')).toEqual(['lt_1m', '1_3m', '3_6m', '6_12m', '1_3y', '3y_plus'])
+    expect(durations('married')).toEqual(['lt_1y', '1_3y', '3_5y', '5_10y', '10y_plus'])
+  })
+
+  it('drops a duration that no longer fits after the stage changes', () => {
+    expect(visibleAnswers(questions, { basics_type: 'married', basics_duration: '1_3m' })).not.toHaveProperty('basics_duration')
+    expect(visibleAnswers(questions, { basics_type: 'married', basics_duration: '1_3y' })).toHaveProperty('basics_duration', '1_3y')
   })
 })

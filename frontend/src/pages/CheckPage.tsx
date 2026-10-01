@@ -6,7 +6,7 @@ import { SectionIntro } from '../components/questionnaire/SectionIntro'
 import { Button } from '../components/ui/Button'
 import { categories, questions } from '../data/questions'
 import { audienceParam, STAGE_QUESTION, stageFitsAudience, trackFor } from '../data/track'
-import { isVisible, visibleAnswers } from '../data/visibility'
+import { isVisible, optionsFor, visibleAnswers } from '../data/visibility'
 import { useQuestionnaire } from '../hooks/useQuestionnaire'
 import { sectionMood } from '../lib/analysis/teaser'
 import { track } from '../lib/analytics'
@@ -134,11 +134,10 @@ export function CheckPage() {
           <div className="flex-1">
             <QuestionView
               key={q.question.id}
-              question={
-                narrowStages && q.question.options
-                  ? { ...q.question, options: q.question.options.filter((o) => stageFitsAudience(o.value, audience!)) }
-                  : q.question
-              }
+              question={{
+                ...q.question,
+                options: optionsFor(q.question, q.answers)?.filter((o) => !narrowStages || stageFitsAudience(o.value, audience!)),
+              }}
               value={q.value}
               onSelect={(value) => {
                 setSelectedHere(q.question.id)
