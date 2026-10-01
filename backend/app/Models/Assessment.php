@@ -40,14 +40,12 @@ class Assessment extends Model
         'analytics_json',
     ];
 
-    protected $hidden = ['id', 'answers_json', 'previous_assessment_id', 'feedback_json', 'analytics_json'];
+    protected $hidden = ['id', 'answers_json', 'previous_assessment_id', 'feedback_json', 'feedback_submitted_at', 'analytics_json'];
 
     protected function casts(): array
     {
         return [
             'answers_json' => 'encrypted:array',
-            'feedback_json' => 'encrypted:array',
-            'feedback_submitted_at' => 'datetime',
             'analytics_json' => 'array',
             'teaser_json' => 'array',
             'status' => AssessmentStatus::class,

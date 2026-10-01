@@ -46,6 +46,7 @@ return [
         'base_url' => env('GEMINI_BASE_URL', 'https://generativelanguage.googleapis.com/v1beta'),
         'timeout' => (int) env('GEMINI_TIMEOUT', 120),
         'max_output_tokens' => (int) env('GEMINI_MAX_OUTPUT_TOKENS', 16000),
+        'thinking_budget' => (int) env('GEMINI_THINKING_BUDGET', 256),
     ],
 
     'openai' => [

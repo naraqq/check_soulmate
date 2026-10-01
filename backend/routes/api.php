@@ -7,7 +7,6 @@ use App\Http\Controllers\Api\ConfigController;
 use App\Http\Controllers\Api\PartnerShareController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ReportController;
-use App\Http\Controllers\Api\ReportFeedbackController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/shared-reports/{shareToken}', [PartnerShareController::class, 'publicShow'])
@@ -30,7 +29,6 @@ Route::prefix('/assessments/{assessment}')->group(function () {
     Route::get('/payment-status', [PaymentController::class, 'status'])->middleware('throttle:payment-status');
 
     Route::post('/generate-report', [ReportController::class, 'generate'])->middleware('throttle:report-generate');
-    Route::post('/feedback', [ReportFeedbackController::class, 'store'])->middleware('throttle:api');
     Route::get('/partner-share', [PartnerShareController::class, 'show'])->middleware('throttle:api');
     Route::post('/partner-share', [PartnerShareController::class, 'store'])->middleware('throttle:api');
     Route::delete('/partner-share', [PartnerShareController::class, 'destroy'])->middleware('throttle:api');

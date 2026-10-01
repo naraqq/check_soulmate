@@ -2,12 +2,12 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import { CheckInProgress } from './CheckInProgress'
 import { EvidenceDetails } from './EvidenceDetails'
-import { ReportFeedbackForm } from './ReportFeedbackForm'
 
 describe('grounded check-in presentation', () => {
-  it('shows what remains unknown without the evidence breakdown', () => {
-    const html = renderToStaticMarkup(<EvidenceDetails uncertainty="<script>Still unknown</script>" />)
+  it('keeps uncertainty without the removed evidence panel', () => {
+    const html = renderToStaticMarkup(<EvidenceDetails uncertainty="Still unknown <script>example</script>" />)
     expect(html).not.toContain('Энэ дүгнэлт юунд тулгуурлав?')
+    expect(html).not.toContain('<details')
     expect(html).toContain('Still unknown')
     expect(html).toContain('&lt;script&gt;')
     expect(html).not.toContain('<script>')
@@ -26,12 +26,4 @@ describe('grounded check-in presentation', () => {
     expect(html).not.toContain('Илүү олон тохиолдож байна')
   })
 
-  it('makes feedback optional and asks about understanding and next steps', () => {
-    const html = renderToStaticMarkup(<ReportFeedbackForm token={'a'.repeat(48)} submitted={false} />)
-    expect(html).toContain('Заавал биш')
-    expect(html).toContain('нөхцөл байдлыг ойлгосон')
-    expect(html).toContain('дараагийн алхам тодорхой')
-    expect(html).not.toContain('<textarea')
-    expect(renderToStaticMarkup(<ReportFeedbackForm token={'a'.repeat(48)} submitted />)).toContain('баярлалаа')
-  })
 })

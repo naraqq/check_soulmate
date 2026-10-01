@@ -52,6 +52,7 @@ class GeminiReportTest extends TestCase
             return $request->url() === 'https://generativelanguage.googleapis.com/v1beta/models/gemini-test-model:generateContent'
                 && $request->hasHeader('x-goog-api-key', 'test-gemini-key')
                 && $body['generationConfig']['responseMimeType'] === 'application/json'
+                && $body['generationConfig']['thinkingConfig']['thinkingBudget'] === 256
                 && str_contains($body['systemInstruction']['parts'][0]['text'], 'Mongolian');
         });
     }

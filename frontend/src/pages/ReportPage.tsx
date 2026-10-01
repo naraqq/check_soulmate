@@ -1,7 +1,6 @@
 import { Printer, RefreshCw, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
-import { ReportFeedbackForm } from '../components/report/ReportFeedbackForm'
 import { ReportView } from '../components/report/ReportView'
 import { PartnerShareButton } from '../components/share/PartnerShareButton'
 import { ShareCta } from '../components/share/ShareCta'
@@ -20,7 +19,7 @@ const POLL_INTERVAL_MS = 4000
 type State =
   | { kind: 'loading' }
   | { kind: 'generating' }
-  | { kind: 'ready'; report: RelationshipReport; createdAt: string; comparison?: CheckInComparison; feedbackSubmitted: boolean }
+  | { kind: 'ready'; report: RelationshipReport; createdAt: string; comparison?: CheckInComparison }
   | { kind: 'failed'; message: string; canRetry: boolean }
   | { kind: 'error'; title: string; message: string }
 
@@ -43,7 +42,7 @@ export function ReportPage() {
   const apply = useCallback(
     (result: ReportState) => {
       if (result.status === 'completed') {
-        setState({ kind: 'ready', report: result.report, createdAt: result.created_at, comparison: result.comparison, feedbackSubmitted: result.feedback_submitted ?? false })
+        setState({ kind: 'ready', report: result.report, createdAt: result.created_at, comparison: result.comparison })
         track({ name: 'report_viewed' })
       } else {
         setState({ kind: 'generating' })
@@ -185,8 +184,6 @@ export function ReportPage() {
         <PartnerShareButton key={`share-${token}`} token={token} report={state.report} />
 
         <ReportView report={state.report} createdAt={state.createdAt} comparison={state.comparison} />
-
-        <ReportFeedbackForm key={token} token={token} submitted={state.feedbackSubmitted} />
 
         <ShareCta
           placement="report"

@@ -1,44 +1,18 @@
 import { ArrowRight, Check, Clock, Heart, Lock, MessageCircleHeart, Quote, Sparkles, Sprout, UserX } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { Link, useSearchParams } from 'react-router'
+import { useSearchParams } from 'react-router'
 import { LemonMark } from '../components/layout/LemonMark'
 import { ButtonLink } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { RetestButton } from '../components/ui/RetestButton'
-import { audienceParam, checkPath } from '../data/track'
+import { audienceParam } from '../data/track'
 import type { Track } from '../data/types'
-import { useAppConfig } from '../hooks/useAppConfig'
 import { track } from '../lib/analytics'
-import { cn, formatPrice } from '../lib/format'
+import { cn } from '../lib/format'
 import { storage } from '../lib/storage'
 
-/**
- * One page, two audiences. Without ?for= it speaks to both and offers two doors;
- * with ?for=early / ?for=couple (from ads and shared cards) it speaks to one, so the
- * page matches the message people clicked on.
- */
+/** Ads can tailor examples; every visitor starts with the same stage question. */
 type View = Track | 'both'
-
-const HERO: Record<View, { before: string; highlight: string; after: string; text: string }> = {
-  both: {
-    before: 'Харилцаагаа ',
-    highlight: 'өөр өнцгөөс',
-    after: ' хараад үзээрэй',
-    text: 'Дөнгөж танилцаж байгаа ч, олон жил хамт байгаа ч хамаагүй. Хэдэн асуултад хариулаад, та хоёрын хооронд яг юу болоод байгааг ойлгоорой.',
-  },
-  early: {
-    before: 'Энэ харилцаа ',
-    highlight: 'ирээдүйтэй',
-    after: ' юу?',
-    text: 'Тэр таныг үнэхээр сонирхож байна уу? Та хоёр адилхан зүйл хүсэж байна уу? Хэдэн асуултад хариулаад, бодит байдлыг нь харж аваарай.',
-  },
-  couple: {
-    before: 'Харилцаагаа ',
-    highlight: 'өөр өнцгөөс',
-    after: ' хараад үзээрэй',
-    text: 'Ганцаараа хичээгээд байгаа юм шиг санагдаж байна уу? Эсвэл зүгээр л бүх зүйл зүгээр байгаа эсэхийг мэдмээр байна уу? Хэдэн асуултад хариулаад, та хоёрын хооронд яг юу болоод байгааг ойлгоорой.',
-  },
-}
 
 /** Thoughts people actually have — the visitor should recognise themselves in at least one. */
 const THOUGHTS: Record<View, string[]> = {
@@ -70,13 +44,13 @@ const THOUGHTS: Record<View, string[]> = {
 
 const STEPS = [
   { title: 'Асуултад хариулна', text: 'Нэг удаад нэг асуулт. Бодоод, үнэнээ хариулаарай. 7 минут орчим л болно.' },
-  { title: 'Товч дүгнэлтээ үнэгүй харна', text: 'Давуу тал, анхаарах зүйлсээ шууд харна. Үүнд төлбөр шаардлагагүй.' },
-  { title: 'Бүтэн тайлангаа нээнэ', text: 'Юу болоод байгаа, яагаад ингэж байгаа, цаашаа юу хийж болохыг энгийн үгээр тайлбарлана.' },
+  { title: 'Товч дүгнэлтээ харна', text: 'Хариултаас тань харагдах давуу тал, анхаарах зүйлсийг нэгтгэнэ.' },
+  { title: 'Дараагийн алхмаа олно', text: 'Дэлгэрэнгүй тайлангаас ярилцах сэдэв, хэлж болох үгс, туршиж болох алхмуудыг харна.' },
 ]
 
 const REPORT_INCLUDES: Record<View, string[]> = {
   early: [
-    'Энэ харилцаа ирээдүйтэй юу гэдэгт шударга хариулт',
+    'Одоогоор харагдаж буй сайн болон эргэлзээтэй талууд',
     'Сайн ба анхаарах дохионууд',
     'Сонирхол, тогтвортой байдал, зорилго зэрэг 7 чиглэлийн тайлбар',
     'Түүнд хэлж, асууж болох үгс',
@@ -90,8 +64,8 @@ const REPORT_INCLUDES: Record<View, string[]> = {
     'Ирэх 7 хоногт хийх 3 алхам',
   ],
   both: [
-    'Та хоёрын хооронд яг юу болоод байгаа, яагаад',
-    'Танилцаж байгаа бол: ирээдүйтэй эсэх талаар шударга дүгнэлт',
+    'Таны хариултаас харагдаж буй харилцааны хэв маяг',
+    'Харилцааныхаа шатанд тохирсон тайлбар',
     '7 чиглэл тус бүрийн тайлбар',
     'Нөгөө хүндээ хэлж болох үгс',
     'Ирэх 7 хоногт хийх 3 алхам',
@@ -101,11 +75,11 @@ const REPORT_INCLUDES: Record<View, string[]> = {
 const FAQ = [
   {
     q: 'Нөгөө хүн маань мэдчих үү?',
-    a: 'Үгүй. Та өөрөө хэлэхгүй л бол хэн ч мэдэхгүй. Нэр, утас асуухгүй, бүртгэл хэрэггүй. Хариултууд тань нууцлагдаж хадгалагдана.',
+    a: 'Нөгөө хүнд тань мэдэгдэл илгээхгүй. Нэр, утас асуухгүй, бүртгэл хэрэггүй. Та өөрөө хүсвэл тайлангийн сонгосон хэсгийг тусдаа холбоосоор хуваалцаж болно.',
   },
   {
     q: 'Бид дөнгөж танилцаж байгаа. Болох уу?',
-    a: 'Болно. Чатлаж, танилцаж байгаа хүмүүст зориулсан тусдаа асуулт, тусдаа тайлан бий. “Энэ харилцаа ирээдүйтэй юу?” гэдэгт шударгаар хариулна.',
+    a: 'Болно. Чатлаж, танилцаж байгаа хүмүүст зориулсан тусдаа асуулт, тусдаа тайлан бий. Таны хариултаас харагдах зүйлс болон одоогоор тодорхойгүй байгаа талыг ялгаж тайлбарлана.',
   },
   {
     q: 'Бүртгүүлэх хэрэгтэй юу?',
@@ -116,25 +90,18 @@ const FAQ = [
     a: 'Үгүй. Харилцааг тоогоор хэмжих боломжгүй. Тайлан тань тоо биш, тайлбар, зөвлөгөөнөөс бүрдэнэ.',
   },
   {
-    q: 'Хэрхэн төлөх вэ?',
-    a: 'Асуултууд болон товч дүгнэлт үнэгүй. Бүтэн тайланг QPay-ээр төлнө: банкны аппаараа QR код уншуулахад л болно. Төлбөр орсноос хойш нэг минут хүрэхгүй хугацаанд тайлан тань бэлэн болно.',
-  },
-  {
     q: 'Хариултаа устгаж болох уу?',
     a: 'Болно. Тайлангийн доод хэсэгт «Тайлангаа устгах» товч бий. Дарахад бүх зүйл бүрмөсөн устна.',
   },
 ]
 
 export function LandingPage() {
-  const { price, currency } = useAppConfig()
   const [params] = useSearchParams()
   const audience = audienceParam(params.get('for'))
   const view: View = audience ?? 'both'
   useEffect(() => track({ name: 'landing_viewed' }), [])
 
   const inProgress = storage.loadAssessment() !== null
-  const priceText = formatPrice(price, currency)
-  const hero = HERO[view]
 
   // Sticky phone CTA: shown once the hero's buttons scroll away, hidden again at the final CTA.
   const heroCta = useRef<HTMLDivElement>(null)
@@ -163,20 +130,19 @@ export function LandingPage() {
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div aria-hidden className="pointer-events-none absolute inset-0 glow-warm" />
-        <div className="relative mx-auto max-w-5xl px-4 pt-16 pb-20 sm:px-6 sm:pt-24 sm:pb-28">
+        <div className="relative mx-auto max-w-5xl px-4 pt-10 pb-10 sm:px-6 sm:pt-20 sm:pb-16">
           <div className="mx-auto max-w-3xl text-center animate-fade-up">
             <p className="mb-7 inline-flex items-center gap-2 rounded-full border border-line bg-paper py-1.5 pr-4 pl-1.5 text-sm text-ink-soft backdrop-blur">
               <LemonMark className="size-6" />
-              Lemony · харилцааны шалгалт
+              Lemony · Хайрын тест
             </p>
             <h1 className="font-display text-[2.1rem] leading-[1.12] font-bold text-balance sm:text-6xl">
-              {hero.before}
-              <span className="text-gradient">{hero.highlight}</span>
-              {hero.after}
+              Харилцаагаа илүү ойлгож,<br />
+              <span className="text-gradient">сайжруулах арга замаа олоорой.</span>
             </h1>
-            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-ink-soft sm:text-xl">{hero.text}</p>
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-ink-soft sm:text-xl">Асуултад хариулж, харилцааныхаа давуу тал, анхаарах зүйлс болон та хоёрт тохирох зөвлөмжийг аваарай.</p>
 
-            <div ref={heroCta} className="mt-10 flex flex-col items-center gap-4">
+            <div ref={heroCta} className="mt-7 flex flex-col items-center gap-4">
               {inProgress ? (
                 <>
                   <ButtonLink to="/complete" size="lg" className="w-full max-w-xs sm:w-auto">
@@ -184,34 +150,54 @@ export function LandingPage() {
                   </ButtonLink>
                   <RetestButton variant="ghost" label="Шинээр шалгах" />
                 </>
-              ) : audience ? (
-                <>
-                  <ButtonLink to={checkPath(audience)} size="lg" className="w-full max-w-xs sm:w-auto">
-                    Эхлэх <ArrowRight className="size-4" />
-                  </ButtonLink>
-                  <Link
-                    to={`/?for=${audience === 'early' ? 'couple' : 'early'}`}
-                    className="text-sm text-ink-muted underline-offset-4 hover:text-ink hover:underline"
-                  >
-                    {audience === 'early' ? 'Үерхэж эсвэл гэр бүлтэй юу? Энд дарна уу' : 'Дөнгөж танилцаж байгаа юу? Энд дарна уу'}
-                  </Link>
-                </>
               ) : (
-                <AudienceDoors />
+                <ButtonLink to="/check" size="lg" className="w-full max-w-sm sm:w-auto">
+                  Тест эхлүүлэх <ArrowRight className="size-4" />
+                </ButtonLink>
               )}
 
               <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-ink-muted">
                 <li className="flex items-center gap-1.5">
-                  <Clock className="size-4" aria-hidden /> 7 минут
+                  <Clock className="size-4" aria-hidden /> ~7 минут
                 </li>
                 <li className="flex items-center gap-1.5">
                   <UserX className="size-4" aria-hidden /> Бүртгэл хэрэггүй
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <Lock className="size-4" aria-hidden /> Хэн ч харахгүй
+                  <Lock className="size-4" aria-hidden /> Хариулт тань нууц
                 </li>
               </ul>
             </div>
+            <p className="mx-auto mt-5 max-w-lg text-sm leading-relaxed text-ink-muted">
+              Чатлаж, болзож байгаа ч, олон жил хамт байгаа ч болно. Асуултууд харилцааны тань шатанд тохирно.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Report preview */}
+      <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6 sm:py-20">
+        <div className="grid items-center gap-12 lg:grid-cols-2">
+          <div>
+            <h2 className="font-display text-3xl font-bold text-balance sm:text-4xl">Тайлан ийм харагдана</h2>
+            <p className="mt-4 text-lg leading-relaxed text-ink-soft">
+              Нөгөө хүний бодлыг таахгүй. Таны хариултад тулгуурлан юу ажиглагдаж байна, юу тодорхойгүй байна,
+              цааш юу хийж болохыг тайлбарлана.
+            </p>
+            <ul className="mt-6 space-y-3">
+              {REPORT_INCLUDES[view].map((item) => (
+                <li key={item} className="flex items-start gap-3 text-[15px]">
+                  <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-accent">
+                    <Check className="size-3 text-white" strokeWidth={3} aria-hidden />
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <p className="mb-3 text-sm font-semibold text-ink-muted">Жишээ тайлан · таны хувийн дүгнэлт биш</p>
+            {view === 'early' ? <EarlyExcerpts /> : <CoupleExcerpts />}
           </div>
         </div>
       </section>
@@ -254,30 +240,12 @@ export function LandingPage() {
             </li>
           ))}
         </ol>
-      </section>
-
-      {/* Report preview */}
-      <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6 sm:py-20">
-        <div className="grid items-center gap-12 lg:grid-cols-2">
-          <div>
-            <h2 className="font-display text-3xl font-bold text-balance sm:text-4xl">Тайлан ийм харагдана</h2>
-            <p className="mt-4 text-lg leading-relaxed text-ink-soft">
-              Хэнийг ч буруутгахгүй, хэнд ч муу нэр зүүхгүй. Юу болоод байгааг, яагаад ингэж байгааг, цаашаа юу хийж
-              болохыг энгийн, ойлгомжтой үгээр тайлбарлана.
-            </p>
-            <ul className="mt-6 space-y-3">
-              {REPORT_INCLUDES[view].map((item) => (
-                <li key={item} className="flex items-start gap-3 text-[15px]">
-                  <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-accent">
-                    <Check className="size-3 text-white" strokeWidth={3} aria-hidden />
-                  </span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-          {view === 'early' ? <EarlyExcerpts /> : <CoupleExcerpts />}
-        </div>
+        <aside className="mx-auto mt-8 max-w-3xl rounded-3xl border border-line bg-paper p-6 text-center sm:p-8" aria-labelledby="test-purpose">
+          <h3 id="test-purpose" className="font-semibold">Энэ тестийн зорилго</h3>
+          <p className="mt-3 leading-relaxed text-ink-soft">
+            Энэхүү тест нь сэтгэл зүйн зөвлөгөө, олон жилийн бодит ярианууд дээр үндэслэн харилцаагаа эрүүлээр харахад тань туслах зорилгоор хийгдсэн.
+          </p>
+        </aside>
       </section>
 
       {/* FAQ — privacy is the first answer (and a hero badge), so it isn't repeated as its own section. */}
@@ -302,18 +270,16 @@ export function LandingPage() {
       <section className="px-4 pb-20 sm:px-6">
         <div ref={finalCta} className="mx-auto max-w-4xl rounded-4xl surface-hero px-6 py-14 text-center sm:px-12">
           <h2 className="font-display text-3xl font-bold text-balance sm:text-4xl">Хэдхэн минут л болно</h2>
-          <p className="mx-auto mt-4 max-w-md text-lg text-ink-soft">Асуултууд үнэгүй. Бүтэн тайлан {priceText}.</p>
+          <p className="mx-auto mt-4 max-w-md text-lg text-ink-soft">Өөрт чухал зүйлсээ ойлгох эхний алхмаа хийгээрэй.</p>
           <div className="mt-8 flex justify-center">
             {inProgress ? (
               <ButtonLink to="/complete" size="lg">
                 Үргэлжлүүлэх <ArrowRight className="size-4" />
               </ButtonLink>
-            ) : audience ? (
-              <ButtonLink to={checkPath(audience)} size="lg">
-                Эхлэх <ArrowRight className="size-4" />
-              </ButtonLink>
             ) : (
-              <AudienceDoors />
+              <ButtonLink to="/check" size="lg">
+                Тест эхлүүлэх <ArrowRight className="size-4" />
+              </ButtonLink>
             )}
           </div>
         </div>
@@ -328,42 +294,14 @@ export function LandingPage() {
         )}
       >
         <ButtonLink
-          to={inProgress ? '/complete' : checkPath(audience)}
+          to={inProgress ? '/complete' : '/check'}
           size="lg"
           className="w-full"
           tabIndex={showSticky ? 0 : -1}
         >
-          {inProgress ? 'Үргэлжлүүлэх' : 'Үнэгүй эхлэх'} <ArrowRight className="size-4" />
+          {inProgress ? 'Үргэлжлүүлэх' : 'Тест эхлүүлэх'} <ArrowRight className="size-4" />
         </ButtonLink>
       </div>
-    </div>
-  )
-}
-
-/** Two doors: each goes straight to its own questions. */
-function AudienceDoors() {
-  const doors: { audience: Track; title: string; text: string }[] = [
-    { audience: 'early', title: 'Чатлаж, танилцаж байгаа', text: 'Энэ харилцаа ирээдүйтэй юу?' },
-    { audience: 'couple', title: 'Үерхэж эсвэл гэр бүлтэй', text: 'Бидний харилцаа зүгээр үү?' },
-  ]
-  return (
-    <div className="grid w-full max-w-lg gap-3 sm:grid-cols-2">
-      {doors.map((door, i) => (
-        <Link
-          key={door.audience}
-          to={checkPath(door.audience)}
-          className={cn(
-            'group flex items-center justify-between gap-3 rounded-3xl px-5 py-4 text-left transition hover:-translate-y-0.5',
-            i === 0 ? 'bg-accent text-white shadow-glow' : 'border border-line bg-paper hover:border-white/25',
-          )}
-        >
-          <span>
-            <span className="block font-semibold">{door.title}</span>
-            <span className={cn('mt-0.5 block text-sm', i === 0 ? 'text-white/80' : 'text-ink-muted')}>{door.text}</span>
-          </span>
-          <ArrowRight className="size-5 shrink-0 transition-transform group-hover:translate-x-0.5" aria-hidden />
-        </Link>
-      ))}
     </div>
   )
 }
@@ -371,7 +309,7 @@ function AudienceDoors() {
 /** Excerpts in the real report's style — early stage. */
 function EarlyExcerpts() {
   return (
-    <div aria-hidden className="space-y-3">
+    <div className="space-y-3">
       <div className="rounded-4xl border border-line bg-paper p-6 shadow-lift">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-muted">Энэ харилцаа ирээдүйтэй юу?</p>
         <span className="mt-3 inline-flex items-center gap-2 rounded-full bg-clay-soft px-3 py-1 text-sm font-semibold text-clay-dark">
@@ -408,7 +346,7 @@ function EarlyExcerpts() {
 /** Excerpts in the real report's style — couples. */
 function CoupleExcerpts() {
   return (
-    <div aria-hidden className="space-y-3">
+    <div className="space-y-3">
       <div className="rounded-4xl border border-pink-300/20 bg-gradient-to-br from-pink-500/12 via-fuchsia-500/8 to-violet-500/10 p-6">
         <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-dusk">
           <Heart className="size-4" /> Танд хэлэх үг

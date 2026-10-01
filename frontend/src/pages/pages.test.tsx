@@ -25,8 +25,8 @@ function render(path: string, url: string, element: ReactElement) {
 const token = 'a'.repeat(48)
 
 describe('pages render', () => {
-  it('landing', () => expect(render('/', '/', <LandingPage />)).toContain('үзээрэй'))
-  it('check', () => expect(render('/check', '/check', <CheckPage />)).toContain('Эхлээд таныг бага зэрэг танъя'))
+  it('landing', () => expect(render('/', '/', <LandingPage />)).toContain('Харилцаагаа илүү ойлгож,'))
+  it('check', () => expect(render('/check', '/check', <CheckPage />)).toContain('Та хоёрын харилцаа одоо ямар шатандаа байна вэ?'))
   it('payment', () => expect(render('/payment/:token', `/payment/${token}`, <PaymentPage />)).toContain('Нэхэмжлэх'))
   it('payment with invalid token', () =>
     expect(render('/payment/:token', '/payment/123', <PaymentPage />)).toContain('Холбоос буруу'))
@@ -53,8 +53,9 @@ describe('ReportView', () => {
     areas_to_explore: [{ title: 'Тэнцвэр', description: 'Тайлбар', importance: 'high' }],
     communication: section,
     affection: section,
-    effort: section,
-    trust: section,
+    // Varied states, so the overview's grouping and order are exercised.
+    effort: { ...section, state: 'strength' },
+    trust: { ...section, state: 'mixed' },
     conflict: section,
     independence: section,
     future: section,
@@ -83,7 +84,13 @@ describe('ReportView', () => {
   it('gives every topic insight, a healthy picture, steps and words to say', () => {
     const html = render('/', '/', <ReportView report={report} createdAt="2026-09-29T00:00:00Z" />)
     expect(html).toContain('Харилцаа тань чиглэл бүрээр')
-    expect(html).toContain('Анхаарах нь зүйтэй')
+    expect(html).toContain('Анхаарах хэрэгтэй')
+    // Plain labels, in reading order: what needs attention comes before what's going well.
+    expect(html.indexOf('Анхаарах хэрэгтэй')).toBeLessThan(html.indexOf('Дунд зэрэг'))
+    expect(html.indexOf('Дунд зэрэг')).toBeLessThan(html.indexOf('Сайн байгаа'))
+    // Detailed cards follow the same order: a strength topic comes after the attention ones.
+    expect(html.indexOf('id="topic-communication"')).toBeLessThan(html.indexOf('id="topic-effort"'))
+    expect(html).not.toContain('Холимог')
     expect(html.match(/Эрүүл харилцаанд ийм байдаг/g)).toHaveLength(7)
     expect(html.match(/Юу хийж болох вэ/g)).toHaveLength(7)
     expect(html.match(/Ингэж хэлээд үзээрэй/g)).toHaveLength(7)

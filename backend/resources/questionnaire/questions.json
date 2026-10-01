@@ -1,5 +1,5 @@
 {
-  "version": "2026.10.4",
+  "version": "2026.10.5",
   "tracks": {
     "stage_question": "basics_type",
     "early_stages": [
@@ -10,7 +10,7 @@
   "categories": [
     {
       "id": "basics",
-      "label": "Таны тухай"
+      "label": "Та хоёрын тухай"
     },
     {
       "id": "self",
@@ -74,70 +74,6 @@
     }
   ],
   "questions": [
-    {
-      "id": "basics_gender",
-      "category": "basics",
-      "text": "Таны хүйс?",
-      "type": "single_choice",
-      "optional": false,
-      "max_length": null,
-      "analysis_tags": [
-        "context",
-        "about_user"
-      ],
-      "show_if": null,
-      "visible_when": [],
-      "options": [
-        {
-          "value": "female",
-          "label": "Эмэгтэй"
-        },
-        {
-          "value": "male",
-          "label": "Эрэгтэй"
-        },
-        {
-          "value": "other",
-          "label": "Бусад / хэлэхийг хүсэхгүй байна"
-        }
-      ]
-    },
-    {
-      "id": "basics_age",
-      "category": "basics",
-      "text": "Таны нас?",
-      "type": "single_choice",
-      "optional": false,
-      "max_length": null,
-      "analysis_tags": [
-        "context",
-        "about_user"
-      ],
-      "show_if": null,
-      "visible_when": [],
-      "options": [
-        {
-          "value": "18_24",
-          "label": "18–24"
-        },
-        {
-          "value": "25_29",
-          "label": "25–29"
-        },
-        {
-          "value": "30_34",
-          "label": "30–34"
-        },
-        {
-          "value": "35_44",
-          "label": "35–44"
-        },
-        {
-          "value": "45_plus",
-          "label": "45-аас дээш"
-        }
-      ]
-    },
     {
       "id": "basics_type",
       "category": "basics",
@@ -623,6 +559,70 @@
         {
           "value": "almost_never",
           "label": "Бараг үгүй"
+        }
+      ]
+    },
+    {
+      "id": "basics_gender",
+      "category": "basics",
+      "text": "Таны хүйс?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "about_user"
+      ],
+      "show_if": null,
+      "visible_when": [],
+      "options": [
+        {
+          "value": "female",
+          "label": "Эмэгтэй"
+        },
+        {
+          "value": "male",
+          "label": "Эрэгтэй"
+        },
+        {
+          "value": "other",
+          "label": "Бусад / хэлэхийг хүсэхгүй байна"
+        }
+      ]
+    },
+    {
+      "id": "basics_age",
+      "category": "basics",
+      "text": "Таны нас?",
+      "type": "single_choice",
+      "optional": false,
+      "max_length": null,
+      "analysis_tags": [
+        "context",
+        "about_user"
+      ],
+      "show_if": null,
+      "visible_when": [],
+      "options": [
+        {
+          "value": "18_24",
+          "label": "18–24"
+        },
+        {
+          "value": "25_29",
+          "label": "25–29"
+        },
+        {
+          "value": "30_34",
+          "label": "30–34"
+        },
+        {
+          "value": "35_44",
+          "label": "35–44"
+        },
+        {
+          "value": "45_plus",
+          "label": "45-аас дээш"
         }
       ]
     },

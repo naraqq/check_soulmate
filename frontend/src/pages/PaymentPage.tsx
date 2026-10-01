@@ -2,9 +2,7 @@ import { SupportLink } from '../components/ui/SupportLink'
 import { RefreshCw, ShieldCheck } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
-import { InAppBrowserNotice } from '../components/payment/InAppBrowserNotice'
 import { InvoicePanel } from '../components/payment/InvoicePanel'
-import { detectInAppBrowser } from '../lib/inAppBrowser'
 import { Button, ButtonLink } from '../components/ui/Button'
 import { Card, Eyebrow } from '../components/ui/Card'
 import { ErrorView, LoadingView } from '../components/ui/StateView'
@@ -29,7 +27,6 @@ export function PaymentPage() {
   const [attempt, setAttempt] = useState(0)
   const pollStarted = useRef(0) // set when polling starts
   // Messenger/Facebook/Instagram browsers block bank-app links (notably on iPhone).
-  const [inApp] = useState(() => detectInAppBrowser(typeof navigator === 'undefined' ? '' : navigator.userAgent))
 
   const onPaid = useCallback(() => {
     track({ name: 'payment_confirmed' })

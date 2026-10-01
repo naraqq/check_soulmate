@@ -375,27 +375,14 @@ class Analytics
         ];
     }
 
-    /** Report quality and operations, from assessments (feedback is aggregated here, never shown individually). */
+    /** Report delivery and repeat check-ins, from assessments. */
     private function quality(Carbon $from, Carbon $to): array
     {
         [$start, $end] = [$from->copy()->utc(), $to->copy()->endOfDay()->utc()];
 
-        $feedback = ['responses' => 0, 'understood' => [], 'actionable' => [], 'concern' => []];
-        $withFeedback = Assessment::whereNotNull('feedback_json')->whereBetween('feedback_submitted_at', [$start, $end]);
-        foreach ($withFeedback->cursor() as $assessment) {
-            $feedback['responses']++;
-            foreach (['understood', 'actionable', 'concern'] as $field) {
-                $value = $assessment->feedback_json[$field] ?? null;
-                if (is_string($value)) {
-                    $feedback[$field][$value] = ($feedback[$field][$value] ?? 0) + 1;
-                }
-            }
-        }
-
         $paidInRange = Assessment::whereBetween('paid_at', [$start, $end]);
 
         return [
-            'feedback' => $feedback,
             'reports_completed' => (clone $paidInRange)->where('status', AssessmentStatus::Completed)->count(),
             'reports_failed' => (clone $paidInRange)->where('status', AssessmentStatus::Failed)->count(),
             'repeat_checkins' => (clone $paidInRange)->whereNotNull('previous_assessment_id')->count(),
