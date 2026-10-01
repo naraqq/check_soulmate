@@ -6,12 +6,10 @@ use App\Enums\AssessmentStatus;
 use App\Models\Assessment;
 use App\Services\CheckInComparison;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 use Tests\Concerns\BuildsAssessments;
 use Tests\TestCase;
 
-class CheckInAndFeedbackTest extends TestCase
+class CheckInTest extends TestCase
 {
     use BuildsAssessments, RefreshDatabase;
 
@@ -87,36 +85,13 @@ class CheckInAndFeedbackTest extends TestCase
         $this->getJson("/api/assessments/{$current->public_token}/report")->assertOk()->assertJsonPath('comparison.status', 'baseline');
     }
 
-    public function test_feedback_is_validated_encrypted_and_updated_in_place(): void
+    public function test_removed_feedback_endpoint_is_unavailable(): void
     {
         $assessment = $this->completed();
-        $url = "/api/assessments/{$assessment->public_token}/feedback";
-        $this->postJson($url, ['understood' => 'yes'])->assertUnprocessable();
-        $this->postJson($url, ['understood' => 'yes', 'actionable' => 'no', 'concern' => 'unsafe'])->assertNoContent();
-        $this->assertStringNotContainsString('unsafe', DB::table('assessments')->where('id', $assessment->id)->value('feedback_json'));
-        $this->postJson($url, ['understood' => 'partly', 'actionable' => 'yes', 'concern' => 'repetitive'])->assertNoContent();
-        $this->assertSame('partly', $assessment->refresh()->feedback_json['understood']);
-        $this->getJson("/api/assessments/{$assessment->public_token}/report")->assertJsonPath('feedback_submitted', true)->assertJsonMissingPath('feedback_json');
-        $this->deleteJson("/api/assessments/{$assessment->public_token}")->assertNoContent();
-        $this->assertDatabaseMissing('assessments', ['id' => $assessment->id]);
-    }
-
-    public function test_unfinished_or_unknown_checks_cannot_submit_feedback(): void
-    {
-        $assessment = $this->createAssessment();
-        $this->postJson("/api/assessments/{$assessment->public_token}/feedback", [])->assertStatus(409);
-        $this->postJson('/api/assessments/'.str_repeat('a', 48).'/feedback', [])->assertNotFound();
-    }
-
-    public function test_feedback_summary_does_not_disclose_individual_answers_or_tokens(): void
-    {
-        $assessment = $this->completed();
-        $assessment->forceFill(['feedback_json' => ['understood' => 'yes', 'actionable' => 'partly', 'concern' => 'none'], 'feedback_submitted_at' => now()])->save();
-        $this->assertSame(0, Artisan::call('reports:feedback', ['--days' => '30']));
-        $output = Artisan::output();
-        $this->assertStringContainsString('feedback responses: 1', $output);
-        $this->assertStringNotContainsString($assessment->public_token, $output);
-        $this->assertStringNotContainsString('mostly_me', $output);
-        $this->assertSame(1, Artisan::call('reports:feedback', ['--days' => '-1']));
+        $this->postJson("/api/assessments/{$assessment->public_token}/feedback", [
+            'understood' => 'yes', 'actionable' => 'yes', 'concern' => 'none',
+        ])->assertNotFound();
+        $this->getJson("/api/assessments/{$assessment->public_token}/report")
+            ->assertOk()->assertJsonMissingPath('feedback_submitted')->assertJsonMissingPath('feedback_json');
     }
 }

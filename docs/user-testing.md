@@ -8,10 +8,10 @@ Run a first round with 5–8 consenting adults across talking, dating, committed
 
 1. Ask the participant to describe what they hope the app will help them understand, without disclosing relationship details.
 2. Have them complete a check on their phone. Ask them to say when a question feels repetitive, assumes something that has not happened, lacks a fitting answer, or uses unnatural Mongolian. Do not explain the intended meaning until after they respond.
-3. Let them read the report. Ask: “Which sentence fits your experience? Which feels like a guess? What remains uncertain?” Have them open the supporting experiences and check whether they actually support the conclusion.
+3. Let them read the report. Ask: “Which sentence fits your experience? Which feels like a guess? What remains uncertain?”
 4. Ask them to explain the next step in their own words. Ask whether it feels practical, safe and within their control. Do not equate wanting to stay together with a successful report.
 5. Using a fictional repeat check, change the stage and one anchor answer. Ask them to find what changed, explain the comparison, and start a separate relationship without linking it. Check that they understand a new report has a separate payment.
-6. Ask the two in-app feedback questions, then: “What would you remove or rewrite?”
+6. Ask verbally: “Did you feel understood? Do you know what to do next? What would you remove or rewrite?”
 
 ## Scenarios to include
 
@@ -26,15 +26,7 @@ Run a first round with 5–8 consenting adults across talking, dating, committed
 
 Record a participant code, stage/scenario, confusing question IDs, repeated concepts, whether they can explain the uncertainty and next step, and whether they accidentally linked different relationships. Keep research notes separately from production data; agree a deletion date with participants. Do not paste personal stories or report tokens into issue trackers.
 
-The report form records `understood`, `actionable`, and an optional concern category. It sends no answer content to analytics or an AI provider. Feedback is encrypted at rest, one editable submission per report, and removed with that assessment.
-
-To view aggregate feedback in the backend:
-
-```sh
-php artisan reports:feedback --days=30
-```
-
-The denominator is completed assessments created within the window; the responses are their currently saved feedback. Counts are grouped by questionnaire version. These are voluntary responses, not a representative satisfaction study. “Unsafe” feedback deserves a scenario review before release; the form is not monitored as an emergency contact service.
+The in-app report feedback form, submission endpoint, dashboard summaries and aggregate command have been retired. Gather research feedback separately during consenting test sessions. Historical encrypted feedback columns remain for migration compatibility and are deleted with the parent assessment.
 
 ## Release review
 
@@ -42,4 +34,4 @@ Aim for participants to independently understand the main conclusion, identify a
 
 ## Deployment
 
-Deploy the frontend questionnaire and backend JSON together. Run `php artisan migrate --force` through the normal deployment process for the check-in link and encrypted feedback columns. Existing saved reports remain readable; older checks without the three anchors show unavailable comparisons instead of inferred trends. New reports require grounded evidence and uncertainty; API tests use fake provider responses, so review fresh live-provider reports in staging before release.
+Deploy the frontend questionnaire and backend JSON together. Run `php artisan migrate --force` through the normal deployment process for the check-in link. Existing saved reports remain readable; older checks without the three anchors show unavailable comparisons instead of inferred trends. New reports require grounded evidence and uncertainty; API tests use fake provider responses, so review fresh live-provider reports in staging before release.

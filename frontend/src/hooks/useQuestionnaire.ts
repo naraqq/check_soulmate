@@ -18,14 +18,18 @@ interface State {
   seenIntros: CategoryId[]
 }
 
-function initialState(total: number): State {
-  const saved = storage.loadProgress(QUESTIONNAIRE_VERSION)
-  if (!saved) return { index: 0, answers: {}, completed: false, seenIntros: [] }
+function initialState(questions: Question[]): State {
+  const current = storage.loadProgress(QUESTIONNAIRE_VERSION)
+  // This version only reordered existing questions; keep the previous version's answers.
+  const saved = current ?? storage.loadProgress('2026.10.4')
+  if (!saved) return { index: 0, answers: {}, completed: false, seenIntros: ['basics'] }
+  const answers = visibleAnswers(questions, saved.answers)
+  const nextUnanswered = questions.findIndex((q) => isVisible(q, answers) && !q.optional && answers[q.id] == null)
   return {
-    index: Math.min(Math.max(0, saved.currentIndex), total - 1),
-    answers: saved.answers,
+    index: current ? Math.min(Math.max(0, saved.currentIndex), questions.length - 1) : Math.max(0, nextUnanswered),
+    answers,
     completed: saved.completed,
-    seenIntros: (saved.seenIntros ?? []) as CategoryId[],
+    seenIntros: [...new Set(['basics', ...(saved.seenIntros ?? [])])] as CategoryId[],
   }
 }
 
@@ -37,7 +41,7 @@ function findVisible(questions: Question[], answers: Answers, from: number, step
 }
 
 export function useQuestionnaire(questions: Question[]) {
-  const [state, setState] = useState<State>(() => initialState(questions.length))
+  const [state, setState] = useState<State>(() => initialState(questions))
   const advanceTimer = useRef<number | undefined>(undefined)
 
   // Persist every change so a refresh or closed tab never loses progress.

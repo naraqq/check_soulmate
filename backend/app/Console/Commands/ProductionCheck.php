@@ -39,9 +39,9 @@ class ProductionCheck extends Command
             'Exported questionnaire exists' => is_file(config('soulmate.questionnaire_path')),
         ];
         try {
-            $checks['Check-in and feedback migration applied'] = Schema::hasColumns('assessments', ['previous_assessment_id', 'feedback_json', 'feedback_submitted_at']);
+            $checks['Check-in migration applied'] = Schema::hasColumns('assessments', ['previous_assessment_id']);
         } catch (Throwable) {
-            $checks['Check-in and feedback migration applied'] = false;
+            $checks['Check-in migration applied'] = false;
         }
         foreach ($checks as $label => $passed) {
             $this->line(($passed ? 'PASS' : 'FAIL').': '.$label);

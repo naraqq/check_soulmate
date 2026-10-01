@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react'
 import { CreativeStudio } from '../components/admin/CreativeStudio'
-import { DailyColumns, DataTable, Funnel, Panel, ShareBar, StatTile, UtmBuilder, type Column } from '../components/admin/DashboardParts'
+import { DailyColumns, DataTable, Funnel, Panel, StatTile, UtmBuilder, type Column } from '../components/admin/DashboardParts'
 import { questions } from '../data/questions'
 import { SHOW_FOR } from '../data/track'
 import type { Question } from '../data/types'
@@ -575,48 +575,29 @@ function SharingPanel({ data }: { data: Dashboard }) {
 }
 
 // ---------------------------------------------------------------------------
-// Question drop-off — where people quit.
+// Question reach — historical flows and question orders are not a sequential funnel.
 // ---------------------------------------------------------------------------
 
 function QuestionsPanel({ data }: { data: Dashboard }) {
   const [flow, setFlow] = useState<'early' | 'couple'>('early')
 
   const rows = useMemo(() => {
-    const reach = new Map<string, number>()
-    for (const q of data.questions) {
-      // The first questions (before the stage is known) are shared by both flows.
-      if (q.track === flow || q.track === null) reach.set(q.question, (reach.get(q.question) ?? 0) + q.visitors)
-    }
-    const ordered = questions.filter((q) => reach.has(q.id))
-    // Baseline for each question: the last question everyone in this flow sees (conditional ones are skipped).
-    const baselines = ordered.reduce<number[]>((acc, q, i) => {
-      const prev = i === 0 ? data.kpis.started : acc[i - 1]
-      return [...acc, isConditional(q, flow) ? prev : (reach.get(q.id) ?? 0)]
-    }, [])
-    return ordered.map((q, i) => {
-      const count = reach.get(q.id) ?? 0
-      const conditional = isConditional(q, flow)
-      const before = i === 0 ? data.kpis.started : baselines[i - 1]
-      const lost = conditional ? 0 : Math.max(0, before - count)
-      return { id: q.id, n: i + 1, text: q.text, count, lost, drop: before > 0 ? lost / before : null, optional: q.optional ?? false, conditional }
+    // Events before stage selection have no flow. Never add them to a flow's count:
+    // that invents drop-offs and can double-count visitors who later return.
+    return questions.flatMap((q) => {
+      const count = data.questions.find((r) => r.question === q.id && r.track === flow)?.visitors ?? 0
+      const unassigned = data.questions.find((r) => r.question === q.id && r.track === null)?.visitors ?? 0
+      return count || unassigned ? [{ id: q.id, text: q.text, count, unassigned, conditional: isConditional(q, flow) }] : []
     })
   }, [data, flow])
 
-  const worst = new Set(
-    [...rows]
-      .filter((r) => !r.optional)
-      .sort((a, b) => b.lost - a.lost)
-      .slice(0, 3)
-      .filter((r) => r.lost > 0)
-      .map((r) => r.id),
-  )
-  const top = Math.max(1, data.kpis.started, ...rows.map((r) => r.count))
+  const top = Math.max(1, ...rows.map((r) => r.count))
 
   return (
     <Panel
       icon={BarChart3}
-      title="Хүмүүс аль асуулт дээр зогсдог вэ"
-      hint="Тодруулсан асуултууд хамгийн олон хүн алддаг. Тэдгээрийг дахин найруулах, байрыг нь солих эсвэл хасаарай."
+      title="Асуулт бүрт хэдэн хүн хариулсан бэ"
+      hint="Асуулт бүрт хариулсан давхардалгүй зочдын тоо. Урсгал болон асуултын дараалал өөрчлөгдөж болох тул тооны зөрүүг гарсан хүний тоо гэж үзэхгүй."
       action={
         <div role="tablist" aria-label="Асуултын урсгал" className="flex rounded-xl border border-line p-0.5">
           {(['early', 'couple'] as const).map((f) => (
@@ -639,18 +620,17 @@ function QuestionsPanel({ data }: { data: Dashboard }) {
       ) : (
         <ol className="max-h-[32rem] space-y-1.5 overflow-y-auto pr-1">
           {rows.map((r) => (
-            <li key={r.id} className={cn('rounded-xl px-3 py-2', worst.has(r.id) && 'bg-dusk-soft')}>
+            <li key={r.id} className="rounded-xl px-3 py-2">
               <div className="flex items-baseline justify-between gap-3 text-sm">
                 <span className="min-w-0 truncate" title={r.text}>
-                  <span className="mr-2 text-xs text-ink-muted tabular-nums">{r.n}</span>
                   {r.text}
                 </span>
                 <span className="shrink-0 tabular-nums text-ink-soft">
                   {r.conditional && <span className="mr-2 text-xs text-ink-muted">зарим хүнд харагддаг</span>}
                   {num(r.count)}
-                  {r.lost > 0 && <span className={cn('ml-2 text-xs', worst.has(r.id) ? 'font-semibold text-dusk' : 'text-ink-muted')}>−{pct(r.drop, 0)}</span>}
                 </span>
               </div>
+              {r.unassigned > 0 && <p className="mt-1 text-xs text-ink-muted">Шат сонгохоос өмнөх хариулт: {num(r.unassigned)} · аль урсгалд хамаарах нь тодорхойгүй</p>}
               <div className="mt-1 h-1.5 rounded-r bg-white/[0.04]">
                 <div className="h-1.5 rounded-r bg-clay" style={{ width: `${(r.count / top) * 100}%` }} />
               </div>
@@ -681,32 +661,10 @@ function isConditional(q: Question, flow: 'early' | 'couple'): boolean {
 // Report quality — does the product deliver? (Drives word of mouth.)
 // ---------------------------------------------------------------------------
 
-const FEEDBACK_LABELS: Record<string, string> = { yes: 'Тийм', partly: 'Хэсэгчлэн', no: 'Үгүй' }
-const CONCERN_LABELS: Record<string, string> = {
-  repetitive: 'Давтагдсан',
-  not_my_situation: 'Миний нөхцөлд тохироогүй',
-  too_certain: 'Хэт итгэлтэй дүгнэсэн',
-  unsafe: 'Аюулгүй бус санагдсан',
-  none: 'Санаа зовох зүйлгүй',
-}
-
 function QualityPanel({ data }: { data: Dashboard }) {
-  const { feedback, reports_completed, reports_failed, repeat_checkins } = data.quality
-  const block = (title: string, counts: Record<string, number>, labels: Record<string, string>) => {
-    const total = Object.values(counts).reduce((a, b) => a + b, 0)
-    return (
-      <div className="space-y-2">
-        <p className="text-xs font-medium text-ink-muted">{title}</p>
-        {Object.keys(labels)
-          .filter((k) => counts[k])
-          .map((k) => (
-            <ShareBar key={k} label={labels[k]} value={counts[k]} total={total} />
-          ))}
-      </div>
-    )
-  }
+  const { reports_completed, reports_failed, repeat_checkins } = data.quality
   return (
-    <Panel icon={MessageSquareHeart} title="Тайлангийн чанар" hint="Сэтгэл хангалуун уншигч бусдад хуваалцдаг. “Ойлгосон” гэсэн үнэлгээ бага бол зараа өсгөхөөс өмнө тайлангаа сайжруулаарай.">
+    <Panel icon={MessageSquareHeart} title="Тайлангийн төлөв" hint="Хүргэсэн болон амжилтгүй тайлан, давтан шалгалтын тоо.">
       <dl className="mb-5 grid grid-cols-3 gap-3 text-center">
         {(
           [
@@ -721,18 +679,6 @@ function QualityPanel({ data }: { data: Dashboard }) {
           </div>
         ))}
       </dl>
-      {feedback.responses === 0 ? (
-        <p className="rounded-2xl bg-white/[0.03] px-4 py-6 text-center text-sm text-ink-muted">Энэ хугацаанд уншигчийн санал алга.</p>
-      ) : (
-        <div className="space-y-5">
-          <p className="text-sm text-ink-soft">
-            {num(feedback.responses)} хариулт (хүргэсэн тайлангийн {pct(ratio(feedback.responses, reports_completed), 0)})
-          </p>
-          {block('Өөрийгөө ойлгогдсон гэж мэдэрсэн', feedback.understood, FEEDBACK_LABELS)}
-          {block('Дараа нь юу хийхээ мэдсэн', feedback.actionable, FEEDBACK_LABELS)}
-          {block('Санаа зовсон зүйл', feedback.concern, CONCERN_LABELS)}
-        </div>
-      )}
     </Panel>
   )
 }

@@ -22,7 +22,7 @@ import {
 import { CheckInProgress } from './CheckInProgress'
 import { EvidenceDetails } from './EvidenceDetails'
 import type { Track } from '../../data/types'
-import type { CheckInComparison, RelationshipReport } from '../../lib/api'
+import { STATE_ORDER, type CheckInComparison, type RelationshipReport } from '../../lib/api'
 import {
   AreaCards,
   CategoryCard,
@@ -104,6 +104,8 @@ export function ReportView({ report, createdAt, comparison }: { report: Relation
     return section ? [{ key, title, icon, section }] : []
   })
   const date = new Intl.DateTimeFormat('mn-MN', { year: 'numeric', month: 'long', day: 'numeric' }).format(new Date(createdAt))
+  // Detailed cards follow the overview's reading order: attention, mixed, then strengths.
+  const orderedTopics = STATE_ORDER.flatMap((state) => topicItems.filter((t) => (t.section.state ?? 'mixed') === state))
 
   return (
     <div className="space-y-16">
@@ -113,7 +115,7 @@ export function ReportView({ report, createdAt, comparison }: { report: Relation
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-clay-dark">{copy.snapshot}</p>
           <p className="mt-4 font-display text-3xl leading-tight font-semibold text-balance sm:text-4xl">{report.headline}</p>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-soft">{report.summary}</p>
-          <EvidenceDetails evidence={report.evidence} uncertainty={report.uncertainty} />
+          <EvidenceDetails uncertainty={report.uncertainty} />
           <p className="mt-8 text-xs text-ink-muted">{date}</p>
         </div>
       </ReportBlock>
@@ -159,9 +161,10 @@ export function ReportView({ report, createdAt, comparison }: { report: Relation
 
       <ReportBlock id="categories" className="space-y-4">
         <SectionHeading icon={Waypoints} eyebrow={`${topicItems.length} чиглэл`} title="Харилцаа тань чиглэл бүрээр" />
+        <p className="-mt-2 text-ink-soft">Нэр дээр нь дарж дэлгэрэнгүйг уншаарай.</p>
         <CategoryOverview items={topicItems} />
         <div className="space-y-4 pt-4">
-          {topicItems.map((item) => (
+          {orderedTopics.map((item) => (
             <CategoryCard key={item.key} item={item} />
           ))}
         </div>

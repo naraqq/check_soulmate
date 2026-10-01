@@ -10,15 +10,15 @@ import type { AnswerFlag, AnswerOption, Category, Question, Track } from './type
  * Option `value`s are stable identifiers — change labels freely, but bump
  * QUESTIONNAIRE_VERSION whenever question ids or option values change.
  */
-export const QUESTIONNAIRE_VERSION = '2026.10.4'
+export const QUESTIONNAIRE_VERSION = '2026.10.5'
 
 export const categories: Category[] = [
   {
     id: 'basics',
-    label: 'Таны тухай',
-    description: 'Таны болон та хоёрын харилцааны талаар бага зэрэг мэдээлэл.',
+    label: 'Та хоёрын тухай',
+    description: 'Харилцааны тань шат болон сүүлийн үеийн тухай.',
     intro: {
-      title: 'Эхлээд таныг бага зэрэг танъя',
+      title: 'Эхлээд та хоёрын тухай',
       text: 'Зөв, буруу хариулт гэж байхгүй. Сүүлийн 2–4 долоо хоногт ямар байснаа бодоорой. Дөнгөж танилцсан бол танилцсанаас хойших хугацаагаа бодоорой.',
     },
     // Context only, not scored — the same gentle line whatever the answers.
@@ -33,7 +33,7 @@ export const categories: Category[] = [
     label: 'Та өөрөө',
     description: 'Та хайраа хэрхэн илэрхийлж, юу хэрэгтэй байдаг вэ.',
     intro: {
-      title: 'Одоо таны тухай',
+      title: 'Таны хэрэгцээ ба хайрлах хэв маяг',
       text: 'Та хайраа хэрхэн илэрхийлж, юу хэрэгтэй байдаг тухай хэдэн асуулт. Тайлан тань үүгээр илүү хувийн болно.',
     },
     // About the person, not scored — the same line whatever the answers.
@@ -118,7 +118,7 @@ export const categories: Category[] = [
     label: 'Бие даасан байдал',
     description: 'Харилцаан доторх таны өөрийн амьдрал.',
     intro: {
-      title: 'Одоо таны өөрийн тухай',
+      title: 'Таны орон зай ба бие даасан байдал',
       text: 'Харилцаанаас гадуурх таны амьдрал, найз нөхөд, сэтгэл санааны тэнцвэрийн тухай хэдэн асуулт.',
     },
     outro: {
@@ -232,7 +232,7 @@ export const categories: Category[] = [
     label: 'Таны мэдрэмж',
     description: 'Энэ харилцаа танд ямар мэдрэмж төрүүлдэг вэ.',
     intro: {
-      title: 'Эцэст нь таны тухай',
+      title: 'Энэ харилцаа танд ямар санагддаг вэ?',
       text: 'Бараг дууслаа. Энэ хүнтэй харилцахад танд ямар санагддаг тухай асууя.',
     },
     outro: {
@@ -310,32 +310,6 @@ function withReplies(options: AnswerOption[], replies: Record<string, string>): 
 
 const basicsQuestions: Question[] = [
   // ТАНЫ ТУХАЙ ------------------------------------------------------------------
-  {
-    id: 'basics_gender',
-    category: 'basics',
-    text: 'Таны хүйс?',
-    type: 'single_choice',
-    analysisTags: ['context', 'about_user'],
-    options: [
-      { value: 'female', label: 'Эмэгтэй' },
-      { value: 'male', label: 'Эрэгтэй' },
-      { value: 'other', label: 'Бусад / хэлэхийг хүсэхгүй байна' },
-    ],
-  },
-  {
-    id: 'basics_age',
-    category: 'basics',
-    text: 'Таны нас?',
-    type: 'single_choice',
-    analysisTags: ['context', 'about_user'],
-    options: [
-      { value: '18_24', label: '18–24' },
-      { value: '25_29', label: '25–29' },
-      { value: '30_34', label: '30–34' },
-      { value: '35_44', label: '35–44' },
-      { value: '45_plus', label: '45-аас дээш' },
-    ],
-  },
   {
     id: 'basics_type',
     category: 'basics',
@@ -506,6 +480,32 @@ const basicsQuestions: Question[] = [
       { value: 'weekly', label: 'Долоо хоногт нэг орчим удаа' },
       { value: 'rarely', label: 'Ховор' },
       { value: 'almost_never', label: 'Бараг үгүй' },
+    ],
+  },
+  {
+    id: 'basics_gender',
+    category: 'basics',
+    text: 'Таны хүйс?',
+    type: 'single_choice',
+    analysisTags: ['context', 'about_user'],
+    options: [
+      { value: 'female', label: 'Эмэгтэй' },
+      { value: 'male', label: 'Эрэгтэй' },
+      { value: 'other', label: 'Бусад / хэлэхийг хүсэхгүй байна' },
+    ],
+  },
+  {
+    id: 'basics_age',
+    category: 'basics',
+    text: 'Таны нас?',
+    type: 'single_choice',
+    analysisTags: ['context', 'about_user'],
+    options: [
+      { value: '18_24', label: '18–24' },
+      { value: '25_29', label: '25–29' },
+      { value: '30_34', label: '30–34' },
+      { value: '35_44', label: '35–44' },
+      { value: '45_plus', label: '45-аас дээш' },
     ],
   },
 ]

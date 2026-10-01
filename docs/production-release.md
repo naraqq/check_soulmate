@@ -9,7 +9,7 @@ The repository is prepared for deployment; local builds and tests do not prove t
 - Test payments work only with `PAYMENT_BYPASS=true` in `local` or `testing`. Legacy forced/production opt-in flags cannot unlock production reports. Do not use the production site for free test payments.
 - Database queue retry defaults to 480 seconds, longer than the 420-second report worker timeout.
 - Deployments propagate remote failures, fail when default backend tests cannot run, use the frontend lockfile for dependency installation, and retain older releases until the health check succeeds. Worker restart failure now fails the deployment. Health checks validate API JSON and verify HTTPS certificates once configured.
-- Check-in/feedback changes require the additive `2026_09_30_000001_add_checkins_and_feedback_to_assessments` migration. Saved reports remain readable.
+- Check-in changes require the additive `2026_09_30_000001_add_checkins_and_feedback_to_assessments` migration. Saved reports remain readable.
 
 ## On the deployment host
 
@@ -29,7 +29,7 @@ Before opening to customers:
 2. Confirm Supervisor reports a running queue worker and the scheduler is active.
 3. Complete an authorized live payment; verify the expected amount, provider callback and report completion. Keep the payment token private. Refund through the normal merchant process if appropriate.
 4. Review newly generated Mongolian reports for early dating, committed relationships, uncertainty and a sensitive-boundary scenario using synthetic answers. Confirm each cited experience exists and the next step fits the situation.
-5. Open an older report, start a same-person check-in, test feedback and deletion, and verify the Facebook support links.
+5. Open an older report, start a same-person check-in, test deletion, and verify the Facebook support links.
 
 Follow `docs/user-testing.md` for actual participant sessions.
 
@@ -42,3 +42,5 @@ The deploy command now returns failure instead of swallowing it during cleanup. 
 Run migrations before publishing the frontend (`2026_09_30_000003_create_partner_shares_table`). The paid, completed report offers a selectable preview and a separate `/shared/<64-character token>` read-only link. Only strengths, areas to discuss, and conversation starters can be shared; raw answers, evidence, and owner tokens are excluded. New links replace old links. Owners can revoke access; deleting the assessment cascades to its share. Stored snapshots and tokens are encrypted. Anyone with a share link can read its selected content until revoked.
 
 Deploy the updated Nginx snippet for `noindex`/`no-store` headers on shared pages. Verify create, recipient view, replacement, and revocation on a completed paid report. Do not use an owner `/report/` link when testing partner sharing.
+
+Report feedback collection is retired: there is no report form, feedback API, dashboard feedback summary, or `reports:feedback` command. Historical database columns remain to preserve migration compatibility; no destructive migration is required.

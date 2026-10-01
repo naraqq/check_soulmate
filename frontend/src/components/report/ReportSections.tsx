@@ -1,6 +1,6 @@
-import { CircleAlert, CircleCheck, Lightbulb, MessageCircleHeart, Sprout, type LucideIcon } from 'lucide-react'
+import { ChevronRight, CircleAlert, CircleCheck, Contrast, Lightbulb, MessageCircleHeart, Sprout, type LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
-import type { PotentialLevel, RelationshipReport, ReportSection, SectionState } from '../../lib/api'
+import { STATE_ORDER, type PotentialLevel, type RelationshipReport, type ReportSection, type SectionState } from '../../lib/api'
 import { EvidenceDetails } from './EvidenceDetails'
 import { cn } from '../../lib/format'
 
@@ -136,18 +136,39 @@ export function AreaCards({ items }: { items: RelationshipReport['areas_to_explo
 }
 
 /** Neutral status tags — teal / violet / pink, never red-yellow-green "health" colours. */
-const stateStyles: Record<SectionState, { label: string; chip: string; dot: string }> = {
-  strength: { label: 'Бат бөх тал', chip: 'bg-sage-soft text-sage', dot: 'bg-sage' },
-  mixed: { label: 'Холимог', chip: 'bg-clay-soft text-clay-dark', dot: 'bg-clay' },
-  attention: { label: 'Анхаарах нь зүйтэй', chip: 'bg-dusk-soft text-dusk', dot: 'bg-dusk' },
+const stateStyles: Record<SectionState, { label: string; hint: string; icon: LucideIcon; chip: string; dot: string; text: string }> = {
+  attention: {
+    label: 'Анхаарах хэрэгтэй',
+    hint: 'Эхлээд эндээс уншаарай.',
+    icon: CircleAlert,
+    chip: 'bg-dusk-soft text-dusk',
+    dot: 'bg-dusk',
+    text: 'text-dusk',
+  },
+  mixed: {
+    label: 'Дунд зэрэг',
+    hint: 'Сайн тал ч, анхаарах зүйл ч бий.',
+    icon: Contrast,
+    chip: 'bg-clay-soft text-clay-dark',
+    dot: 'bg-clay',
+    text: 'text-clay-dark',
+  },
+  strength: {
+    label: 'Сайн байгаа',
+    hint: 'Үүнийгээ хадгалаарай.',
+    icon: CircleCheck,
+    chip: 'bg-sage-soft text-sage',
+    dot: 'bg-sage',
+    text: 'text-sage',
+  },
 }
 
 export function StateChip({ state }: { state?: SectionState }) {
   if (!state) return null
   const s = stateStyles[state]
   return (
-    <span className={cn('inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold', s.chip)}>
-      <span aria-hidden className={cn('size-1.5 rounded-full', s.dot)} />
+    <span className={cn('inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold whitespace-nowrap', s.chip)}>
+      <s.icon className="size-3.5" aria-hidden />
       {s.label}
     </span>
   )
@@ -160,22 +181,42 @@ export interface CategoryItem {
   section: ReportSection
 }
 
-/** At-a-glance grid: every topic with its status; tapping jumps to the detailed card. */
+/**
+ * At a glance: topics grouped by what they need, in reading order, each group with a plain
+ * label, icon and one-line hint (never colour alone). Tapping a topic jumps to its card.
+ */
 export function CategoryOverview({ items }: { items: CategoryItem[] }) {
+  const groups = STATE_ORDER.map((state) => ({ state, items: items.filter((i) => (i.section.state ?? 'mixed') === state) })).filter(
+    (g) => g.items.length > 0,
+  )
   return (
-    <nav aria-label="Чиглэлүүд" className="no-print grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-      {items.map(({ key, title, icon: Icon, section }) => (
-        <a
-          key={key}
-          href={`#topic-${key}`}
-          className="flex flex-col gap-2.5 rounded-2xl border border-line bg-paper p-3.5 backdrop-blur transition hover:-translate-y-px hover:border-white/25"
-        >
-          <span className="flex items-center gap-2 text-sm font-semibold">
-            <Icon className="size-4 shrink-0 text-clay" aria-hidden /> {title}
-          </span>
-          <StateChip state={section.state} />
-        </a>
-      ))}
+    <nav aria-label="Чиглэлүүд" className="no-print space-y-3">
+      {groups.map(({ state, items: group }) => {
+        const s = stateStyles[state]
+        return (
+          <div key={state} className="rounded-3xl border border-line bg-paper p-4 sm:p-5">
+            <p className={cn('flex items-center gap-2 font-semibold', s.text)}>
+              <s.icon className="size-5 shrink-0" aria-hidden />
+              {s.label}
+            </p>
+            <p className="mt-0.5 pl-7 text-sm text-ink-muted">{s.hint}</p>
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {group.map(({ key, title, icon: Icon }) => (
+                <li key={key}>
+                  <a
+                    href={`#topic-${key}`}
+                    className="inline-flex items-center gap-2 rounded-full border border-line bg-white/[0.04] py-2 pr-3 pl-3.5 text-sm font-medium transition hover:border-white/25 hover:bg-white/10"
+                  >
+                    <Icon className="size-4 shrink-0 text-ink-soft" aria-hidden />
+                    {title}
+                    <ChevronRight className="size-4 shrink-0 text-ink-muted" aria-hidden />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      })}
     </nav>
   )
 }
@@ -196,7 +237,7 @@ export function CategoryCard({ item }: { item: CategoryItem }) {
 
       <p className="text-[17px] leading-relaxed text-ink">{section.insight ?? section.summary}</p>
 
-      <EvidenceDetails evidence={section.evidence} uncertainty={section.uncertainty} />
+      <EvidenceDetails uncertainty={section.uncertainty} />
 
       {section.healthy && (
         <div className="mt-6 rounded-2xl border border-teal-300/15 bg-sage-soft p-4 sm:p-5">

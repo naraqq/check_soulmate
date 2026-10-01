@@ -103,6 +103,42 @@ class RelationshipReportServiceTest extends TestCase
         }
     }
 
+    public function test_both_prompts_demand_answers_not_reassurance(): void
+    {
+        foreach (['couple', 'early'] as $track) {
+            $prompt = $this->service()->systemPrompt($track);
+
+            $this->assertSame(1, substr_count($prompt, 'MOST IMPORTANT — GIVE ANSWERS, NOT REASSURANCE'), $track);
+            // The user's own examples are named as forbidden…
+            $this->assertStringContainsString('Орон зайг үгүйлж байгаа нь маш ойлгомжтой', $prompt);
+            $this->assertStringContainsString('Та өөрийгөө сонсож, өөртөө анхаарал тавих бүрэн эрхтэй', $prompt);
+            $this->assertStringContainsString('тийм байж магадгүй', $prompt);
+            // …and no instruction still asks for "deserves / every right / likely explanations".
+            $this->assertStringNotContainsString('deserve', $prompt);
+            $this->assertStringNotContainsString('every right', $prompt);
+            $this->assertStringNotContainsString('likely explanations', $prompt);
+            // The block comes right after the role, before everything else.
+            $this->assertLessThan(strpos($prompt, 'LANGUAGE'), strpos($prompt, 'MOST IMPORTANT'));
+        }
+    }
+
+    public function test_detects_reassurance_and_hedging_in_a_report(): void
+    {
+        $report = $this->fakeReport();
+        $report['note_to_you'] = 'Орон зайг үгүйлж байгаа нь маш ойлгомжтой. Та өөрийгөө сонсох бүрэн эрхтэй.';
+        $report['trust']['insight'] = 'Тэр завгүй байгаа, тийм байж магадгүй.';
+
+        $this->assertSame(['магадгүй', 'ойлгомжтой', 'эрхтэй'], $this->service()->reassurancePhrases($report));
+    }
+
+    public function test_clear_advice_is_not_flagged(): void
+    {
+        $report = $this->fakeReport();
+        $report['note_to_you'] = 'Танд ганцаараа байх цаг хэрэгтэй байна. Долоо хоногт хоёр орой өөрийн цаг гаргая гэж тохироорой. Энгийн, ойлгомжтой үгээр хэлээрэй.';
+
+        $this->assertSame([], $this->service()->reassurancePhrases($report));
+    }
+
     public function test_attention_requires_supporting_evidence_too(): void
     {
         $answers = app(Questionnaire::class)->normalizeAnswers($this->validAnswers());

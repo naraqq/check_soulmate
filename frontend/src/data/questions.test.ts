@@ -52,8 +52,8 @@ describe('questionnaire config', () => {
     }
   })
 
-  it('starts with questions about the user, then the relationship stage', () => {
-    expect(questions.slice(0, 3).map((q) => q.id)).toEqual(['basics_gender', 'basics_age', 'basics_type'])
+  it('starts with relationship stage before asking for demographics', () => {
+    expect(questions.slice(0, 3).map((q) => q.id)).toEqual(['basics_type', 'basics_duration', 'checkin_communication'])
   })
 
   it.each([

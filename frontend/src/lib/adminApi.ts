@@ -55,12 +55,6 @@ export interface Dashboard {
     guess: { shared: number; opened: number; guesses: number; correct: number; started_check: number }
   }
   quality: {
-    feedback: {
-      responses: number
-      understood: Record<string, number>
-      actionable: Record<string, number>
-      concern: Record<string, number>
-    }
     reports_completed: number
     reports_failed: number
     repeat_checkins: number

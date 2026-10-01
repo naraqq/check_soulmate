@@ -6,6 +6,7 @@ use App\Enums\AssessmentStatus;
 use App\Http\Controllers\Controller;
 use App\Jobs\GenerateRelationshipReport;
 use App\Models\Assessment;
+use App\Services\CheckInComparison;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
@@ -104,8 +105,7 @@ class ReportController extends Controller
         return response()->json([
             'status' => 'completed',
             'report' => $report->report_json,
-            'comparison' => app(\App\Services\CheckInComparison::class)->forAssessment($assessment),
-            'feedback_submitted' => $assessment->feedback_submitted_at !== null,
+            'comparison' => app(CheckInComparison::class)->forAssessment($assessment),
             'created_at' => $report->created_at?->toIso8601String(),
         ]);
     }
