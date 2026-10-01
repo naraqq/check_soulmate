@@ -4,7 +4,6 @@ import {
   type AnswerFlag,
   type Answers,
   type AnswerOption,
-  type CategoryId,
   type Question,
   type ScoredCategoryId,
 } from '../../data/types'
@@ -117,24 +116,6 @@ export function collectFlags(questions: Question[], answers: Answers): Map<Answe
   }
 
   return flags
-}
-
-export type SectionMood = 'high' | 'mid' | 'low'
-
-/**
- * How a finished section felt overall — picks which gentle reflection to show
- * between sections. A flagged answer in the section caps it at "mid".
- */
-export function sectionMood(category: CategoryId, questions: Question[], answers: Answers): SectionMood {
-  if (!isScored(category)) return 'mid'
-  const score = analyzeCategories(questions, answers)[category].score
-  if (score === null) return 'mid'
-  const flagged = questions.some(
-    (q) => q.category === category && q.options?.some((o) => o.value === answers[q.id] && o.flag),
-  )
-  if (score < 0.45) return 'low'
-  if (score >= 0.7 && !flagged) return 'high'
-  return 'mid'
 }
 
 export function countAnswers(questions: Question[], answers: Answers) {

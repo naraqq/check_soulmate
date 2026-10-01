@@ -33,11 +33,10 @@ describe('conditional questions', () => {
 })
 
 describe('section intros', () => {
-  it('every category has an intro and an end-of-section reflection for every mood', () => {
+  it('every category has an intro', () => {
     for (const c of categories) {
       expect(c.intro.title.length, c.id).toBeGreaterThan(0)
       expect(c.intro.text.length, c.id).toBeGreaterThan(0)
-      for (const mood of ['high', 'mid', 'low'] as const) expect(c.outro[mood].length, `${c.id}.${mood}`).toBeGreaterThan(0)
     }
   })
 

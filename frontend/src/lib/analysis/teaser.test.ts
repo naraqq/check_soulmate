@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { questions } from '../../data/questions'
 import type { Answers, Question } from '../../data/types'
 import { isVisible } from '../../data/visibility'
-import { analyzeCategories, buildTeaser, collectFlags, countAnswers, sectionMood } from './teaser'
+import { analyzeCategories, buildTeaser, collectFlags, countAnswers } from './teaser'
 
 /** Answer every choice question with the option scoring highest (or lowest). */
 function answerAll(pick: 'best' | 'worst'): Answers {
@@ -110,23 +110,6 @@ describe('buildTeaser', () => {
   it('is deterministic', () => {
     const answers = answerAll('worst')
     expect(buildTeaser(questions, answers)).toEqual(buildTeaser(questions, answers))
-  })
-})
-
-describe('sectionMood', () => {
-  it('is high for supportive answers, low for difficult ones', () => {
-    expect(sectionMood('communication', questions, answerAll('best'))).toBe('high')
-    expect(sectionMood('communication', questions, answerAll('worst'))).toBe('low')
-  })
-
-  it('is never "high" when the section contains a flagged answer', () => {
-    const answers = answerAll('best')
-    answers.conflict_harm = 'once_or_twice'
-    expect(sectionMood('conflict', questions, answers)).not.toBe('high')
-  })
-
-  it('treats the unscored basics section neutrally', () => {
-    expect(sectionMood('basics', questions, answerAll('best'))).toBe('mid')
   })
 })
 

@@ -111,11 +111,6 @@ export interface Category {
   description: string
   /** Screen shown when the user enters this section — guides them through the check. */
   intro: { title: string; text: string }
-  /**
-   * Shown when the user finishes this section, chosen by how the section felt overall.
-   * Gentle acknowledgement only — never the report's actual findings.
-   */
-  outro: { high: string; mid: string; low: string }
 }
 
 /** questionId → option value (or free text). null means the user skipped it. */

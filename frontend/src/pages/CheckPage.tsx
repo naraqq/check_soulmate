@@ -6,9 +6,8 @@ import { SectionIntro } from '../components/questionnaire/SectionIntro'
 import { Button } from '../components/ui/Button'
 import { categories, questions } from '../data/questions'
 import { audienceParam, STAGE_QUESTION, stageFitsAudience, trackFor } from '../data/track'
-import { isVisible, optionsFor, visibleAnswers } from '../data/visibility'
+import { isVisible, optionsFor } from '../data/visibility'
 import { useQuestionnaire } from '../hooks/useQuestionnaire'
-import { sectionMood } from '../lib/analysis/teaser'
 import { track } from '../lib/analytics'
 import { storage } from '../lib/storage'
 
@@ -44,11 +43,9 @@ export function CheckPage() {
   const overall = (categoryIndex + sectionProgress) / sections.length
   const encouragement = encouragementFor(overall)
 
-  // Reflection on the section just completed, shown on the next section's intro.
+  // The section just completed gets a neutral tick on the next intro. No verdict: results stay behind the paywall.
   const finishedCat = q.finishedCategory ? categories.find((c) => c.id === q.finishedCategory) : undefined
-  const finished = finishedCat
-    ? { label: finishedCat.label, reflection: finishedCat.outro[sectionMood(finishedCat.id, questions, visibleAnswers(questions, q.answers))] }
-    : undefined
+  const finished = finishedCat ? { label: finishedCat.label } : undefined
 
   useEffect(() => {
     if (!startedTracked.current && q.position === 0 && Object.keys(q.answers).length === 0) {
